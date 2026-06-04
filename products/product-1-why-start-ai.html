@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Pain Audit — Life Builder OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- GA4 placeholder — replace G-XXXXXXXXXX with real ID before deploy -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #0d0d0d;
+  --bg2:     #141414;
+  --bg3:     #1c1c1c;
+  --border:  #2a2a2a;
+  --accent:  #ff6d3b;
+  --accent-hover: #ff7d4f;
+  --accent2: #7c3aed; /* Reserved — secondary CTA, used in later screens */
+  --text:    #ffffff;
+  --text2:   #a0a0a0;
+  --text3:   #888888;
+  --green:   #22c55e;
+  --red:     #ef4444;  /* Reserved — hate tag, error state */
+  --blue:    #3b82f6;  /* Reserved — routine tag, info state */
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  background: rgba(13,13,13,.95);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+.topbar-brand { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+.topbar-sep { color: var(--border); font-size: 13px; }
+.topbar-product { font-size: 13px; color: var(--text3); }
+
+/* SCREENS */
+.screen { display: none; max-width: 560px; margin: 0 auto; padding: 40px 24px 80px; }
+.screen.active { display: block; }
+
+/* TYPOGRAPHY */
+.brand-label {
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.brand-label::before { content: ''; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+
+h1 { font-size: 30px; font-weight: 900; line-height: 1.15; letter-spacing: -.6px; margin-bottom: 14px; }
+h1 .hl { background: linear-gradient(90deg, var(--accent), #ff9a6c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.subtitle { font-size: 15px; color: var(--text2); line-height: 1.65; margin-bottom: 24px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--accent); color: #fff;
+  padding: 12px 24px; border-radius: 8px; border: none;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: background .15s, transform .15s, box-shadow .15s;
+  width: 100%;
+}
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(255,109,59,.3); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border); color: var(--text2);
+  width: auto; padding: 10px 18px; font-size: 14px;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: transparent; box-shadow: none; transform: none; }
+.btn-row { display: flex; gap: 10px; margin-top: 24px; }
+.btn-row .btn { flex: 1; }
+
+/* CARDS */
+.card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+/* PROGRESS BAR */
+.progress-wrap { margin-bottom: 28px; }
+.progress-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.progress-label { font-size: 13px; color: var(--text3); }
+.progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
+.progress-track { height: 3px; background: var(--bg3); border-radius: 3px; }
+.progress-fill { height: 3px; background: var(--accent); border-radius: 3px; box-shadow: 0 0 8px rgba(255,109,59,.5); /* #ff6d3b */ transition: width .3s ease; }
+
+/* STAT ROW */
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 22px 0; }
+.stat-block {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 12px; text-align: center; position: relative; overflow: hidden;
+}
+.stat-block::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.stat-num { font-size: 28px; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 6px; letter-spacing: -1px; }
+.stat-lbl { font-size: 12px; color: var(--text3); line-height: 1.4; }
+
+/* PROMISE BOX */
+.promise-box {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; margin: 18px 0; position: relative; overflow: hidden;
+}
+.promise-box::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2));
+}
+.promise-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
+.promise-box ul { list-style: none; }
+.promise-box li { font-size: 14px; color: var(--text2); padding: 4px 0; display: flex; gap: 8px; align-items: flex-start; }
+.promise-box li::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+/* AUTHOR NOTE */
+.author-note {
+  border: 1px solid var(--border); border-radius: 8px; padding: 13px 16px;
+  font-size: 13px; color: var(--text3); line-height: 1.55; font-style: italic; margin-top: 14px;
+}
+
+/* SEARCH */
+.search-input {
+  width: 100%; padding: 12px 16px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-size: 14px; font-family: inherit;
+  margin-bottom: 16px; outline: none; transition: border-color .15s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text3); }
+
+/* SEARCH RESULTS */
+.search-results {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+  max-height: 200px; overflow-y: auto; margin-bottom: 16px; display: none;
+}
+.search-result-item {
+  padding: 10px 16px; font-size: 14px; color: var(--text2);
+  cursor: pointer; border-bottom: 1px solid var(--border); transition: background .1s;
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: rgba(255,109,59,.06); color: var(--text); }
+
+/* CATEGORY CARDS */
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.cat-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 20px 16px; cursor: pointer; transition: border-color .15s, background .15s;
+  position: relative; overflow: hidden;
+}
+.cat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  transition: background .15s;
+}
+.cat-card.selected { border-color: var(--accent); background: rgba(255,109,59,.06); }
+.cat-card.selected::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.cat-card:hover:not(.selected) { border-color: #444; }
+.cat-emoji { font-size: 28px; margin-bottom: 10px; display: block; }
+.cat-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.cat-sub { font-size: 13px; color: var(--text2); line-height: 1.4; }
+
+/* LIMIT HINT */
+.limit-hint {
+  background: #1a150a; border: 1px solid #3a2510; border-radius: 7px;
+  padding: 9px 13px; font-size: 13px; color: #e09060; margin-bottom: 14px;
+}
+
+/* PAIN ITEMS */
+.pain-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.pain-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; background: var(--bg2); transition: border-color .15s, opacity .15s;
+}
+.pain-item:hover:not(.dimmed) { border-color: #444; }
+.pain-item.selected { border-color: var(--accent); background: rgba(255,109,59,.06); }
+.pain-item.dimmed { opacity: .35; cursor: not-allowed; }
+.checkbox {
+  width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--border);
+  border-radius: 4px; margin-top: 2px; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #fff; transition: all .15s; flex-shrink: 0;
+}
+.pain-item.selected .checkbox { background: var(--accent); border-color: var(--accent); }
+.pain-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.pain-desc { font-size: 13px; color: var(--text2); line-height: 1.4; }
+
+/* ADD OWN */
+.add-own-wrap { margin-top: 4px; }
+.add-own-btn {
+  width: 100%; border: 1px dashed var(--border); border-radius: 8px; padding: 12px 14px;
+  font-size: 14px; color: var(--text3); cursor: pointer; text-align: center;
+  background: transparent; font-family: inherit; transition: border-color .15s, color .15s;
+}
+.add-own-btn:hover { border-color: var(--accent); color: var(--accent); }
+.add-own-input {
+  width: 100%; padding: 12px 16px; background: var(--bg2);
+  border: 1px solid var(--accent); border-radius: 8px; color: var(--text);
+  font-size: 14px; font-family: inherit; outline: none; margin-top: 8px;
+  display: none;
+}
+
+/* TAGGER */
+.tagger-why {
+  background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.25);
+  border-radius: 8px; padding: 12px 15px; font-size: 14px; color: #c4b5fd;
+  line-height: 1.5; margin: 14px 0 20px;
+}
+.tagger-list { display: flex; flex-direction: column; gap: 10px; }
+.tagger-row {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+}
+.tagger-pain-name { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.tag-options { display: flex; gap: 8px; }
+.tag-btn {
+  flex: 1; padding: 9px 10px; border-radius: 6px; border: 1px solid var(--border);
+  font-size: 13px; font-weight: 500; color: var(--text3); cursor: pointer;
+  text-align: center; background: var(--bg3); transition: all .15s; font-family: inherit;
+}
+.tag-btn.active-routine { border-color: var(--blue); background: rgba(59,130,246,.1); color: #93c5fd; }
+.tag-btn.active-hate    { border-color: var(--red);  background: rgba(239,68,68,.1);  color: #fca5a5; }
+
+/* TIME CALCULATOR BLOCK */
+.time-calc {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 22px 24px; margin-bottom: 20px; position: relative; overflow: hidden;
+}
+.time-calc::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.time-calc-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.time-block { flex: 1; text-align: center; }
+.time-block-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.time-block-num { font-size: 36px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+.time-block-num.before { color: var(--text2); }
+.time-block-num.after { color: var(--green); }
+.time-arrow { font-size: 24px; color: var(--text3); }
+.time-savings { font-size: 15px; color: var(--text2); line-height: 1.5; }
+.time-savings strong { color: var(--accent); }
+
+/* RESULTS TABLE */
+.results-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 14px 0; }
+.results-table th {
+  text-align: left; font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .06em; padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.results-table td { padding: 13px 10px; border-bottom: 1px solid #1a1a1a; vertical-align: middle; }
+.tag-pill {
+  display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 8px;
+  border-radius: 8px; min-width: 80px; text-align: center;
+}
+.tag-pill.routine { background: rgba(59,130,246,.1); color: #93c5fd; border: 1px solid rgba(59,130,246,.2); }
+.tag-pill.hate    { background: rgba(239,68,68,.1);  color: #fca5a5; border: 1px solid rgba(239,68,68,.2); }
+.time-saved-badge {
+  display: inline-flex; align-items: center; background: rgba(34,197,94,.1);
+  color: var(--green); font-size: 13px; font-weight: 700; padding: 4px 10px;
+  border-radius: 20px; border: 1px solid rgba(34,197,94,.2);
+}
+.expand-btn {
+  background: none; border: none; color: var(--text3); font-size: 18px;
+  cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: color .15s;
+}
+.expand-btn:hover { color: var(--accent); }
+
+/* EXPAND CARD */
+.expand-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; margin: 4px 0 8px; position: relative; overflow: hidden;
+}
+.expand-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.expand-section { margin-bottom: 16px; }
+.expand-section:last-child { margin-bottom: 0; }
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin-bottom: 8px; }
+.framing-text {
+  font-size: 14px; color: var(--text2); line-height: 1.55;
+  background: rgba(255,109,59,.06); border-radius: 7px; padding: 12px 14px;
+  border-left: 2px solid var(--accent);
+}
+.framing-text.hate-style { background: rgba(239,68,68,.06); border-color: var(--red); }
+.roadmap-steps { display: flex; flex-direction: column; gap: 8px; }
+.roadmap-step { font-size: 14px; color: var(--text2); display: flex; gap: 8px; align-items: flex-start; }
+.roadmap-step::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+.roadmap-result {
+  margin-top: 10px; background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+  border-radius: 7px; padding: 10px 13px; font-size: 14px; color: var(--green); font-weight: 600;
+  display: flex; gap: 6px; align-items: center;
+}
+.roadmap-result::before { content: '✓'; }
+.path-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.path-block { border-radius: 8px; padding: 14px; }
+.path-block.diy { background: rgba(34,197,94,.06); border: 1px solid rgba(34,197,94,.15); }
+.path-block.buy { background: rgba(255,109,59,.06); border: 1px solid rgba(255,109,59,.2); }
+.path-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.path-block.diy .path-label { color: var(--green); }
+.path-block.buy .path-label { color: var(--accent); }
+.path-block p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.path-price { font-size: 18px; font-weight: 800; color: var(--accent); margin-top: 6px; }
+.buy-cta-btn {
+  display: block; width: 100%; background: var(--accent); color: #fff;
+  border: none; border-radius: 6px; padding: 9px 10px; font-size: 13px; font-weight: 700;
+  cursor: pointer; margin-top: 8px; font-family: inherit; transition: background .15s;
+}
+.buy-cta-btn:hover { background: var(--accent-hover); }
+
+/* SHARE CTA */
+.share-block {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; margin: 20px 0 16px; text-align: center;
+}
+.share-block p { font-size: 14px; color: var(--text2); margin-bottom: 14px; font-style: italic; }
+.share-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.share-btn {
+  padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--bg3); color: var(--text2); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.share-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* EMAIL FORM */
+.email-section {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px; position: relative; overflow: hidden;
+}
+.email-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.email-section h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.email-section .email-sub { font-size: 14px; color: var(--text2); margin-bottom: 20px; line-height: 1.5; }
+.form-field { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; display: block; }
+.form-input, .form-textarea, .form-select {
+  width: 100%; padding: 11px 14px; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 7px; color: var(--text);
+  font-size: 14px; font-family: inherit; outline: none; transition: border-color .15s;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--accent); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-select { appearance: none; cursor: pointer; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.optional-label { font-size: 11px; color: var(--text3); margin-left: 4px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.skip-link { display: block; text-align: center; font-size: 13px; color: var(--text3); margin-top: 12px; cursor: pointer; text-decoration: underline; }
+.skip-link:hover { color: var(--text2); }
+
+/* SUCCESS STATE */
+.submit-success {
+  text-align: center; padding: 10px 0;
+}
+.submit-success .success-icon { font-size: 40px; margin-bottom: 12px; }
+.submit-success h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.submit-success p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.submit-error { font-size: 13px; color: var(--red); margin-top: 8px; }
+
+/* BOOK A CALL */
+.book-call {
+  margin-top: 20px; text-align: center; padding: 20px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--bg2);
+}
+.book-call p { font-size: 14px; color: var(--text2); margin-bottom: 14px; }
+.book-call a {
+  display: inline-block; padding: 11px 24px; border: 1px solid var(--accent);
+  border-radius: 8px; color: var(--accent); font-size: 14px; font-weight: 700;
+  text-decoration: none; transition: background .15s;
+}
+.book-call a:hover { background: rgba(255,109,59,.1); }
+
+/* MOBILE — 768px breakpoint */
+@media (max-width: 768px) {
+  .screen { padding: 28px 16px 60px; }
+
+  h1 { font-size: 24px; }
+  .subtitle { font-size: 14px; }
+
+  .stat-row { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .stat-num { font-size: 22px; }
+  .stat-lbl { font-size: 11px; }
+
+  .cat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cat-card { padding: 14px 12px; }
+  .cat-emoji { font-size: 22px; }
+
+  .path-blocks { grid-template-columns: 1fr; }
+
+  .results-table { display: block; overflow-x: auto; }
+
+  .form-row { grid-template-columns: 1fr; }
+
+  .share-btns { flex-direction: column; align-items: stretch; }
+  .share-btn { text-align: center; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 21px; letter-spacing: -.3px; }
+  .btn { font-size: 14px; padding: 11px 20px; }
+  .stat-row { gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-brand">Life Builder OS</span>
+  <span class="topbar-sep">·</span>
+  <span class="topbar-product">AI Pain Audit</span>
+</div>
+
+<!-- Screen containers — JS shows/hides these -->
+<main id="quiz-root">
+  <div id="screen-1" class="screen active"></div>
+  <div id="screen-2" class="screen"></div>
+  <div id="screen-3" class="screen"></div>
+  <div id="screen-4" class="screen"></div>
+  <div id="screen-5" class="screen"></div>
+</main>
+
+<script>
+// === QUIZ STATE ===
+const quizState = {
+  category: null,       // 'self-employed' | 'in-a-team' | 'sales' | 'creative'
+  profession: null,     // string, e.g. "Florist" — null if only category selected
+  pains: [],            // array of pain IDs, max 5
+  customPain: null,     // string from "+ add own" or null
+  tags: {},             // { painId: 'routine' | 'hate' }
+  buyClicks: [],        // [{ pain: string, price: number }]
+  utmParams: {}         // { utm_source, utm_medium, utm_campaign }
+};
+
+// Capture UTM params on load
+(function captureUTM() {
+  const params = new URLSearchParams(window.location.search);
+  ['utm_source','utm_medium','utm_campaign'].forEach(k => {
+    if (params.get(k)) quizState.utmParams[k] = params.get(k);
+  });
+})();
+
+// === PAIN DATA ===
+// 4 categories × 8 pains. Fields: id, title, description, hoursWasted,
+// hoursWithAI, routine, hate, steps[], result, diy, buyName, buyPrice, buyUrl
+const PAIN_DATA = {
+
+  'self-employed': [
+    {
+      id: 'se-scheduling',
+      title: 'Manually scheduling and confirming appointments',
+      description: 'Every booking is 3–5 minutes of back-and-forth messaging.',
+      hoursWasted: 2, hoursWithAI: 0.1,
+      routine: 'Every booking is 3–5 minutes of back-and-forth. With 20 clients a week, that\'s 2 hours of pure logistics — no revenue, just scheduling.',
+      hate: 'You\'ve answered "what times do you have available?" eleven times today. You know you\'ll do it again tomorrow.',
+      steps: ['Set up Calendly (free) — clients pick their own slot, no messages needed','Add an AI bot to Instagram or Telegram that answers, shows availability, and books automatically','Automated reminder goes out 1 hour before each appointment'],
+      result: '2 hrs/week → 5 min (just glance at your calendar)',
+      diy: 'Calendly (free) + ManyChat ($15/mo) — 3–4 hrs to set up',
+      buyName: 'Booking Bot Setup', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'se-followup',
+      title: 'Post-service follow-up messages',
+      description: 'Clients who get follow-ups come back. Most never get one.',
+      hoursWasted: 1.5, hoursWithAI: 0,
+      routine: 'You know you should follow up after every appointment. But between clients and life, it keeps sliding. The pros who remember their clients get the repeat business.',
+      hate: 'Writing "hope you\'re feeling great after your session!" to each person individually feels forced — even when you actually mean it.',
+      steps: ['After every appointment, an automatic message fires 24–48 hours later','AI sends a personalized note with the client\'s name and service details','If they reply, the bot surfaces it for you — or offers to rebook automatically'],
+      result: '0 minutes of manual effort, 100% of clients get a follow-up',
+      diy: 'Make.com (free up to 1,000 ops) + Google Sheets — 4–6 hrs to set up',
+      buyName: 'Follow-Up Automation', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'se-dates',
+      title: 'Tracking client birthdays and important dates',
+      description: 'The professionals who remember get loyalty and referrals.',
+      hoursWasted: 0.5, hoursWithAI: 0,
+      routine: 'You have 200+ clients. Remembering everyone\'s birthday is impossible. The stylists and therapists who do remember? They get loyalty and referrals you don\'t.',
+      hate: 'Digging through spreadsheets, finding dates, figuring out what to write — it always falls to the bottom of the list.',
+      steps: ['Collect birthdays at the first booking (simple form or bot question)','Three days before the date: AI auto-sends a personalized offer (discount, seasonal offer, special treatment)','A "VIP dates" list runs itself — AI tracks and triggers automatically'],
+      result: '15 min/year to set up → 0 min to run',
+      diy: 'Google Sheets + Apps Script (free) — 3–4 hrs setup',
+      buyName: 'Client Loyalty System', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'se-invoicing',
+      title: 'Sending invoices and chasing payments',
+      description: 'Write, send, track, remind — 5–10 min per client, every month.',
+      hoursWasted: 1, hoursWithAI: 0.2,
+      routine: 'Write invoice, send it, check if they paid, remind them if they didn\'t — 5–10 minutes per client, every month, on repeat.',
+      hate: 'Asking someone to pay feels awkward every time. You\'re a professional, not a collections agent.',
+      steps: ['After each service: invoice auto-generates with client name, service, amount, and payment link','No payment after 3 days: automatic reminder goes out — without you involved','Payment confirmed: automatic thank-you and receipt sent'],
+      result: '2–3 hrs/month → 10 min (just review the report)',
+      diy: 'Invoice Ninja (free) + Zapier — 2–3 hrs setup',
+      buyName: 'Payment Autopilot', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'se-faq',
+      title: 'Answering the same questions over and over',
+      description: '"How much?" "Do you have Friday?" "What\'s included?" — daily.',
+      hoursWasted: 4.5, hoursWithAI: 0.5,
+      routine: '"How much does it cost?" "Do you have anything on Friday?" "What\'s included?" — you get these every day. Each answer is 3–5 minutes.',
+      hate: 'You can\'t respond to everything instantly — so someone waits hours. It hurts your reputation and your energy.',
+      steps: ['Set up an FAQ bot on Instagram or Telegram with answers to your top 20 questions','Bot responds instantly, 24/7 — including nights and weekends','Questions it can\'t answer get flagged and forwarded to you'],
+      result: '45 min/day → 5 min (only unusual questions reach you)',
+      diy: 'ManyChat ($15/mo) — 3–4 hrs to write and set up answers',
+      buyName: 'FAQ Bot Setup', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'se-newsletter',
+      title: 'Newsletters and promotions (never have time for them)',
+      description: 'You know you should stay visible. It always becomes a half-day project.',
+      hoursWasted: 0.5, hoursWithAI: 0.1,
+      routine: 'You know you should stay in front of your clients. But writing the message, choosing who to send it to, actually hitting send — it always becomes a half-day project.',
+      hate: 'Coming up with something new to say every time triggers a creative block — plus the fear of sounding pushy.',
+      steps: ['Once a month: AI generates 4 draft messages (seasonal, promo, new service, personal)','You pick one, edit for 5 minutes, send','System segments your list: active clients, lapsed clients, new leads — each gets the right message'],
+      result: 'Half a day of prep → 20 min/month',
+      diy: 'ChatGPT ($20/mo) + free broadcast tool — 2–3 hrs on templates',
+      buyName: 'Content Calendar + Automation', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'se-inventory',
+      title: 'Reordering supplies and tracking inventory',
+      description: 'Forget once — a client waits or an appointment gets moved.',
+      hoursWasted: 0.8, hoursWithAI: 0.1,
+      routine: 'Every couple of weeks: check what\'s running low, message your supplier, wait, update your spreadsheet. Forget once — and a client waits or an appointment gets moved.',
+      hate: 'Tracking inventory feels like warehouse work. You\'re a practitioner, not a stock manager.',
+      steps: ['Keep a simple inventory sheet in Google Sheets','AI monitors levels and sends a Telegram alert when anything hits the reorder threshold','Optional: auto-draft the supplier message when stock gets low — you just confirm'],
+      result: '2–3 hrs/month → 10 min (just approve the order)',
+      diy: 'Google Sheets + Apps Script (free) — 2 hrs setup',
+      buyName: 'Inventory Alert System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'se-crm',
+      title: 'Keeping client history organized',
+      description: 'Asking a client something they already told you signals you don\'t remember them.',
+      hoursWasted: 1, hoursWithAI: 0.1,
+      routine: 'What they bought, their preferences, past complaints, last visit date — it\'s all in your head or scattered across notes. That\'s a liability.',
+      hate: 'Asking a client something they already told you feels unprofessional. It signals you don\'t remember them.',
+      steps: ['Simple CRM in Google Sheets or Notion — name, services, dates, notes','Before each appointment: AI pulls their history — what they ordered, what they mentioned last time','You show up prepared. Every time.'],
+      result: 'Scattered notes → structured database, 30 seconds to prep for any client',
+      diy: 'Notion (free) + template — 1–2 hrs setup',
+      buyName: 'Client CRM Setup', buyPrice: 97, buyUrl: '#'
+    }
+  ],
+
+  'in-a-team': [
+    {
+      id: 'team-reports',
+      title: 'Writing recurring reports (weekly / monthly)',
+      description: 'Pull the same numbers, fill the same template. Every time.',
+      hoursWasted: 3, hoursWithAI: 0.2,
+      routine: 'Every Monday or end of month: pull the same numbers from the same spreadsheets, paste them into the same template. 2–4 hours, every time.',
+      hate: 'Reports are work about work. You know it could be automated. It never is.',
+      steps: ['Connect your data sources (Google Sheets, Excel, CRM) to an automation','Once a week or month: system pulls data and fills your template automatically','You get the finished report in Telegram or email — just review and forward'],
+      result: '3 hrs/week → 10 min (review and send)',
+      diy: 'Google Apps Script + template (free) — 4–6 hrs setup',
+      buyName: 'Automated Report Builder', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'team-coordination',
+      title: 'Project coordination and endless email chains',
+      description: 'Between Slack, email, and Telegram — 30–40% of your day is coordination.',
+      hoursWasted: 8, hoursWithAI: 3,
+      routine: 'Between Slack, email, Telegram, and meetings — 30–40% of your day is coordination. Finding what was decided, nudging people, tracking who hasn\'t replied.',
+      hate: 'You become the human CRM — keeping track of who promised what and by when, so nothing falls through.',
+      steps: ['Claude or ChatGPT drafts clear project briefs and decision summaries in minutes','Automated reminders go to teammates on deadlines — no nagging from you','Template library for common requests: clarifications, escalations, approvals'],
+      result: '8 hrs/week on coordination → 3 hrs',
+      diy: 'ChatGPT ($20/mo) + message templates — 1–2 hrs to build the library',
+      buyName: 'Coordination Template System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'team-data-entry',
+      title: 'Manual data entry and spreadsheet updates',
+      description: 'Copy, paste, format. 5–10 minutes each time, 20 times a day.',
+      hoursWasted: 7, hoursWithAI: 0,
+      routine: 'Copy from one file, paste into another. Open, find, copy, paste, format. 5–10 minutes each time — but you do it 20 times a day.',
+      hate: 'It feels like intern work. But explaining it and checking it takes longer than just doing it yourself.',
+      steps: ['Set up automatic sync between your sources (Zapier or Make)','New data from a form, email, or another system flows into your spreadsheet automatically','Formulas and scripts replace manual formatting'],
+      result: '7 hrs/week of data entry → 0 hours (data updates itself)',
+      diy: 'Make.com (free up to 1,000 ops) — 3–4 hrs setup',
+      buyName: 'Data Flow Automation', buyPrice: 147, buyUrl: '#'
+    },
+    {
+      id: 'team-presentations',
+      title: 'Building presentations and meeting materials',
+      description: 'Every meeting needs a deck. Gather slides, find numbers, format everything.',
+      hoursWasted: 3, hoursWithAI: 0.8,
+      routine: 'Every meeting needs a deck. Gather slides, find numbers, format everything. 2–4 hours per presentation.',
+      hate: 'You know what you need to say. Turning it into a polished PowerPoint is the part you dread.',
+      steps: ['ChatGPT or Claude generates slide structure and content from your brief in 5 minutes','You edit the substance — not build from scratch','Gamma.app or Canva AI handles design automatically from your text'],
+      result: '3 hrs/presentation → 45 min (just review and tweak)',
+      diy: 'ChatGPT ($20/mo) + Gamma.app (free) — 1 hr to learn the workflow',
+      buyName: 'Presentation System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'team-file-search',
+      title: 'Hunting for files and information buried in chats',
+      description: 'Scroll up, search, three tabs open — still not sure you found the right version.',
+      hoursWasted: 2.5, hoursWithAI: 0.2,
+      routine: 'Scroll up in the chat, search for the keyword, three tabs open — and you\'re still not sure if you found the right version.',
+      hate: 'Spending 20 minutes finding a file you definitely saw is demoralizing. Every time.',
+      steps: ['Notion or Obsidian as your team knowledge base — all decisions and files in one place','NotebookLM or Notion AI: ask a question in plain English, get the answer with the source','Log decisions right after meetings — 2 minutes now saves 20 minutes later'],
+      result: '2.5 hrs/week searching → 2–3 min per lookup',
+      diy: 'Notion (free) + knowledge base template — 2–3 hrs setup',
+      buyName: 'Knowledge Base Setup', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'team-approvals',
+      title: 'Chasing document approvals and signatures',
+      description: 'Send, wait, remind, revise, send again. Every cycle takes 1–2 days.',
+      hoursWasted: 2, hoursWithAI: 0.5,
+      routine: 'Send the doc, wait, remind, get revisions, fix it, send again. Every cycle takes 1–2 days.',
+      hate: 'Reminding colleagues to sign documents makes you feel like an assistant, not a specialist.',
+      steps: ['Google Docs with tracked changes or DocuSign — full process in one place, visible where it\'s stuck','Automated reminders via Zapier: no one "forgets" anymore','Templates for recurring documents — fill in the variables, the rest is done'],
+      result: '2–3 days per approval cycle → 4–8 hours',
+      diy: 'Google Docs + Zapier reminders (free) — 1–2 hrs setup',
+      buyName: 'Document Workflow System', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'team-meeting-notes',
+      title: 'Writing meeting notes and action items',
+      description: 'Take notes while participating in the meeting — you can\'t do both well.',
+      hoursWasted: 2, hoursWithAI: 0.1,
+      routine: 'After every meeting: write up decisions, who said what, who owns what, when it\'s due. Miss it once, and half the context is gone.',
+      hate: 'Taking notes while participating in the meeting — you can\'t do both well at the same time.',
+      steps: ['Record the meeting audio (with consent) → Otter.ai or Fathom auto-transcribes','Claude or ChatGPT extracts: decisions, action items, owners, deadlines','Structured meeting notes in 2 minutes after the call — no manual work'],
+      result: '30–45 min per meeting → 5 min (just verify)',
+      diy: 'Otter.ai (free, 300 min/mo) + ChatGPT — works immediately',
+      buyName: 'Meeting Notes Automation', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'team-onboarding',
+      title: 'Onboarding new hires or contractors',
+      description: 'Every new person needs the same briefing — same questions, same files.',
+      hoursWasted: 1, hoursWithAI: 0.2,
+      routine: 'Every new person needs the same briefing. Same questions, same explanations, same files sent every time.',
+      hate: 'Training someone from scratch again — it feels like you\'re rebuilding the wheel every hire.',
+      steps: ['Notion knowledge base — all processes, FAQ answers, key contacts in one place','Onboarding checklist — new hires work through it themselves without interrupting you','AI bot answers routine new-hire questions: where things are, how to do X'],
+      result: '4–8 hrs per onboarding → 1–2 hrs (only substantive questions)',
+      diy: 'Notion (free) + checklist template — 3–4 hrs one-time',
+      buyName: 'Onboarding System', buyPrice: 97, buyUrl: '#'
+    }
+  ],
+
+  'sales': [
+    {
+      id: 'sales-cold-outreach',
+      title: 'Writing cold outreach messages',
+      description: '50 messages a day, each slightly different. Best case: 5% reply rate.',
+      hoursWasted: 8, hoursWithAI: 2,
+      routine: '50 messages a day — each slightly different so it doesn\'t look like spam. An hour on copy, another on personalization. Best case: 5% reply rate.',
+      hate: 'Cold messages feel like asking for a favor. It\'s hard to write them with any energy.',
+      steps: ['Claude or ChatGPT generates 10 message variants based on your offer and target profile','You test 2–3 versions — find what works','Personalization (name, company, a specific detail) is inserted automatically from your contact list'],
+      result: '2 hrs/day writing → 30 min (select and send)',
+      diy: 'ChatGPT ($20/mo) + message templates — 2–3 hrs to build the library',
+      buyName: 'Cold Outreach Library', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'sales-followup',
+      title: 'Following up with leads (no system, keep forgetting)',
+      description: 'Without a system, half your leads just disappear.',
+      hoursWasted: 2, hoursWithAI: 0.5,
+      routine: 'After first contact: follow up in 3 days, then a week, then a month. Without a system, half your leads just disappear.',
+      hate: 'Reaching out a second or third time feels like bothering someone.',
+      steps: ['CRM (even a simple spreadsheet) with follow-up dates per lead','Automatic Telegram reminder when it\'s time to reach out','AI drafts the follow-up message based on the stage: first touch, second touch, "last try"'],
+      result: '0 leads dropped, 30 min/day → 10 min',
+      diy: 'Google Sheets + Apps Script (free) — 2–3 hrs setup',
+      buyName: 'Lead Follow-Up System', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'sales-proposals',
+      title: 'Writing proposals',
+      description: 'Every proposal: 2–3 hours. And there\'s a chance they won\'t even reply.',
+      hoursWasted: 6, hoursWithAI: 1.5,
+      routine: 'Every proposal: 2–3 hours. Research the client, write the pitch, calculate pricing, format it, proofread it.',
+      hate: 'The client wanted it today. You\'re already buried. And there\'s a real chance they won\'t even reply.',
+      steps: ['Proposal template with fillable variables: company name, problem, solution, price','AI fills 80% of the content from your brief — you personalize the remaining 20%','Automatic open tracking: did the client open it? When? → your signal to call'],
+      result: '2–3 hrs per proposal → 30–45 min',
+      diy: 'ChatGPT + Canva (free) — 3–4 hrs to build the template',
+      buyName: 'Proposal Template System', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'sales-qualification',
+      title: 'Qualifying leads (wasting time on wrong prospects)',
+      description: 'An hour-long call with someone who has no budget. You find out at the end.',
+      hoursWasted: 4, hoursWithAI: 0.5,
+      routine: 'An hour-long call with someone who\'s "just curious" or has no budget. You find out at the end.',
+      hate: 'Feeling like you got used for a free consultation.',
+      steps: ['Pre-call qualification form (Google Forms) — budget, timeline, specific problem','AI scores the responses: hot / warm / cold','Cold leads go into automated nurturing — no more of your personal time'],
+      result: '30% of meetings wasted on wrong prospects → 5%',
+      diy: 'Google Forms + ChatGPT to score (free) — 1–2 hrs setup',
+      buyName: 'Lead Qualification System', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'sales-competitor-research',
+      title: 'Competitor research before pitches',
+      description: 'Before every major pitch: 1–2 hours of research, every time.',
+      hoursWasted: 2, hoursWithAI: 0.3,
+      routine: 'Before every major pitch: check competitor websites, compare pricing, read reviews. 1–2 hours every time.',
+      hate: 'Research is tedious. And you always find something unexpected right before the meeting.',
+      steps: ['AI pulls public competitor data (website, social, reviews) in 15 minutes','Generates a comparison table: you vs. competitor (pricing, terms, advantages)','Prepares "questions the client will likely ask" with your ready answers'],
+      result: '1–2 hrs → 20 min (review and add your own notes)',
+      diy: 'ChatGPT + Perplexity ($20 + $0/mo) — works immediately',
+      buyName: 'Competitive Analysis Templates', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sales-pipeline-reporting',
+      title: 'Sales pipeline reporting',
+      description: 'Manually count conversions, update the spreadsheet, build the chart. Same thing every week.',
+      hoursWasted: 2, hoursWithAI: 0,
+      routine: 'Manually count conversions, update the spreadsheet, build the chart. Same thing you did last week.',
+      hate: 'Admin work instead of selling. The CRM exists — but no automatic reports.',
+      steps: ['Google Sheets with formulas — conversion rates update automatically as you add leads','Dashboard refreshes itself when new data comes in','Weekly report auto-sends to your Telegram or email'],
+      result: '2 hrs/week → 0 min (report writes itself)',
+      diy: 'Google Sheets + pipeline template (free) — 3–4 hrs setup',
+      buyName: 'Pipeline Dashboard', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'sales-negotiation-prep',
+      title: 'Preparing for negotiations',
+      description: 'Research client, build arguments, anticipate objections. 1.5–2 hrs every time.',
+      hoursWasted: 3, hoursWithAI: 0.5,
+      routine: 'Research the client, build your arguments, anticipate objections, write your notes. 1.5–2 hours before every serious negotiation.',
+      hate: 'Prepare for everything — then get blindsided by something you didn\'t expect. Feels worse than not preparing.',
+      steps: ['Feed AI the client background and your goal → get a list of likely questions and objections','AI drafts arguments and counter-arguments specific to this situation','15-minute prep brief replaces 2 hours of research'],
+      result: '2 hrs prep → 20–30 min',
+      diy: 'ChatGPT ($20/mo) — usable immediately',
+      buyName: 'Negotiation Prep Templates', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sales-pitch-personalization',
+      title: 'Personalizing pitches for each prospect',
+      description: 'Prospects hear a templated pitch immediately. Personalizing 30 pitches a week isn\'t possible.',
+      hoursWasted: 4, hoursWithAI: 0.8,
+      routine: 'You have a base pitch. But rewriting it for each industry, company size, and pain point takes time — every single time.',
+      hate: 'Prospects hear a templated pitch immediately. But personalizing 30 pitches a week isn\'t physically possible.',
+      steps: ['Base pitch + client intake form (industry, size, problem) → AI adapts it to this specific prospect in 5 minutes','Build a pitch library organized by industry — it gets better over time','5 minutes on personalization instead of 40'],
+      result: '40 min per personalized pitch → 5–10 min',
+      diy: 'ChatGPT ($20/mo) + pitch library — 2–3 hrs initial setup',
+      buyName: 'Pitch Personalization System', buyPrice: 97, buyUrl: '#'
+    }
+  ],
+
+  'creative': [
+    {
+      id: 'creative-repurposing',
+      title: 'Adapting content for different platforms',
+      description: 'One idea — Instagram post, Reels caption, LinkedIn article, Threads post.',
+      hoursWasted: 5, hoursWithAI: 0.5,
+      routine: 'One idea — then a separate Instagram post, a Reels caption, a LinkedIn article, a Threads post. Same content, four different formats, every time.',
+      hate: 'You already said everything you wanted to say once. Rephrasing the same thing four times is mechanical and pointless.',
+      steps: ['Write your core text or key points → AI adapts for each platform (tone, length, hashtags)','Get 4 ready-to-post versions in 2 minutes','Just read through and publish'],
+      result: '2–3 hrs on repurposing → 20 min',
+      diy: 'ChatGPT ($20/mo) — works immediately, prompts are freely available',
+      buyName: 'Content Repurposing System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'creative-research',
+      title: 'Research and fact-checking',
+      description: 'Before every piece: 30–60 min on stats, quotes, source verification.',
+      hoursWasted: 4, hoursWithAI: 0.5,
+      routine: 'Before every piece: 30–60 min hunting for stats, quotes, source verification. And there\'s always a risk of citing outdated data.',
+      hate: 'Research should be the part you enjoy. When it takes longer than writing the actual piece, it stops being enjoyable.',
+      steps: ['Perplexity AI — real-time search with cited sources, 3–5 min per fact-check','Claude or ChatGPT — structured research brief on any topic in 5–10 minutes','You verify the key numbers — AI handles the initial research pass'],
+      result: '1 hr on research → 15–20 min',
+      diy: 'Perplexity ($20/mo) — works immediately',
+      buyName: 'Research Prompt Library', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'creative-briefs',
+      title: 'Getting clear briefs from clients',
+      description: 'Client sends three lines. 20 messages later, you had different things in mind.',
+      hoursWasted: 3, hoursWithAI: 0.5,
+      routine: 'Client sends three lines. Then 20 back-and-forth messages. Then it turns out you had completely different things in mind.',
+      hate: 'Starting a project without full clarity is a guaranteed revision spiral — and an unhappy client.',
+      steps: ['Standard intake form (Google Forms or Notion) — client fills it out themselves, 15–20 min','AI reviews the answers and flags anything missing or unclear before you even read it','You start every project with complete context — no "I thought you meant something different"'],
+      result: '2–3 hrs on clarifications → 30 min (one call if needed)',
+      diy: 'Google Forms + Notion (free) — 1–2 hrs to build the template',
+      buyName: 'Client Intake System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'creative-captions',
+      title: 'Writing captions, descriptions, and SEO copy',
+      description: 'You finished the work. Now you need a caption. Another hour.',
+      hoursWasted: 2, hoursWithAI: 0.2,
+      routine: 'You finished the work. Now you need a caption, a portfolio description, a post about the project. Another hour.',
+      hate: 'You\'re a visual person or a storyteller — not a copywriter. It either takes forever or comes out flat.',
+      steps: ['Describe the project in 3–5 sentences → AI generates 3 caption options (short, long, with hashtags)','SEO-optimized description for your website or Behance — in 5 minutes','You choose or tweak — you don\'t write from scratch'],
+      result: '45–60 min on copy → 10–15 min',
+      diy: 'ChatGPT ($20/mo) — works immediately',
+      buyName: 'Caption & Copy Templates', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'creative-scheduling',
+      title: 'Scheduling and publishing to a content calendar',
+      description: 'Publishing manually at 7pm every day means you\'re tied to your phone.',
+      hoursWasted: 2, hoursWithAI: 0.2,
+      routine: 'The content calendar exists. But publishing at the right time, adding the right caption and hashtags — it\'s all manual, every day.',
+      hate: 'Posting manually at 7pm every day means you\'re tied to your phone instead of living your life.',
+      steps: ['Buffer or Later — schedule posts in advance, they publish themselves','AI helps fill the content calendar for a week or month in 1 hour','Analytics automatically show what\'s working — no manual counting'],
+      result: '30–45 min/day on manual publishing → 1 hr/week on planning',
+      diy: 'Buffer ($18/mo) — 1 hr to set up',
+      buyName: 'Content Calendar System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'creative-client-reports',
+      title: 'Client performance reports',
+      description: 'Screenshots from analytics, paste into a deck, label numbers, send. 2–3 hrs/month.',
+      hoursWasted: 1.5, hoursWithAI: 0.3,
+      routine: 'Screenshots from analytics, paste into a deck, label the numbers, send. Once a month — 2–3 hours.',
+      hate: 'You do great work. Spending that much time just to show it is exhausting.',
+      steps: ['Google Looker Studio — automated dashboard from your analytics, client sees it in real time','AI writes the narrative: what grew, what dropped, why, what\'s next','You send one link instead of a presentation'],
+      result: '2–3 hrs/month → 20 min (verify the summary)',
+      diy: 'Google Looker Studio (free) — 3–4 hrs setup',
+      buyName: 'Client Reporting Dashboard', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'creative-dms',
+      title: 'Responding to comments and DMs',
+      description: '50–80 messages a day across Instagram, Telegram, email. 1–1.5 hrs daily.',
+      hoursWasted: 7, hoursWithAI: 1.5,
+      routine: 'Instagram, Telegram, email — 50–80 messages a day. Read each one, think, write a reply. 1–1.5 hours every day.',
+      hate: 'Most questions are identical. But replying "check my highlights" feels cold and rude.',
+      steps: ['FAQ bot on Instagram or Telegram handles routine questions automatically','Template library for your top 15 questions — reply in one click','AI drafts responses to non-standard messages based on context'],
+      result: '1.5 hrs/day → 20–30 min',
+      diy: 'ManyChat ($15/mo) — 2–3 hrs to configure',
+      buyName: 'DM Automation Setup', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'creative-invoicing',
+      title: 'Invoicing and tracking payments',
+      description: 'Finish project → write invoice → send → check → remind. Every month.',
+      hoursWasted: 0.5, hoursWithAI: 0.1,
+      routine: 'Finish the project → write the invoice → send it → check if it\'s paid → follow up if not. Every month, on repeat.',
+      hate: 'Asking to be paid is uncomfortable every time. Especially with recurring clients.',
+      steps: ['Invoice template (Google Docs or Invoice Ninja) — filled out in 3 minutes','Automatic reminder fires 3 and 7 days after sending','Tracker shows: who paid, who hasn\'t, total revenue for the month'],
+      result: '1–2 hrs/month → 15 min',
+      diy: 'Invoice Ninja (free) + Zapier — 1–2 hrs setup',
+      buyName: 'Invoicing Automation', buyPrice: 47, buyUrl: '#'
+    }
+  ]
+};
+
+// Maps profession name → category key
+const PROFESSION_MAP = {
+  'Aesthetician': 'self-employed', 'Makeup Artist': 'self-employed', 'Hair Stylist': 'self-employed',
+  'Massage Therapist': 'self-employed', 'Nutritionist': 'self-employed', 'Photographer': 'self-employed',
+  'Florist': 'self-employed', 'Therapist': 'self-employed', 'Veterinarian': 'self-employed',
+  'Consultant': 'self-employed', 'Private Tutor': 'self-employed',
+  'Accountant': 'in-a-team', 'Auditor': 'in-a-team', 'Financial Analyst': 'in-a-team',
+  'Lawyer': 'in-a-team', 'Attorney': 'in-a-team', 'HR Manager': 'in-a-team',
+  'Logistics Manager': 'in-a-team', 'Project Manager': 'in-a-team', 'Business Analyst': 'in-a-team',
+  'Marketing Specialist': 'in-a-team', 'Brand Manager': 'in-a-team', 'Economist': 'in-a-team',
+  'Architect': 'in-a-team', 'Teacher': 'in-a-team', 'Translator': 'in-a-team',
+  'Pharmacist': 'in-a-team', 'Psychiatrist': 'in-a-team', 'Dentist': 'in-a-team',
+  'Dermatologist': 'in-a-team', 'Family Doctor': 'in-a-team', 'Physical Therapist': 'in-a-team',
+  'Hotel Manager': 'in-a-team', 'Restaurant Manager': 'in-a-team', 'Procurement Manager': 'in-a-team',
+  'Sales Manager': 'sales', 'Realtor': 'sales', 'Insurance Agent': 'sales', 'Notary': 'sales',
+  'Journalist': 'creative', 'Copywriter': 'creative', 'Social Media Manager': 'creative',
+  'Graphic Designer': 'creative', 'Interior Designer': 'creative', 'Illustrator': 'creative',
+  'Video Editor': 'creative', 'Motion Designer': 'creative', 'Writer': 'creative', 'Film Director': 'creative'
+};
+
+const ALL_PROFESSIONS = Object.keys(PROFESSION_MAP);
+
+// === NAVIGATION ===
+function goToScreen(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + n).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function updateProgress(step, total) {
+  const wrap = document.getElementById('progress-wrap');
+  if (!wrap) return;
+  wrap.querySelector('.progress-label').textContent = 'Step ' + step + ' of ' + total;
+  wrap.querySelector('.progress-fill').style.width = ((step / total) * 100) + '%';
+}
+
+function progressBarHTML(step) {
+  return `<div class="progress-wrap" id="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label">Step ${step} of 3</span>
+      <span class="progress-count" id="pain-count"></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${(step/3)*100}%"></div></div>
+  </div>`;
+}
+
+// === SCREEN 1: INTRO ===
+function renderScreen1() {
+  document.getElementById('screen-1').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    <h1>You're probably wasting <span class="hl">10+ hours a week</span> on work AI can handle. Let's find out.</h1>
+    <p class="subtitle">Pick your biggest daily pains — get a specific roadmap: which tool, how long to set up, how many hours you get back every week.</p>
+
+    <div class="stat-row">
+      <div class="stat-block">
+        <div class="stat-num">56%</div>
+        <div class="stat-lbl">higher salary for professionals with AI skills</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">8 hrs</div>
+        <div class="stat-lbl">avg. time lost weekly to AI-automatable tasks</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">$0</div>
+        <div class="stat-lbl">cost to set up most of these automations</div>
+      </div>
+    </div>
+
+    <div class="promise-box">
+      <div class="promise-title">What you get in 5 minutes</div>
+      <ul>
+        <li>The specific pains where AI helps most — for your type of work</li>
+        <li>A concrete roadmap: how it works, which tool, step by step</li>
+        <li>DIY vs. done-for-you — time and cost of both paths</li>
+      </ul>
+    </div>
+
+    <div class="author-note">Built by someone with no tech background who reached the top 1% of salaries in 4 years. This is what I wish I'd known on day one.</div>
+
+    <button class="btn" style="margin-top:28px" onclick="startQuiz()">Find my time wasters →</button>
+  `;
+}
+
+function startQuiz() {
+  gtag('event', 'quiz_started');
+  renderScreen2();
+  goToScreen(2);
+}
+
+// === SCREEN 2: CATEGORY + SEARCH ===
+function renderScreen2() {
+  const categories = [
+    { key: 'self-employed', emoji: '🧑‍💼', title: 'Self-Employed', sub: 'Freelancer, consultant, or running your own clients' },
+    { key: 'in-a-team',     emoji: '🏢', title: 'In a Team',     sub: 'Specialist or manager at a company' },
+    { key: 'sales',         emoji: '📈', title: 'Sales',          sub: 'Closing deals, managing pipeline, hitting quota' },
+    { key: 'creative',      emoji: '🎨', title: 'Creative / Media', sub: 'Content, design, journalism, video' }
+  ];
+
+  document.getElementById('screen-2').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    ${progressBarHTML(1)}
+    <h1>What's your <span class="hl">work context?</span></h1>
+    <p class="subtitle" style="margin-bottom:16px">Choose the closest match — your results will be tailored to your role.</p>
+
+    <input type="text" class="search-input" id="prof-search"
+      placeholder="Search your job title (e.g. Accountant, Florist...)"
+      oninput="handleProfSearch(this.value)">
+    <div class="search-results" id="search-results"></div>
+
+    <div class="cat-grid">
+      ${categories.map(c => `
+        <div class="cat-card${quizState.category === c.key ? ' selected' : ''}"
+             onclick="selectCategory('${c.key}', null)">
+          <span class="cat-emoji">${c.emoji}</span>
+          <div class="cat-title">${c.title}</div>
+          <div class="cat-sub">${c.sub}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="goToScreen(1)">← Back</button>
+      <button class="btn" id="s2-continue" onclick="goToS3()"
+        ${quizState.category ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+}
+
+function handleProfSearch(val) {
+  const resultsEl = document.getElementById('search-results');
+  if (!val.trim()) { resultsEl.style.display = 'none'; return; }
+  const matches = ALL_PROFESSIONS.filter(p => p.toLowerCase().includes(val.toLowerCase()));
+  if (!matches.length) { resultsEl.style.display = 'none'; return; }
+  resultsEl.style.display = 'block';
+  resultsEl.innerHTML = matches.slice(0, 8).map(p =>
+    `<div class="search-result-item" onclick="selectCategory('${PROFESSION_MAP[p]}', '${p}')">${p}</div>`
+  ).join('');
+}
+
+function selectCategory(catKey, profName) {
+  quizState.category = catKey;
+  quizState.profession = profName;
+  quizState.pains = [];
+  quizState.tags = {};
+  gtag('event', 'category_selected', { category: catKey });
+  document.getElementById('search-results').style.display = 'none';
+  renderScreen2(); // re-render to show selected state
+}
+
+function goToS3() {
+  renderScreen3();
+  goToScreen(3);
+}
+
+// === SCREEN 3: PAIN SELECTION ===
+function renderScreen3() {
+  const pains = PAIN_DATA[quizState.category] || [];
+
+  document.getElementById('screen-3').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    ${progressBarHTML(2)}
+    <h1>What's eating your <span class="hl">time or energy</span> the most?</h1>
+    <p class="subtitle" style="margin-bottom:12px">Pick up to 5 — we'll break down each one.</p>
+    <div class="limit-hint">⚠ Maximum 5. Forced prioritization — intentional.</div>
+
+    <div class="pain-list" id="pain-list">
+      ${pains.map(p => {
+        const selected = quizState.pains.includes(p.id);
+        const atMax = quizState.pains.length >= 5 && !selected;
+        return `<div class="pain-item${selected ? ' selected' : ''}${atMax ? ' dimmed' : ''}"
+                     onclick="togglePain('${p.id}')">
+          <div class="checkbox">${selected ? '✓' : ''}</div>
+          <div>
+            <div class="pain-title">${p.title}</div>
+            <div class="pain-desc">${p.description}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="add-own-wrap">
+      <button class="add-own-btn" id="add-own-btn" onclick="showAddOwn()">
+        + This isn't on the list — add mine
+      </button>
+      <input type="text" class="add-own-input" id="add-own-input"
+        placeholder="Describe your pain in a few words..."
+        onkeydown="if(event.key==='Enter') confirmAddOwn(this.value)"
+        onblur="confirmAddOwn(this.value)">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="renderScreen2(); goToScreen(2);">← Back</button>
+      <button class="btn" id="s3-continue" onclick="goToS4()"
+        ${quizState.pains.length > 0 ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+
+  updatePainCount();
+}
+
+function togglePain(id) {
+  const idx = quizState.pains.indexOf(id);
+  if (idx > -1) {
+    quizState.pains.splice(idx, 1);
+    delete quizState.tags[id];
+    gtag('event', 'pain_selected', { pain: id, action: 'deselected' });
+  } else {
+    if (quizState.pains.length >= 5) return;
+    quizState.pains.push(id);
+    gtag('event', 'pain_selected', { pain: id, action: 'selected' });
+  }
+  renderScreen3();
+}
+
+function updatePainCount() {
+  const el = document.getElementById('pain-count');
+  if (el) el.textContent = `Selected: ${quizState.pains.length} / 5`;
+}
+
+function showAddOwn() {
+  document.getElementById('add-own-btn').style.display = 'none';
+  document.getElementById('add-own-input').style.display = 'block';
+  document.getElementById('add-own-input').focus();
+}
+
+function confirmAddOwn(val) {
+  if (!val.trim()) return;
+  quizState.customPain = val.trim();
+  if (quizState.pains.length < 5 && !quizState.pains.includes('custom')) {
+    quizState.pains.push('custom');
+    gtag('event', 'pain_selected', { pain: 'custom:' + val.trim(), action: 'selected' });
+  }
+  renderScreen3();
+}
+
+function goToS4() {
+  renderScreen4();
+  goToScreen(4);
+}
+
+// === SCREEN 4: PAIN TAGGING ===
+function renderScreen4() {
+  const allPains = PAIN_DATA[quizState.category] || [];
+
+  const tagRows = quizState.pains.map(id => {
+    const pain = id === 'custom'
+      ? { title: quizState.customPain }
+      : allPains.find(p => p.id === id);
+    if (!pain) return '';
+    const tag = quizState.tags[id];
+    return `<div class="tagger-row">
+      <div class="tagger-pain-name">${pain.title}</div>
+      <div class="tag-options">
+        <button class="tag-btn${tag === 'routine' ? ' active-routine' : ''}"
+          onclick="setTag('${id}', 'routine')">⏰ Routine — eats time</button>
+        <button class="tag-btn${tag === 'hate' ? ' active-hate' : ''}"
+          onclick="setTag('${id}', 'hate')">😤 I hate doing this</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const allTagged = quizState.pains.every(id => quizState.tags[id]);
+
+  document.getElementById('screen-4').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    ${progressBarHTML(3)}
+    <h1>One more thing about <span class="hl">each pain</span></h1>
+    <div class="tagger-why">💡 This changes the solution. Routine tasks → we automate completely. Things you hate → we remove them from your day entirely.</div>
+    <div class="tagger-list">${tagRows}</div>
+    <div class="btn-row" style="margin-top:22px">
+      <button class="btn btn-ghost" onclick="renderScreen3(); goToScreen(3);">← Back</button>
+      <button class="btn" id="s4-continue" onclick="goToS5()" ${allTagged ? '' : 'disabled'}>
+        Show my roadmap →
+      </button>
+    </div>
+  `;
+}
+
+function setTag(painId, tag) {
+  quizState.tags[painId] = tag;
+  gtag('event', 'pain_tag_set', { pain: painId, tag: tag });
+  renderScreen4();
+}
+
+function goToS5() {
+  renderScreen5();
+  goToScreen(5);
+  gtag('event', 'results_viewed');
+}
+
+// === SCREEN 5: RESULTS ===
+function renderScreen5() {
+  const allPains = PAIN_DATA[quizState.category] || [];
+  const selectedPains = quizState.pains.map(id =>
+    id === 'custom' ? { id: 'custom', title: quizState.customPain, isCustom: true } : allPains.find(p => p.id === id)
+  ).filter(Boolean);
+
+  const totalWasted = selectedPains.reduce((sum, p) => sum + (p.hoursWasted || 0), 0);
+  const totalWithAI = selectedPains.reduce((sum, p) => sum + (p.hoursWithAI || 0), 0);
+  const saved = +(totalWasted - totalWithAI).toFixed(1);
+
+  const profName = quizState.profession || {
+    'self-employed': 'Self-Employed Professional',
+    'in-a-team': 'Team Professional',
+    'sales': 'Sales Professional',
+    'creative': 'Creative Professional'
+  }[quizState.category];
+
+  const tableRows = selectedPains.map((pain, i) => {
+    const tag = quizState.tags[pain.id] || 'routine';
+    const painSaved = pain.isCustom ? '?' : +(pain.hoursWasted - pain.hoursWithAI).toFixed(1);
+    return `
+      <tr>
+        <td><strong>${pain.title}</strong></td>
+        <td><span class="tag-pill ${tag}">${tag}</span></td>
+        <td><span class="time-saved-badge">-${painSaved} hrs</span></td>
+        <td><button class="expand-btn" id="expand-btn-${i}" onclick="toggleExpand(${i})">▸</button></td>
+      </tr>
+      <tr id="expand-row-${i}" style="display:none">
+        <td colspan="4" style="padding:2px 0 12px">
+          ${pain.isCustom ? renderCustomExpandCard(pain) : renderExpandCard(pain, tag)}
+        </td>
+      </tr>`;
+  }).join('');
+
+  document.getElementById('screen-5').innerHTML = `
+    <div class="brand-label">Your AI Roadmap</div>
+    <h1><span class="hl">${profName}'s AI Audit</span></h1>
+
+    <div class="time-calc">
+      <div class="time-calc-row">
+        <div class="time-block">
+          <div class="time-block-label">Right Now</div>
+          <div class="time-block-num before">${totalWasted.toFixed(1)}<span style="font-size:18px;font-weight:400"> hrs</span></div>
+        </div>
+        <div class="time-arrow">→</div>
+        <div class="time-block">
+          <div class="time-block-label">With AI</div>
+          <div class="time-block-num after">${totalWithAI.toFixed(1)}<span style="font-size:18px;font-weight:400"> hrs</span></div>
+        </div>
+      </div>
+      <div class="time-savings">You're leaving <strong>${saved} hours on the table</strong> every single week.</div>
+    </div>
+
+    <p class="subtitle" style="margin-bottom:14px">Expand each pain — see a concrete plan and two paths to fix it.</p>
+
+    <table class="results-table">
+      <thead><tr>
+        <th>Pain</th><th>Tag</th><th>Saved/week</th><th></th>
+      </tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <div id="s5-rest"></div>
+  `;
+
+  renderS5Rest();
+}
+
+function renderExpandCard(pain, tag) {
+  const framing = tag === 'hate' ? pain.hate : pain.routine;
+  const framingClass = tag === 'hate' ? 'framing-text hate-style' : 'framing-text';
+  return `<div class="expand-card">
+    <div class="expand-section">
+      <div class="section-label">${tag === 'hate' ? '😤 Why you hate this' : '⏰ What this routine really costs you'}</div>
+      <div class="${framingClass}">${framing}</div>
+    </div>
+    <div class="expand-section">
+      <div class="section-label">🤖 How AI solves this</div>
+      <div class="roadmap-steps">
+        ${pain.steps.map(s => `<div class="roadmap-step">${s}</div>`).join('')}
+      </div>
+      <div class="roadmap-result">${pain.result}</div>
+    </div>
+    <div class="expand-section">
+      <div class="section-label">Two paths forward</div>
+      <div class="path-blocks">
+        <div class="path-block diy">
+          <div class="path-label">🛠 DIY Path</div>
+          <p>${pain.diy}</p>
+        </div>
+        <div class="path-block buy">
+          <div class="path-label">🚀 Done For You</div>
+          <p>${pain.buyName}</p>
+          <div class="path-price">$${pain.buyPrice}</div>
+          <button class="buy-cta-btn" onclick="handleBuyClick('${pain.id}', ${pain.buyPrice}, '${pain.buyUrl}')">
+            Fix this — $${pain.buyPrice} →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCustomExpandCard(pain) {
+  return `<div class="expand-card">
+    <div class="expand-section">
+      <div class="section-label">🤖 Where to start with AI</div>
+      <div class="framing-text">AI can likely handle this. Here's the universal starting point.</div>
+      <div class="roadmap-steps" style="margin-top:10px">
+        <div class="roadmap-step">Describe this task to ChatGPT in detail — ask it "how would I automate this with AI?"</div>
+        <div class="roadmap-step">Identify the repetitive pattern: what triggers the task, what's the input, what's the output</div>
+        <div class="roadmap-step">Build a simple Make.com or Zapier flow connecting the trigger to the output — takes 2–4 hrs</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleExpand(i) {
+  const row = document.getElementById('expand-row-' + i);
+  const btn = document.getElementById('expand-btn-' + i);
+  const isOpen = row.style.display !== 'none';
+  row.style.display = isOpen ? 'none' : 'table-row';
+  btn.textContent = isOpen ? '▸' : '▾';
+  btn.style.color = isOpen ? '' : 'var(--accent)';
+}
+
+function handleBuyClick(painId, price, url) {
+  quizState.buyClicks.push({ pain: painId, price: price });
+  gtag('event', 'buy_clicked', { pain: painId, price: price });
+  if (url && url !== '#') window.open(url, '_blank');
+}
+
+// === SCREEN 5 REST: SHARE + EMAIL + BOOK ===
+function renderS5Rest() {
+  const saved = quizState.pains.reduce((sum, id) => {
+    const p = (PAIN_DATA[quizState.category] || []).find(x => x.id === id);
+    return sum + (p ? p.hoursWasted - p.hoursWithAI : 0);
+  }, 0).toFixed(1);
+
+  const shareText = encodeURIComponent(
+    `Just found out I'm wasting ${saved} hours/week on work AI can handle. Free audit →`
+  );
+
+  const firstPainId = quizState.pains[0];
+  const firstPain = (PAIN_DATA[quizState.category] || []).find(p => p.id === firstPainId);
+  const firstTool = firstPain ? firstPain.diy.split(' — ')[0] : 'ChatGPT';
+
+  document.getElementById('s5-rest').innerHTML = `
+    <div class="share-block">
+      <p>"Just found out I'm wasting ${saved} hours/week. What's yours?"</p>
+      <div class="share-btns">
+        <button class="share-btn" onclick="shareLinkedIn('${shareText}')">Share on LinkedIn</button>
+        <button class="share-btn" onclick="shareThreads('${shareText}')">Share on Threads</button>
+        <button class="share-btn" onclick="copyLink()">📋 Copy link</button>
+      </div>
+    </div>
+
+    <div class="email-section" id="email-section">
+      <h2>Your roadmap is ready.</h2>
+      <p class="email-sub">Leave your details — we'll send a personalized step-by-step action plan for your #1 pain. Free.</p>
+
+      <div id="email-form-wrap">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">First name</label>
+            <input type="text" class="form-input" id="f-name" placeholder="Alex">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="f-email" placeholder="you@email.com">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Your job title</label>
+          <input type="text" class="form-input" id="f-jobtitle" placeholder="e.g. Marketing Manager, Florist, Sales Rep">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Where are you now? <span class="optional-label">(Point A)</span></label>
+          <textarea class="form-textarea" id="f-pointa" placeholder="e.g. I spend 3+ hours daily on reports and feel like I'm always behind"></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Where do you want to be in 90 days? <span class="optional-label">(Point B)</span></label>
+          <textarea class="form-textarea" id="f-pointb" placeholder="e.g. Automated my reporting, have 2 extra hours daily, focused on strategy"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Timeline</label>
+            <select class="form-select" id="f-timeline">
+              <option value="">Select...</option>
+              <option value="30 days">30 days</option>
+              <option value="60 days">60 days</option>
+              <option value="90 days">90 days</option>
+              <option value="6 months">6 months</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">LinkedIn URL <span class="optional-label">optional</span></label>
+            <input type="text" class="form-input" id="f-linkedin" placeholder="linkedin.com/in/yourname">
+          </div>
+        </div>
+        <div id="form-error" class="submit-error" style="display:none"></div>
+        <button class="btn" style="margin-top:6px" onclick="submitForm()">Send my AI roadmap →</button>
+        <span class="skip-link" onclick="skipForm()">Skip for now — just save the results</span>
+        <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">We'll send your roadmap within 24 hours. No spam.</p>
+      </div>
+    </div>
+
+    <div class="book-call">
+      <p><strong>Want to talk through your specific situation?</strong></p>
+      <a href="https://calendly.com/YOUR_LINK" target="_blank" onclick="gtag('event','book_call_clicked')">
+        Book a free 20-min call with Artem →
+      </a>
+    </div>
+  `;
+}
+
+// === FORM SUBMISSION ===
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+function submitForm() {
+  const name    = document.getElementById('f-name').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const title   = document.getElementById('f-jobtitle').value.trim();
+  const pointA  = document.getElementById('f-pointa').value.trim();
+  const pointB  = document.getElementById('f-pointb').value.trim();
+  const timeline = document.getElementById('f-timeline').value;
+  const linkedin = document.getElementById('f-linkedin').value.trim();
+  const errorEl = document.getElementById('form-error');
+
+  if (!name || !email || !title || !pointA || !pointB || !timeline) {
+    errorEl.textContent = 'Please fill in all required fields.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (!email.includes('@')) {
+    errorEl.textContent = 'Please enter a valid email address.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  errorEl.style.display = 'none';
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    ...quizState.utmParams,
+    category: quizState.category,
+    profession: quizState.profession || '',
+    pains: JSON.stringify(quizState.pains),
+    tags: JSON.stringify(quizState.tags),
+    custom_pain: quizState.customPain || '',
+    buy_clicks: JSON.stringify(quizState.buyClicks),
+    hours_wasted: quizState.pains.reduce((s, id) => {
+      const p = (PAIN_DATA[quizState.category] || []).find(x => x.id === id);
+      return s + (p ? p.hoursWasted : 0);
+    }, 0).toFixed(1),
+    hours_with_ai: quizState.pains.reduce((s, id) => {
+      const p = (PAIN_DATA[quizState.category] || []).find(x => x.id === id);
+      return s + (p ? p.hoursWithAI : 0);
+    }, 0).toFixed(1),
+    first_name: name,
+    email: email,
+    job_title: title,
+    point_a: pointA,
+    point_b: pointB,
+    timeline: timeline,
+    linkedin_url: linkedin
+  };
+
+  const submitBtn = document.querySelector('#email-form-wrap .btn');
+  submitBtn.textContent = 'Sending...';
+  submitBtn.disabled = true;
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(() => showSubmitSuccess(name))
+  .catch(() => {
+    errorEl.textContent = 'Something went wrong — email us directly at eco.stepanenko@gmail.com';
+    errorEl.style.display = 'block';
+    submitBtn.textContent = 'Send my AI roadmap →';
+    submitBtn.disabled = false;
+  });
+
+  gtag('event', 'email_submitted');
+}
+
+function showSubmitSuccess(name) {
+  const firstPainId = quizState.pains[0];
+  const firstPain = (PAIN_DATA[quizState.category] || []).find(p => p.id === firstPainId);
+  const firstTool = firstPain ? firstPain.diy.split(' — ')[0] : 'ChatGPT';
+
+  document.getElementById('email-form-wrap').innerHTML = `
+    <div class="submit-success">
+      <div class="success-icon">✅</div>
+      <h2>You're in, ${name}!</h2>
+      <p>Check your inbox within 24 hours.<br><br>
+      <strong>While you wait — your first action:</strong><br>
+      ${firstTool} takes about 15 minutes to set up for your top pain.</p>
+    </div>
+  `;
+}
+
+function skipForm() {
+  document.getElementById('email-section').style.display = 'none';
+}
+
+// === SHARE HELPERS ===
+function shareLinkedIn(text) {
+  gtag('event', 'share_clicked', { platform: 'linkedin' });
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(window.location.href) + '&summary=' + text, '_blank');
+}
+
+function shareThreads(text) {
+  gtag('event', 'share_clicked', { platform: 'threads' });
+  window.open('https://www.threads.net/intent/post?text=' + text + ' ' + encodeURIComponent(window.location.href), '_blank');
+}
+
+function copyLink() {
+  gtag('event', 'share_clicked', { platform: 'copy' });
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => { alert('Link copied!'); })
+    .catch(() => { alert('Copy: ' + window.location.href); });
+}
+
+// Init
+renderScreen1();
+</script>
+</body>
+</html>
