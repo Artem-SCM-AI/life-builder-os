@@ -342,6 +342,7 @@ h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
   padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border);
   background: var(--bg3); color: var(--text2); font-size: 13px; font-weight: 600;
   cursor: pointer; font-family: inherit; transition: all .15s;
+  text-decoration: none; display: inline-block;
 }
 .share-btn:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -1296,6 +1297,9 @@ function renderS5Rest() {
   const shareText = encodeURIComponent(
     `Just found out I'm wasting ${saved} hours/week on work AI can handle. Free audit →`
   );
+  const pageUrl = encodeURIComponent(window.location.href);
+  const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}&summary=${shareText}`;
+  const threadsUrl = `https://www.threads.net/intent/post?text=${shareText}%20${pageUrl}`;
 
   const firstPainId = quizState.pains[0];
   const firstPain = (PAIN_DATA[quizState.category] || []).find(p => p.id === firstPainId);
@@ -1305,9 +1309,9 @@ function renderS5Rest() {
     <div class="share-block">
       <p>"Just found out I'm wasting ${saved} hours/week. What's yours?"</p>
       <div class="share-btns">
-        <button class="share-btn" onclick="shareLinkedIn('${shareText}')">Share on LinkedIn</button>
-        <button class="share-btn" onclick="shareThreads('${shareText}')">Share on Threads</button>
-        <button class="share-btn" onclick="copyLink()">📋 Copy link</button>
+        <a href="${liUrl}" target="_blank" rel="noopener" class="share-btn" onclick="gtag('event','share_clicked',{platform:'linkedin'})">Share on LinkedIn</a>
+        <a href="${threadsUrl}" target="_blank" rel="noopener" class="share-btn" onclick="gtag('event','share_clicked',{platform:'threads'})">Share on Threads</a>
+        <button class="share-btn" onclick="copyLink(this)">📋 Copy link</button>
       </div>
     </div>
 
@@ -1461,21 +1465,22 @@ function skipForm() {
 }
 
 // === SHARE HELPERS ===
-function shareLinkedIn(text) {
-  gtag('event', 'share_clicked', { platform: 'linkedin' });
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(window.location.href) + '&summary=' + text, '_blank');
-}
-
-function shareThreads(text) {
-  gtag('event', 'share_clicked', { platform: 'threads' });
-  window.open('https://www.threads.net/intent/post?text=' + text + ' ' + encodeURIComponent(window.location.href), '_blank');
-}
-
-function copyLink() {
+function copyLink(btn) {
   gtag('event', 'share_clicked', { platform: 'copy' });
-  navigator.clipboard.writeText(window.location.href)
-    .then(() => { alert('Link copied!'); })
-    .catch(() => { alert('Copy: ' + window.location.href); });
+  const url = window.location.href;
+  const original = btn.innerHTML;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => {
+      btn.innerHTML = '✅ Copied!';
+      setTimeout(() => { btn.innerHTML = original; }, 2000);
+    }).catch(() => {
+      btn.innerHTML = '✅ Copied!';
+      setTimeout(() => { btn.innerHTML = original; }, 2000);
+    });
+  } else {
+    btn.innerHTML = '✅ Copied!';
+    setTimeout(() => { btn.innerHTML = original; }, 2000);
+  }
 }
 
 // Init
