@@ -315,21 +315,42 @@ h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
   display: flex; gap: 6px; align-items: center;
 }
 .roadmap-result::before { content: '✓'; }
-.path-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.path-block { border-radius: 8px; padding: 14px; }
-.path-block.diy { background: rgba(34,197,94,.06); border: 1px solid rgba(34,197,94,.15); }
-.path-block.buy { background: rgba(255,109,59,.06); border: 1px solid rgba(255,109,59,.2); }
-.path-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-.path-block.diy .path-label { color: var(--green); }
-.path-block.buy .path-label { color: var(--accent); }
-.path-block p { font-size: 13px; color: var(--text2); line-height: 1.5; }
-.path-price { font-size: 18px; font-weight: 800; color: var(--accent); margin-top: 6px; }
-.buy-cta-btn {
-  display: block; width: 100%; background: var(--accent); color: #fff;
-  border: none; border-radius: 6px; padding: 9px 10px; font-size: 13px; font-weight: 700;
-  cursor: pointer; margin-top: 8px; font-family: inherit; transition: background .15s;
+.paths-heading { font-size: 15px; font-weight: 800; letter-spacing: -.2px; margin-bottom: 4px; }
+.paths-sub     { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+.path-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 10px; overflow: hidden; position: relative;
 }
-.buy-cta-btn:hover { background: var(--accent-hover); }
+.path-card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px; border-bottom: 1px solid var(--border);
+}
+.path-icon { font-size: 20px; flex-shrink: 0; }
+.path-header-text { flex: 1; }
+.path-num   { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); margin-bottom: 2px; }
+.path-title { font-size: 14px; font-weight: 700; }
+.path-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 9px;
+  border-radius: 20px; white-space: nowrap;
+}
+.badge-free   { background: rgba(34,197,94,.1);  color: var(--green); border: 1px solid rgba(34,197,94,.2); }
+.badge-paid   { background: rgba(124,58,237,.1); color: #a78bfa;      border: 1px solid rgba(124,58,237,.2); }
+.badge-custom { background: rgba(255,109,59,.1); color: var(--accent); border: 1px solid rgba(255,109,59,.2); }
+.path-body { padding: 13px 16px; }
+.path-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+.coming-soon {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 7px;
+  padding: 9px 13px; font-size: 12px; color: var(--text3); text-align: center;
+}
+.coming-soon a { color: var(--accent); text-decoration: none; }
+.coming-soon a:hover { text-decoration: underline; }
+.btn-dfy {
+  display: block; text-align: center; background: var(--accent); color: #fff;
+  padding: 11px 20px; border-radius: 8px; font-weight: 700; font-size: 14px;
+  font-family: inherit; text-decoration: none; border: none; cursor: pointer; width: 100%;
+  transition: background .15s, transform .15s, box-shadow .15s;
+}
+.btn-dfy:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,109,59,.3); }
 
 /* SHARE CTA */
 .share-block {
@@ -408,8 +429,6 @@ h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
   .cat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
   .cat-card { padding: 14px 12px; }
   .cat-emoji { font-size: 22px; }
-
-  .path-blocks { grid-template-columns: 1fr; }
 
   .results-table { display: block; overflow-x: auto; }
 
@@ -1239,19 +1258,47 @@ function renderExpandCard(pain, tag) {
       <div class="roadmap-result">${pain.result}</div>
     </div>
     <div class="expand-section">
-      <div class="section-label">Two paths forward</div>
-      <div class="path-blocks">
-        <div class="path-block diy">
-          <div class="path-label">🛠 DIY Path</div>
-          <p>${pain.diy}</p>
+      <div class="paths-heading">What's your next step?</div>
+      <div class="paths-sub">Three paths. Pick the one that fits your situation.</div>
+      <div class="path-card">
+        <div class="path-card-header">
+          <span class="path-icon">📚</span>
+          <div class="path-header-text">
+            <div class="path-num">Path 1</div>
+            <div class="path-title">Learn & Build Yourself</div>
+          </div>
+          <span class="path-badge badge-free">Free</span>
         </div>
-        <div class="path-block buy">
-          <div class="path-label">🚀 Done For You</div>
-          <p>${pain.buyName}</p>
-          <div class="path-price">$${pain.buyPrice}</div>
-          <button class="buy-cta-btn" onclick="handleBuyClick('${pain.id}', ${pain.buyPrice}, '${pain.buyUrl}')">
-            Fix this — $${pain.buyPrice} →
-          </button>
+        <div class="path-body">
+          <p class="path-desc">${pain.diy}</p>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-card-header">
+          <span class="path-icon">🎥</span>
+          <div class="path-header-text">
+            <div class="path-num">Path 2</div>
+            <div class="path-title">Watch How I Do It</div>
+          </div>
+          <span class="path-badge badge-paid">$19–39</span>
+        </div>
+        <div class="path-body">
+          <p class="path-desc">Under 30-min video where I build this exact type of automation from scratch. Step-by-step + ready-to-use setup file.</p>
+          <div class="coming-soon">🔜 Coming soon — <a href="#email-section">join the waitlist</a> below to get notified first</div>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-card-header">
+          <span class="path-icon">⚡</span>
+          <div class="path-header-text">
+            <div class="path-num">Path 3</div>
+            <div class="path-title">Let Me Build It For You</div>
+          </div>
+          <span class="path-badge badge-custom">Custom</span>
+        </div>
+        <div class="path-body">
+          <p class="path-desc">You describe the task. I build the automation or AI agent. You get the working setup, documentation, and a 30-min handoff call.</p>
+          <a href="https://calendly.com/artem-scait/30min" target="_blank" class="btn-dfy">Book a Free Discovery Call →</a>
         </div>
       </div>
     </div>
@@ -1385,7 +1432,7 @@ function renderS5Rest() {
 }
 
 // === FORM SUBMISSION ===
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4Z_Si5QLxzr7MwFh4uvmJQrsUn_LP-EjjnAPs_NHkX104glGAT4mkwmAQh6QS_34ixg/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfBe87y7FsxcCEm_4OU_RG0u7SsVKhKtsmWb1wthedrL5dW86637Duyb-6-WlMopkflw/exec';
 
 function submitForm() {
   const name    = document.getElementById('f-name').value.trim();
