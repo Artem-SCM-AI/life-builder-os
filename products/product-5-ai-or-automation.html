@@ -701,6 +701,14 @@ const tierResources = {
 
 let currentScore = 0;
 let currentTier  = null;
+let utmParams    = {};
+
+(function captureUTM() {
+  const params = new URLSearchParams(window.location.search);
+  ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k => {
+    if (params.get(k)) utmParams[k] = params.get(k);
+  });
+})();
 
 function renderQuestions() {
   questions.forEach((block, bi) => {
@@ -795,17 +803,25 @@ function submitForm() {
   }
   errorEl.style.display = 'none';
 
+  const answers = [];
+  for (let i = 1; i <= 25; i++) {
+    const el = document.querySelector('input[name="q' + i + '"]:checked');
+    answers.push(el ? parseInt(el.value) : null);
+  }
+
   const payload = {
-    product:     'product-5',
-    timestamp:   new Date().toISOString(),
-    score:       currentScore,
-    tier_label:  currentTier ? currentTier.name : '',
-    first_name:  name,
-    email:       email,
-    job_title:   title,
-    point_a:     pointA,
-    point_b:     pointB,
-    timeline:    timeline,
+    product:      'product-5',
+    timestamp:    new Date().toISOString(),
+    ...utmParams,
+    score:        currentScore,
+    tier_label:   currentTier ? currentTier.name : '',
+    answers:      JSON.stringify(answers),
+    first_name:   name,
+    email:        email,
+    job_title:    title,
+    point_a:      pointA,
+    point_b:      pointB,
+    timeline:     timeline,
     linkedin_url: linkedin,
   };
 

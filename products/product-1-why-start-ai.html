@@ -477,7 +477,7 @@ const quizState = {
 // Capture UTM params on load
 (function captureUTM() {
   const params = new URLSearchParams(window.location.search);
-  ['utm_source','utm_medium','utm_campaign'].forEach(k => {
+  ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k => {
     if (params.get(k)) quizState.utmParams[k] = params.get(k);
   });
 })();
@@ -1457,6 +1457,7 @@ function submitForm() {
   errorEl.style.display = 'none';
 
   const payload = {
+    product: 'product-1',
     timestamp: new Date().toISOString(),
     ...quizState.utmParams,
     category: quizState.category,
