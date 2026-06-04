@@ -1294,13 +1294,6 @@ function renderS5Rest() {
     return sum + (p ? p.hoursWasted - p.hoursWithAI : 0);
   }, 0).toFixed(1);
 
-  const shareText = encodeURIComponent(
-    `Just found out I'm wasting ${saved} hours/week on work AI can handle. Free audit →`
-  );
-  const pageUrl = encodeURIComponent(window.location.href);
-  const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}&summary=${shareText}`;
-  const threadsUrl = `https://www.threads.net/intent/post?text=${shareText}%20${pageUrl}`;
-
   const firstPainId = quizState.pains[0];
   const firstPain = (PAIN_DATA[quizState.category] || []).find(p => p.id === firstPainId);
   const firstTool = firstPain ? firstPain.diy.split(' — ')[0] : 'ChatGPT';
@@ -1309,9 +1302,9 @@ function renderS5Rest() {
     <div class="share-block">
       <p>"Just found out I'm wasting ${saved} hours/week. What's yours?"</p>
       <div class="share-btns">
-        <a href="${liUrl}" target="_blank" rel="noopener" class="share-btn" onclick="gtag('event','share_clicked',{platform:'linkedin'})">Share on LinkedIn</a>
-        <a href="${threadsUrl}" target="_blank" rel="noopener" class="share-btn" onclick="gtag('event','share_clicked',{platform:'threads'})">Share on Threads</a>
-        <button class="share-btn" onclick="copyLink(this)">📋 Copy link</button>
+        <a id="share-li" target="_blank" rel="noopener" class="share-btn">Share on LinkedIn</a>
+        <a id="share-th" target="_blank" rel="noopener" class="share-btn">Share on Threads</a>
+        <button class="share-btn" id="share-copy">📋 Copy link</button>
       </div>
     </div>
 
@@ -1372,6 +1365,23 @@ function renderS5Rest() {
       </a>
     </div>
   `;
+
+  // Set share hrefs via JS to avoid innerHTML encoding issues
+  const currentUrl = window.location.href;
+  const shareMsg = `Just found out I'm wasting ${saved} hours/week on work AI can handle. Free audit → ${currentUrl}`;
+  document.getElementById('share-li').href =
+    'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(currentUrl);
+  document.getElementById('share-th').href =
+    'https://www.threads.net/intent/post?text=' + encodeURIComponent(shareMsg);
+  document.getElementById('share-copy').addEventListener('click', function() {
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      this.innerHTML = '✅ Copied!';
+      setTimeout(() => { this.innerHTML = '📋 Copy link'; }, 2000);
+    }).catch(() => {
+      this.innerHTML = '✅ Copied!';
+      setTimeout(() => { this.innerHTML = '📋 Copy link'; }, 2000);
+    });
+  });
 }
 
 // === FORM SUBMISSION ===
@@ -1464,24 +1474,6 @@ function skipForm() {
   document.getElementById('email-section').style.display = 'none';
 }
 
-// === SHARE HELPERS ===
-function copyLink(btn) {
-  gtag('event', 'share_clicked', { platform: 'copy' });
-  const url = window.location.href;
-  const original = btn.innerHTML;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => {
-      btn.innerHTML = '✅ Copied!';
-      setTimeout(() => { btn.innerHTML = original; }, 2000);
-    }).catch(() => {
-      btn.innerHTML = '✅ Copied!';
-      setTimeout(() => { btn.innerHTML = original; }, 2000);
-    });
-  } else {
-    btn.innerHTML = '✅ Copied!';
-    setTimeout(() => { btn.innerHTML = original; }, 2000);
-  }
-}
 
 // Init
 renderScreen1();
