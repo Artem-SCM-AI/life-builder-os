@@ -4,640 +4,204 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI or Automation? — Life Builder OS</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg:           #0d0d0d;
-  --bg2:          #141414;
-  --bg3:          #1c1c1c;
-  --border:       #2a2a2a;
-  --accent:       #ff6d3b;
-  --accent-hover: #ff7d4f;
-  --accent2:      #7c3aed;
-  --text:         #ffffff;
-  --text2:        #a0a0a0;
-  --text3:        #888888;
-  --green:        #22c55e;
-  --red:          #ef4444;
-  --blue:         #3b82f6;
-}
-
-body {
-  font-family: 'Inter', -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-/* ── TOPBAR ── */
-.topbar {
-  background: rgba(13,13,13,.95);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(10px);
-}
-.topbar-brand   { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
-.topbar-sep     { color: var(--border); font-size: 13px; }
-.topbar-product { font-size: 13px; color: var(--text3); }
-
-/* ── SCREENS ── */
-.screen { display: none; max-width: 560px; margin: 0 auto; padding: 40px 24px 80px; }
-.screen.active { display: block; }
-
-/* ── TYPOGRAPHY ── */
-.brand-label {
-  font-size: 12px; font-weight: 700; color: var(--accent);
-  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-}
-.brand-label::before { content: ''; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
-
-h1 { font-size: 30px; font-weight: 900; line-height: 1.15; letter-spacing: -.6px; margin-bottom: 14px; }
-h1 .hl { background: linear-gradient(90deg, var(--accent), #ff9a6c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-.subtitle { font-size: 15px; color: var(--text2); line-height: 1.65; margin-bottom: 24px; }
-
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  background: var(--accent); color: #fff;
-  padding: 12px 24px; border-radius: 8px; border: none;
-  font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
-  transition: background .15s, transform .15s, box-shadow .15s;
-  width: 100%; text-decoration: none;
-}
-.btn:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(255,109,59,.3); }
-.btn-ghost {
-  background: transparent; border: 1px solid var(--border); color: var(--text2);
-  width: auto; padding: 10px 18px; font-size: 14px;
-}
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: transparent; box-shadow: none; transform: none; }
-.btn-row { display: flex; gap: 10px; margin-top: 24px; }
-.btn-row .btn { flex: 1; }
-
-/* ── CARDS ── */
-.card {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-  padding: 18px 20px; position: relative; overflow: hidden;
-}
-.card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-}
-
-/* ── CALLOUT ── */
-.callout {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-  padding: 16px 20px; margin-bottom: 20px; font-size: 14px; color: var(--text2); line-height: 1.6;
-  position: relative; overflow: hidden;
-}
-.callout::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2));
-}
-
-/* ── PROGRESS ── */
-.progress-wrap { margin-bottom: 28px; }
-.progress-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
-.progress-label { font-size: 13px; color: var(--text3); }
-.progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
-.progress-track { height: 3px; background: var(--bg3); border-radius: 3px; }
-.progress-fill  { height: 3px; background: var(--accent); border-radius: 3px; box-shadow: 0 0 8px rgba(255,109,59,.5); transition: width .3s ease; }
-
-/* ── QUESTIONS ── */
-.block-title { font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 20px; }
-.question { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 12px; }
-.question p  { color: var(--text2); line-height: 1.55; margin-bottom: 14px; font-size: 14px; }
-.scale       { display: flex; gap: 8px; align-items: center; }
-.scale-label { font-size: 12px; color: var(--text3); min-width: 56px; }
-.scale-label.right { text-align: right; }
-.scale-options { display: flex; gap: 6px; flex: 1; justify-content: center; }
-.scale-options label { display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 4px; }
-.scale-options input[type=radio] { display: none; }
-.scale-dot {
-  width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 600; color: var(--text3); transition: all .15s; background: var(--bg3);
-}
-.scale-options input[type=radio]:checked + .scale-dot {
-  background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;
-}
-.scale-options label:hover .scale-dot { border-color: var(--accent); color: var(--text); }
-
-/* ── RESULT SCORE ── */
-.result-score-wrap { text-align: center; padding: 28px 0 8px; }
-.result-score-num { font-size: 64px; font-weight: 900; letter-spacing: -3px; color: var(--accent); line-height: 1; }
-.result-score-label { font-size: 13px; color: var(--text3); margin-top: 6px; }
-
-/* ── TIER CARD ── */
-.tier-card {
-  border-radius: 10px; padding: 20px 22px; margin: 20px 0;
-  position: relative; overflow: hidden;
-}
-.tier-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-}
-.tier-automation       { background: rgba(34,197,94,.06);   border: 1px solid rgba(34,197,94,.25); }
-.tier-automation::before { background: linear-gradient(90deg, transparent, #22c55e, transparent); }
-.tier-automation .tier-label { color: #22c55e; }
-.tier-automation-first { background: rgba(163,230,53,.06);  border: 1px solid rgba(163,230,53,.25); }
-.tier-automation-first::before { background: linear-gradient(90deg, transparent, #a3e635, transparent); }
-.tier-automation-first .tier-label { color: #a3e635; }
-.tier-intelligent      { background: rgba(124,58,237,.06);  border: 1px solid rgba(124,58,237,.3); }
-.tier-intelligent::before { background: linear-gradient(90deg, transparent, #7c3aed, transparent); }
-.tier-intelligent .tier-label { color: #a78bfa; }
-.tier-ai               { background: rgba(244,114,182,.06); border: 1px solid rgba(244,114,182,.25); }
-.tier-ai::before { background: linear-gradient(90deg, transparent, #f472b6, transparent); }
-.tier-ai .tier-label { color: #f472b6; }
-.tier-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
-.tier-name  { font-size: 22px; font-weight: 900; letter-spacing: -.4px; margin-bottom: 10px; }
-.tier-text  { font-size: 14px; color: var(--text2); line-height: 1.6; }
-
-/* ── SECTION DIVIDER ── */
-.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
-
-/* ── PATHS HEADING ── */
-.paths-heading { font-size: 18px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 4px; }
-.paths-sub     { font-size: 14px; color: var(--text3); margin-bottom: 20px; }
-
-/* ── PATH CARDS ── */
-.path-card {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-  margin-bottom: 12px; overflow: hidden; position: relative;
-}
-.path-card-header {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-}
-.path-icon { font-size: 22px; flex-shrink: 0; }
-.path-header-text { flex: 1; }
-.path-num   { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); margin-bottom: 2px; }
-.path-title { font-size: 15px; font-weight: 700; }
-.path-badge {
-  font-size: 12px; font-weight: 700; padding: 3px 10px;
-  border-radius: 20px; white-space: nowrap;
-}
-.badge-free   { background: rgba(34,197,94,.1);   color: var(--green);  border: 1px solid rgba(34,197,94,.2); }
-.badge-paid   { background: rgba(124,58,237,.1);  color: #a78bfa;       border: 1px solid rgba(124,58,237,.2); }
-.badge-custom { background: rgba(255,109,59,.1);  color: var(--accent); border: 1px solid rgba(255,109,59,.2); }
-
-.path-body { padding: 16px 20px; }
-.path-time  { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
-.path-tools { font-size: 12px; color: var(--text3); margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.path-tools-label { margin-right: 2px; }
-.tool-tag {
-  background: var(--bg3); border: 1px solid var(--border); border-radius: 4px;
-  padding: 2px 8px; font-size: 12px; color: var(--text2);
-}
-.resource-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.resource-item { display: flex; align-items: flex-start; gap: 8px; }
-.resource-badge {
-  font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-  padding: 2px 6px; border-radius: 4px; white-space: nowrap; margin-top: 2px; flex-shrink: 0;
-}
-.badge-video   { background: rgba(244,114,182,.1); color: #f472b6; border: 1px solid rgba(244,114,182,.2); }
-.badge-article { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
-.resource-link { color: var(--text2); text-decoration: none; font-size: 13px; line-height: 1.4; }
-.resource-link:hover { color: var(--accent); }
-.resource-duration { color: var(--text3); font-size: 12px; margin-left: 4px; }
-
-.path-desc { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
-.coming-soon {
-  background: var(--bg3); border: 1px solid var(--border); border-radius: 7px;
-  padding: 10px 14px; font-size: 13px; color: var(--text3); text-align: center;
-}
-.coming-soon a { color: var(--accent); text-decoration: none; }
-.coming-soon a:hover { text-decoration: underline; }
-.btn-dfy {
-  display: block; text-align: center; background: var(--accent); color: #fff;
-  padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 15px;
-  font-family: inherit; text-decoration: none; border: none; cursor: pointer; width: 100%;
-  transition: background .15s, transform .15s, box-shadow .15s;
-}
-.btn-dfy:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(255,109,59,.3); }
-
-/* ── EMAIL CAPTURE ── */
-.email-section {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
-  padding: 24px; position: relative; overflow: hidden;
-}
-.email-section::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-}
-.email-section h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-.email-sub { font-size: 14px; color: var(--text2); margin-bottom: 20px; line-height: 1.5; }
-.form-field { margin-bottom: 12px; }
-.form-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; display: block; }
-.form-input {
-  width: 100%; padding: 11px 14px; background: var(--bg3);
-  border: 1px solid var(--border); border-radius: 7px; color: var(--text);
-  font-size: 14px; font-family: inherit; outline: none; transition: border-color .15s;
-}
-.form-input:focus { border-color: var(--accent); }
-.form-input::placeholder { color: var(--text3); }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.form-textarea { resize: vertical; min-height: 80px; }
-.form-select { appearance: none; cursor: pointer; }
-.optional-label { font-size: 11px; color: var(--text3); margin-left: 4px; font-weight: 400; text-transform: none; letter-spacing: 0; }
-.skip-link { display: block; text-align: center; font-size: 13px; color: var(--text3); margin-top: 12px; cursor: pointer; text-decoration: underline; }
-.skip-link:hover { color: var(--text2); }
-.submit-error { font-size: 13px; color: var(--red); margin-top: 8px; }
-.submit-success { text-align: center; padding: 10px 0; }
-.submit-success .success-icon { font-size: 36px; margin-bottom: 10px; }
-.submit-success h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-.submit-success p { font-size: 14px; color: var(--text2); line-height: 1.55; }
-
-/* ── SHARE ── */
-.share-block {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-  padding: 18px 20px; margin-top: 20px; text-align: center;
-}
-.share-block p { font-size: 13px; color: var(--text3); margin-bottom: 12px; }
-.share-text { font-size: 13px; color: var(--text2); font-style: italic; line-height: 1.5; }
-.share-btns { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
-.share-btn {
-  padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border);
-  background: var(--bg3); color: var(--text2); font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: inherit; transition: all .15s;
-  text-decoration: none; display: inline-block;
-}
-.share-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ── SCORING BLOCK ── */
-.scoring-block {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-  padding: 18px 20px; margin-bottom: 20px; position: relative; overflow: hidden;
-}
-.scoring-block::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2));
-}
-.scoring-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 12px; }
-
-.score-dots-row { display: flex; gap: 8px; }
-.score-dot-item { flex: 1; text-align: center; }
-.score-dot-num {
-  width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center; margin: 0 auto 6px;
-  font-size: 15px; font-weight: 800; color: var(--text3); background: var(--bg3);
-}
-.score-dot-item--c0 .score-dot-num { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,.1); }
-.score-dot-item--c1 .score-dot-num { border-color: #f97316; color: #f97316; background: rgba(249,115,22,.1); }
-.score-dot-item--c2 .score-dot-num { border-color: #eab308; color: #eab308; background: rgba(234,179,8,.1); }
-.score-dot-item--c3 .score-dot-num { border-color: #84cc16; color: #84cc16; background: rgba(132,204,22,.1); }
-.score-dot-item--c4 .score-dot-num { border-color: #22c55e; color: #22c55e; background: rgba(34,197,94,.1); }
-.score-dot-lbl { font-size: 11px; color: var(--text3); line-height: 1.3; }
-
-.spectrum-bar { display: flex; border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
-.spectrum-seg {
-  flex: 1; padding: 10px 6px; text-align: center;
-  font-size: 11px; font-weight: 700; line-height: 1.35;
-}
-.spectrum-seg span { font-size: 10px; font-weight: 600; opacity: .8; display: block; margin-top: 2px; }
-.seg-ai    { background: rgba(244,114,182,.15); color: #f472b6; border: 1px solid rgba(244,114,182,.25); border-right: none; border-radius: 8px 0 0 8px; }
-.seg-intel { background: rgba(124,58,237,.12);  color: #a78bfa; border: 1px solid rgba(124,58,237,.25); border-right: none; }
-.seg-auto1 { background: rgba(163,230,53,.1);   color: #a3e635; border: 1px solid rgba(163,230,53,.2);  border-right: none; }
-.seg-auto  { background: rgba(34,197,94,.12);   color: #22c55e; border: 1px solid rgba(34,197,94,.2);  border-radius: 0 8px 8px 0; }
-.spectrum-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
-
-/* ── AUTHOR NOTE ── */
-.author-note {
-  border: 1px solid var(--border); border-radius: 8px; padding: 13px 16px;
-  font-size: 13px; color: var(--text3); line-height: 1.55; margin-top: 16px;
-  display: flex; gap: 10px; align-items: flex-start;
-}
-.author-note-avatar {
-  width: 32px; height: 32px; border-radius: 50%; background: var(--bg3);
-  border: 1px solid var(--border); flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 15px;
-}
-
-/* ── MOBILE ── */
-@media (max-width: 768px) {
-  .screen { padding: 28px 16px 60px; }
-  h1 { font-size: 24px; }
-  .subtitle { font-size: 14px; }
-}
-@media (max-width: 480px) {
-  h1 { font-size: 21px; letter-spacing: -.3px; }
-  .btn { font-size: 14px; padding: 11px 20px; }
-  .scale-dot { width: 30px; height: 30px; font-size: 12px; }
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0f1a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 0;
+  }
+  .screen { display: none; max-width: 680px; margin: 0 auto; padding: 32px 20px; }
+  .screen.active { display: block; }
+  .brand { font-size: 0.8em; color: #6c63ff; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 24px; }
+  h1 { font-size: 2em; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+  h2 { font-size: 1.3em; font-weight: 600; color: #6c63ff; margin-bottom: 20px; }
+  .subtitle { color: #94a3b8; font-size: 1.05em; line-height: 1.6; margin-bottom: 28px; }
+  .callout { background: #141e30; border-left: 3px solid #6c63ff; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 28px; color: #cbd5e1; line-height: 1.6; }
+  .btn {
+    display: inline-block; background: #6c63ff; color: #fff; padding: 14px 32px;
+    border-radius: 8px; border: none; font-size: 1em; font-weight: 600; cursor: pointer;
+    transition: background .2s; text-decoration: none;
+  }
+  .btn:hover { background: #5b52e0; }
+  .btn-outline { background: transparent; border: 2px solid #6c63ff; color: #6c63ff; margin-left: 12px; }
+  .btn-outline:hover { background: #6c63ff; color: #fff; }
+  .progress-bar { background: #141e30; border-radius: 4px; height: 4px; margin-bottom: 32px; }
+  .progress-fill { background: #6c63ff; height: 4px; border-radius: 4px; transition: width .3s; }
+  .progress-label { font-size: 0.8em; color: #64748b; margin-bottom: 8px; }
+  .block-title { font-size: 0.75em; color: #6c63ff; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 20px; }
+  .question { background: #141e30; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .question p { color: #e2e8f0; line-height: 1.5; margin-bottom: 14px; font-size: 0.95em; }
+  .scale { display: flex; gap: 8px; align-items: center; }
+  .scale-label { font-size: 0.75em; color: #64748b; min-width: 60px; }
+  .scale-label.right { text-align: right; }
+  .scale-options { display: flex; gap: 6px; flex: 1; justify-content: center; }
+  .scale-options label { display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 4px; }
+  .scale-options input[type=radio] { display: none; }
+  .scale-dot {
+    width: 36px; height: 36px; border-radius: 50%; border: 2px solid #2d3748;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85em; color: #94a3b8; transition: all .15s; background: #0a0f1a;
+  }
+  .scale-options input[type=radio]:checked + .scale-dot {
+    background: #6c63ff; border-color: #6c63ff; color: #fff; font-weight: 700;
+  }
+  .scale-options label:hover .scale-dot { border-color: #6c63ff; color: #e2e8f0; }
+  .nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+  .result-score { font-size: 4em; font-weight: 800; color: #6c63ff; text-align: center; margin: 24px 0 8px; }
+  .result-label { text-align: center; font-size: 0.85em; color: #64748b; margin-bottom: 32px; }
+  .result-tier { padding: 24px; border-radius: 12px; margin-bottom: 24px; }
+  .result-tier h3 { font-size: 1.4em; font-weight: 700; margin-bottom: 12px; }
+  .result-tier p { color: #cbd5e1; line-height: 1.6; }
+  .tier-automation { background: #0f2a10; border: 2px solid #4ade80; }
+  .tier-automation h3 { color: #4ade80; }
+  .tier-automation-first { background: #1a2010; border: 2px solid #a3e635; }
+  .tier-automation-first h3 { color: #a3e635; }
+  .tier-intelligent { background: #1a1a2e; border: 2px solid #818cf8; }
+  .tier-intelligent h3 { color: #818cf8; }
+  .tier-ai { background: #2a0f1a; border: 2px solid #f472b6; }
+  .tier-ai h3 { color: #f472b6; }
+  .next-step { background: #141e30; border-radius: 10px; padding: 24px; margin-top: 24px; text-align: center; }
+  .next-step p { color: #94a3b8; margin-bottom: 16px; line-height: 1.5; }
+  .share-text { background: #0a0f1a; border: 1px solid #2d3748; border-radius: 8px; padding: 16px; margin: 20px 0; color: #94a3b8; font-style: italic; font-size: 0.9em; line-height: 1.6; }
+  .divider { border: none; border-top: 1px solid #1e2d40; margin: 28px 0; }
+  @media (max-width: 480px) {
+    h1 { font-size: 1.6em; }
+    .scale-dot { width: 30px; height: 30px; font-size: 0.8em; }
+  }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <span class="topbar-brand">Life Builder OS</span>
-  <span class="topbar-sep">·</span>
-  <span class="topbar-product">AI or Automation?</span>
-</div>
-
 <!-- SCREEN 0: INTRO -->
 <div class="screen active" id="screen-intro">
-  <div class="brand-label">Free Assessment</div>
-  <h1>AI or <span class="hl">Automation?</span></h1>
+  <div class="brand">Life Builder OS</div>
+  <h1>AI or Automation?</h1>
   <p class="subtitle">You have a specific task or process in mind. This test tells you what it actually needs — so you stop guessing and start implementing.</p>
   <div class="callout">
     <strong>How it works:</strong> Think of one specific task in your work. Answer 25 questions about that task on a scale from 0 to 4. Takes 3–5 minutes. You'll get a clear verdict with a recommended approach.
   </div>
-  <div class="scoring-block">
-    <div class="scoring-title">How to answer each question</div>
-    <div class="score-dots-row">
-      <div class="score-dot-item score-dot-item--c0">
-        <div class="score-dot-num">0</div>
-        <div class="score-dot-lbl">Not true<br>at all</div>
-      </div>
-      <div class="score-dot-item score-dot-item--c1">
-        <div class="score-dot-num">1</div>
-        <div class="score-dot-lbl">Barely<br>true</div>
-      </div>
-      <div class="score-dot-item score-dot-item--c2">
-        <div class="score-dot-num">2</div>
-        <div class="score-dot-lbl">Somewhat<br>true</div>
-      </div>
-      <div class="score-dot-item score-dot-item--c3">
-        <div class="score-dot-num">3</div>
-        <div class="score-dot-lbl">Mostly<br>true</div>
-      </div>
-      <div class="score-dot-item score-dot-item--c4">
-        <div class="score-dot-num">4</div>
-        <div class="score-dot-lbl">Completely<br>true</div>
-      </div>
-    </div>
-    <div class="scoring-title" style="margin-top:20px">What your total score means</div>
-    <div class="spectrum-bar">
-      <div class="spectrum-seg seg-ai">AI-First<br><span>0–35</span></div>
-      <div class="spectrum-seg seg-intel">Intelligent<br><span>36–55</span></div>
-      <div class="spectrum-seg seg-auto1">Auto +<br>Light AI<br><span>56–75</span></div>
-      <div class="spectrum-seg seg-auto">Classic<br>Auto<br><span>76–100</span></div>
-    </div>
-    <div class="spectrum-labels">
-      <span>← More AI needed</span>
-      <span>More Automation →</span>
-    </div>
+  <div class="callout">
+    <strong>Scoring scale:</strong><br>
+    0 = Completely disagree &nbsp;·&nbsp; 2 = Somewhat true &nbsp;·&nbsp; 4 = Completely true<br><br>
+    <strong>Higher score → Automation. Lower score → AI.</strong>
   </div>
-  <div class="author-note">
-    <div class="author-note-avatar">👤</div>
-    <span>Built by Artem — 7+ years in C-level supply chain & operations. Zero technical background 6 months ago. Just systems thinking and the right tools.</span>
-  </div>
-  <button class="btn" style="margin-top:20px" onclick="goToBlock(1)">Start Test →</button>
+  <button class="btn" onclick="goToBlock(1)">Start Test →</button>
 </div>
 
-<!-- SCREEN 1 -->
+<!-- SCREEN 1: Block 1 -->
 <div class="screen" id="screen-1">
-  <div class="progress-wrap">
-    <div class="progress-meta">
-      <span class="progress-label">Block 1 of 5 — Task Predictability</span>
-      <span class="progress-count">20%</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" style="width:20%"></div></div>
-  </div>
-  <div class="block-title">Task Predictability</div>
+  <div class="brand">Life Builder OS</div>
+  <div class="progress-label">Block 1 of 5 — Task Predictability</div>
+  <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+  <h2>Task Predictability</h2>
   <div id="questions-1"></div>
-  <div class="btn-row">
-    <button class="btn btn-ghost" onclick="goToBlock(0)">← Back</button>
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goToBlock(0)">← Back</button>
     <button class="btn" onclick="goToBlock(2)">Next →</button>
   </div>
 </div>
 
-<!-- SCREEN 2 -->
+<!-- SCREEN 2: Block 2 -->
 <div class="screen" id="screen-2">
-  <div class="progress-wrap">
-    <div class="progress-meta">
-      <span class="progress-label">Block 2 of 5 — Data & Inputs</span>
-      <span class="progress-count">40%</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
-  </div>
-  <div class="block-title">Data & Inputs</div>
+  <div class="brand">Life Builder OS</div>
+  <div class="progress-label">Block 2 of 5 — Data & Inputs</div>
+  <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+  <h2>Data & Inputs</h2>
   <div id="questions-2"></div>
-  <div class="btn-row">
-    <button class="btn btn-ghost" onclick="goToBlock(1)">← Back</button>
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goToBlock(1)">← Back</button>
     <button class="btn" onclick="goToBlock(3)">Next →</button>
   </div>
 </div>
 
-<!-- SCREEN 3 -->
+<!-- SCREEN 3: Block 3 -->
 <div class="screen" id="screen-3">
-  <div class="progress-wrap">
-    <div class="progress-meta">
-      <span class="progress-label">Block 3 of 5 — Decision & Judgment</span>
-      <span class="progress-count">60%</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
-  </div>
-  <div class="block-title">Decision & Judgment</div>
+  <div class="brand">Life Builder OS</div>
+  <div class="progress-label">Block 3 of 5 — Decision & Judgment</div>
+  <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+  <h2>Decision & Judgment</h2>
   <div id="questions-3"></div>
-  <div class="btn-row">
-    <button class="btn btn-ghost" onclick="goToBlock(2)">← Back</button>
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goToBlock(2)">← Back</button>
     <button class="btn" onclick="goToBlock(4)">Next →</button>
   </div>
 </div>
 
-<!-- SCREEN 4 -->
+<!-- SCREEN 4: Block 4 -->
 <div class="screen" id="screen-4">
-  <div class="progress-wrap">
-    <div class="progress-meta">
-      <span class="progress-label">Block 4 of 5 — Learning & Adaptation</span>
-      <span class="progress-count">80%</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" style="width:80%"></div></div>
-  </div>
-  <div class="block-title">Learning & Adaptation</div>
+  <div class="brand">Life Builder OS</div>
+  <div class="progress-label">Block 4 of 5 — Learning & Adaptation</div>
+  <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+  <h2>Learning & Adaptation</h2>
   <div id="questions-4"></div>
-  <div class="btn-row">
-    <button class="btn btn-ghost" onclick="goToBlock(3)">← Back</button>
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goToBlock(3)">← Back</button>
     <button class="btn" onclick="goToBlock(5)">Next →</button>
   </div>
 </div>
 
-<!-- SCREEN 5 -->
+<!-- SCREEN 5: Block 5 -->
 <div class="screen" id="screen-5">
-  <div class="progress-wrap">
-    <div class="progress-meta">
-      <span class="progress-label">Block 5 of 5 — Business Context</span>
-      <span class="progress-count">100%</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
-  </div>
-  <div class="block-title">Business Context</div>
+  <div class="brand">Life Builder OS</div>
+  <div class="progress-label">Block 5 of 5 — Business Context</div>
+  <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  <h2>Business Context</h2>
   <div id="questions-5"></div>
-  <div class="btn-row">
-    <button class="btn btn-ghost" onclick="goToBlock(4)">← Back</button>
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goToBlock(4)">← Back</button>
     <button class="btn" onclick="showResult()">See My Result →</button>
   </div>
 </div>
 
 <!-- SCREEN 6: RESULT -->
 <div class="screen" id="screen-result">
-  <div class="brand-label">Your Verdict</div>
-  <div class="result-score-wrap">
-    <div class="result-score-num" id="score-display">0</div>
-    <div class="result-score-label">out of 100 points</div>
-  </div>
+  <div class="brand">Life Builder OS</div>
+  <h1>Your Result</h1>
+  <div class="result-score" id="score-display">0</div>
+  <div class="result-label">out of 100 points</div>
   <div id="result-tier"></div>
-
   <hr class="divider">
-
-  <p class="paths-heading">What's your next step?</p>
-  <p class="paths-sub">Three paths. Pick the one that fits your situation.</p>
-
-  <!-- Path 1: DIY -->
-  <div class="path-card">
-    <div class="path-card-header">
-      <span class="path-icon">📚</span>
-      <div class="path-header-text">
-        <div class="path-num">Path 1</div>
-        <div class="path-title">Learn & Build Yourself</div>
-      </div>
-      <span class="path-badge badge-free">Free</span>
-    </div>
-    <div class="path-body">
-      <div class="path-time" id="diy-time"></div>
-      <div class="path-tools" id="diy-tools"></div>
-      <ul class="resource-list" id="diy-resources"></ul>
-    </div>
+  <div class="next-step">
+    <p>Your verdict tells you the direction. I can tell you the exact tool for your specific task — just share your score and describe it in one sentence.</p>
+    <a href="FORM_LINK_HERE" target="_blank" class="btn">Get My Tool Recommendation →</a>
+    <p style="margin-top:16px;font-size:0.85em;color:#64748b">60 seconds. No spam. One direct reply from Artem.</p>
   </div>
-
-  <!-- Path 2: DWY -->
-  <div class="path-card">
-    <div class="path-card-header">
-      <span class="path-icon">🎥</span>
-      <div class="path-header-text">
-        <div class="path-num">Path 2</div>
-        <div class="path-title">Watch How I Do It</div>
-      </div>
-      <span class="path-badge badge-paid">$19–39</span>
-    </div>
-    <div class="path-body">
-      <p class="path-desc">Under 30-min video where I build this exact type of automation from scratch. Includes step-by-step instructions + ready-to-use setup file.</p>
-      <div class="coming-soon">🔜 Coming soon — <a href="#email-section">join the waitlist</a> below to get notified first</div>
-    </div>
-  </div>
-
-  <!-- Path 3: DFY -->
-  <div class="path-card">
-    <div class="path-card-header">
-      <span class="path-icon">⚡</span>
-      <div class="path-header-text">
-        <div class="path-num">Path 3</div>
-        <div class="path-title">Let Me Build It For You</div>
-      </div>
-      <span class="path-badge badge-custom">Custom</span>
-    </div>
-    <div class="path-body">
-      <p class="path-desc">You describe the task. I build the automation or AI agent. You get the working setup, documentation, and a 30-min handoff call.</p>
-      <div class="author-note" style="margin-bottom:14px">
-        <div class="author-note-avatar">👤</div>
-        <span>I had zero technical background 6 months ago. 7+ years running operations at the C-level taught me what actually breaks — and what's worth automating.</span>
-      </div>
-      <a href="https://calendly.com/artem-scait/30min" target="_blank" class="btn-dfy">Book a Free Discovery Call →</a>
-    </div>
-  </div>
-
   <hr class="divider">
-
-  <!-- Email capture -->
-  <div class="email-section" id="email-section">
-    <h2>Your action plan is ready.</h2>
-    <p class="email-sub">Leave your details — I'll send a personalized step-by-step plan based on your score. Free.</p>
-    <div id="email-form-wrap">
-      <div class="form-row">
-        <div class="form-field">
-          <label class="form-label">First name</label>
-          <input type="text" class="form-input" id="f-name" placeholder="Alex">
-        </div>
-        <div class="form-field">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="f-email" placeholder="you@email.com">
-        </div>
-      </div>
-      <div class="form-field">
-        <label class="form-label">Your job title</label>
-        <input type="text" class="form-input" id="f-jobtitle" placeholder="e.g. Operations Manager, Founder, Freelancer">
-      </div>
-      <div class="form-field">
-        <label class="form-label">Where are you now? <span class="optional-label">(Point A)</span></label>
-        <textarea class="form-input form-textarea" id="f-pointa" placeholder="e.g. I do this task manually every week, it takes 2+ hours and I know it could be automated"></textarea>
-      </div>
-      <div class="form-field">
-        <label class="form-label">Where do you want to be in 90 days? <span class="optional-label">(Point B)</span></label>
-        <textarea class="form-input form-textarea" id="f-pointb" placeholder="e.g. This task runs automatically, I just check the output once a week"></textarea>
-      </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label class="form-label">Timeline</label>
-          <select class="form-input form-select" id="f-timeline">
-            <option value="">Select...</option>
-            <option value="30 days">30 days</option>
-            <option value="60 days">60 days</option>
-            <option value="90 days">90 days</option>
-            <option value="6 months">6 months</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label class="form-label">LinkedIn URL <span class="optional-label">optional</span></label>
-          <input type="text" class="form-input" id="f-linkedin" placeholder="linkedin.com/in/yourname">
-        </div>
-      </div>
-      <div id="form-error" class="submit-error" style="display:none"></div>
-      <button class="btn" style="margin-top:6px" onclick="submitForm()">Send my action plan →</button>
-      <span class="skip-link" onclick="skipForm()">Skip for now — just save my score</span>
-      <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">We'll send your plan within 24 hours. No spam.</p>
-    </div>
-    <div id="email-success" style="display:none;">
-      <div class="submit-success">
-        <div class="success-icon">✅</div>
-        <h2>You're all set</h2>
-        <p>Your personalized action plan is on its way. Check your inbox within 24 hours.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="share-block">
-    <p>Share your result:</p>
-    <div class="share-text" id="share-text"></div>
-    <div class="share-btns">
-      <a class="share-btn" id="share-threads" href="#" target="_blank">Threads</a>
-      <a class="share-btn" id="share-linkedin" href="#" target="_blank">LinkedIn</a>
-    </div>
-  </div>
+  <p style="color:#94a3b8;margin-bottom:12px">Share your result:</p>
+  <div class="share-text" id="share-text"></div>
+  <p style="font-size:0.85em;color:#64748b;margin-top:8px">Tag <strong>@YOURHANDLE</strong> on Threads or LinkedIn — I'll reply with the exact tool I'd use.</p>
 </div>
 
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfBe87y7FsxcCEm_4OU_RG0u7SsVKhKtsmWb1wthedrL5dW86637Duyb-6-WlMopkflw/exec';
-
 const questions = [
+  // Block 1: Task Predictability
   ["The task is triggered by a clear event or rule — \"when X happens, do Y.\"",
    "The steps of this task are always the same — in the same order, every time.",
    "A new employee could learn to do this task correctly by reading a one-page instruction.",
    "The process has worked the same way for at least one year without significant changes.",
    "You can write a checklist that covers 95%+ of all cases this task encounters."],
+  // Block 2: Data & Inputs
   ["All inputs for this task come in structured formats — tables, forms, databases, fixed templates.",
    "The data is already digital — it doesn't need to be extracted from PDFs, images, or handwritten sources.",
    "The task processes high volume of data, but each unit of data is simple and similar.",
    "The inputs rarely surprise you — they arrive in an expected format with expected values.",
    "You can pre-define a rule for every exception that occurs in this task."],
+  // Block 3: Decision & Judgment
   ["This task requires no interpretation or judgment — the answer is always objectively right or wrong.",
    "The output of this task is always the same type — a number, a status, a notification, a filled form.",
    "The task works the same way regardless of context, customer, or situation.",
    "There is no need to understand meaning, tone, or intent — only values and rules matter.",
    "You would trust the output of this task even without a human reviewing each result."],
+  // Block 4: Learning & Adaptation
   ["This task does NOT need to improve or adapt over time based on past results.",
    "This task does NOT involve predicting anything — no forecasting, no risk scoring, no pattern detection.",
    "This task does NOT require understanding free text — emails, contracts, complaints, messages.",
    "This task does NOT involve recommendations, personalization, or context-dependent decisions.",
    "If the task gives a wrong output, you would catch it immediately — errors are obvious."],
+  // Block 5: Business Context
   ["Low implementation cost and speed matter more to you than flexibility or intelligence.",
    "This task runs at high volume — it happens 50+ times per month.",
    "The task needs to connect with existing systems in a straightforward, predictable way.",
@@ -646,69 +210,15 @@ const questions = [
 ];
 
 const tiers = [
-  { min: 76, max: 100, cls: 'tier-automation',       label: 'Classic Automation',
-    name: 'Classic Automation',
+  { min: 76, max: 100, cls: 'tier-automation', label: 'Classic Automation',
     text: 'Pure rule-based task. Use workflow tools: Zapier, Make, Power Automate, Python scripts, or RPA. No AI needed — it would only add cost and complexity.' },
-  { min: 56, max: 75,  cls: 'tier-automation-first', label: 'Automation-First',
-    name: 'Automation-First + Light AI',
+  { min: 56, max: 75, cls: 'tier-automation-first', label: 'Automation-First + Light AI',
     text: 'Core process is automatable, but some steps need AI for exceptions or unstructured inputs. Start with automation, add AI for the edge cases.' },
-  { min: 36, max: 55,  cls: 'tier-intelligent',      label: 'Intelligent Automation',
-    name: 'Intelligent Automation',
+  { min: 36, max: 55, cls: 'tier-intelligent', label: 'Intelligent Automation',
     text: 'You need both. AI handles the judgment, prediction, or language understanding — automation handles execution and routing. This is the most common real-world answer.' },
-  { min: 0,  max: 35,  cls: 'tier-ai',               label: 'AI-First',
-    name: 'AI-First',
+  { min: 0, max: 35, cls: 'tier-ai', label: 'AI-First',
     text: 'This task is too variable, judgment-heavy, or adaptive for classic automation. You need an LLM or AI agent. Automation alone will break constantly.' }
 ];
-
-const tierResources = {
-  'tier-automation': {
-    time: '⏱ ~4–6 hrs to learn · ~2–4 hrs to build',
-    tools: ['Zapier', 'Make.com', 'Power Automate'],
-    resources: [
-      { type: 'video',   title: 'Zapier Complete Beginner Tutorial',       url: 'https://www.youtube.com/results?search_query=zapier+complete+tutorial+beginners',       duration: '~45 min' },
-      { type: 'video',   title: 'Make.com Automation Crash Course',        url: 'https://www.youtube.com/results?search_query=make.com+automation+crash+course',         duration: '~40 min' },
-      { type: 'article', title: 'Zapier vs Make: Full Comparison',         url: 'https://zapier.com/blog/zapier-vs-make/' },
-    ]
-  },
-  'tier-automation-first': {
-    time: '⏱ ~8–12 hrs to learn · ~4–8 hrs to build',
-    tools: ['Make.com + OpenAI', 'n8n + Claude', 'Power Automate + AI Builder'],
-    resources: [
-      { type: 'video',   title: 'Make.com + OpenAI: Step-by-Step Integration', url: 'https://www.youtube.com/results?search_query=make.com+openai+integration+tutorial',      duration: '~50 min' },
-      { type: 'video',   title: 'n8n + AI: Practical Walkthrough',             url: 'https://www.youtube.com/results?search_query=n8n+ai+integration+automation+tutorial',   duration: '~45 min' },
-      { type: 'article', title: 'When to Add AI to Your Automation',           url: 'https://n8n.io/blog/ai-workflow-automation/' },
-    ]
-  },
-  'tier-intelligent': {
-    time: '⏱ ~15–20 hrs to learn · ~8–16 hrs to build',
-    tools: ['n8n', 'Claude API', 'LangChain'],
-    resources: [
-      { type: 'video',   title: 'n8n AI Agents — Full Course',                   url: 'https://www.youtube.com/results?search_query=n8n+ai+agents+full+course',               duration: '~1h 10min' },
-      { type: 'video',   title: 'Build an Automation with Claude API',            url: 'https://www.youtube.com/results?search_query=claude+api+automation+workflow+tutorial', duration: '~40 min' },
-      { type: 'article', title: 'Building Effective Agents — Anthropic',          url: 'https://www.anthropic.com/research/building-effective-agents' },
-    ]
-  },
-  'tier-ai': {
-    time: '⏱ ~20–40 hrs to learn · complexity varies',
-    tools: ['Claude API', 'OpenAI Assistants', 'LangGraph'],
-    resources: [
-      { type: 'video',   title: 'Building AI Agents from Scratch',      url: 'https://www.youtube.com/results?search_query=building+ai+agents+from+scratch+2024',  duration: '~1h 05min' },
-      { type: 'video',   title: 'Claude API — Complete Introduction',   url: 'https://www.youtube.com/results?search_query=claude+api+complete+introduction+tutorial', duration: '~45 min' },
-      { type: 'article', title: 'Building Effective Agents — Anthropic', url: 'https://www.anthropic.com/research/building-effective-agents' },
-    ]
-  }
-};
-
-let currentScore = 0;
-let currentTier  = null;
-let utmParams    = {};
-
-(function captureUTM() {
-  const params = new URLSearchParams(window.location.search);
-  ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k => {
-    if (params.get(k)) utmParams[k] = params.get(k);
-  });
-})();
 
 function renderQuestions() {
   questions.forEach((block, bi) => {
@@ -742,108 +252,21 @@ function goToBlock(n) {
 function showResult() {
   let total = 0;
   for (let i = 1; i <= 25; i++) {
-    const el = document.querySelector('input[name="q' + i + '"]:checked');
-    if (el) total += parseInt(el.value);
+    const checked = document.querySelector('input[name="q' + i + '"]:checked');
+    if (checked) total += parseInt(checked.value);
   }
-  currentScore = total;
-  const tier = tiers.find(t => total >= t.min && total <= t.max) || tiers[3];
-  currentTier = tier;
-
   document.getElementById('score-display').textContent = total;
+  const tier = tiers.find(t => total >= t.min && total <= t.max) || tiers[3];
   document.getElementById('result-tier').innerHTML = `
-    <div class="tier-card ${tier.cls}">
-      <div class="tier-label">${tier.label}</div>
-      <div class="tier-name">${tier.name}</div>
-      <div class="tier-text">${tier.text}</div>
+    <div class="result-tier ${tier.cls}">
+      <h3>${tier.label}</h3>
+      <p>${tier.text}</p>
     </div>`;
-
-  const res = tierResources[tier.cls];
-  document.getElementById('diy-time').textContent = res.time;
-  document.getElementById('diy-tools').innerHTML =
-    `<span class="path-tools-label">Recommended tools:</span>` +
-    res.tools.map(t => `<span class="tool-tag">${t}</span>`).join('');
-  document.getElementById('diy-resources').innerHTML = res.resources.map(r => `
-    <li class="resource-item">
-      <span class="resource-badge badge-${r.type}">${r.type}</span>
-      <span>
-        <a href="${r.url}" target="_blank" class="resource-link">${r.title}</a>
-        ${r.duration ? `<span class="resource-duration">${r.duration}</span>` : ''}
-      </span>
-    </li>`).join('');
-
-  const shareText = `Just tested one of my work processes: AI or Automation? Verdict: ${tier.name} (score: ${total}/100). Honestly useful. #AIorAutomation #LifeBuilderOS`;
-  document.getElementById('share-text').textContent = `"${shareText}"`;
-  document.getElementById('share-threads').href  = `https://www.threads.net/intent/post?text=${encodeURIComponent(shareText)}`;
-  document.getElementById('share-linkedin').href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
-
+  document.getElementById('share-text').textContent =
+    `"Just tested one of my work processes: AI or Automation? Verdict: ${tier.label} (score: ${total}/100). Honestly useful. #AIorAutomation #LifeBuilderOS"`;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-result').classList.add('active');
   window.scrollTo(0, 0);
-}
-
-function submitForm() {
-  const name     = document.getElementById('f-name').value.trim();
-  const email    = document.getElementById('f-email').value.trim();
-  const title    = document.getElementById('f-jobtitle').value.trim();
-  const pointA   = document.getElementById('f-pointa').value.trim();
-  const pointB   = document.getElementById('f-pointb').value.trim();
-  const timeline = document.getElementById('f-timeline').value;
-  const linkedin = document.getElementById('f-linkedin').value.trim();
-  const errorEl  = document.getElementById('form-error');
-
-  if (!name || !email || !title || !pointA || !pointB || !timeline) {
-    errorEl.textContent = 'Please fill in all required fields.';
-    errorEl.style.display = 'block';
-    return;
-  }
-  if (!email.includes('@')) {
-    errorEl.textContent = 'Please enter a valid email address.';
-    errorEl.style.display = 'block';
-    return;
-  }
-  errorEl.style.display = 'none';
-
-  const answers = [];
-  for (let i = 1; i <= 25; i++) {
-    const el = document.querySelector('input[name="q' + i + '"]:checked');
-    answers.push(el ? parseInt(el.value) : null);
-  }
-
-  const payload = {
-    product:      'product-5',
-    timestamp:    new Date().toISOString(),
-    ...utmParams,
-    score:        currentScore,
-    tier_label:   currentTier ? currentTier.name : '',
-    answers:      JSON.stringify(answers),
-    first_name:   name,
-    email:        email,
-    job_title:    title,
-    point_a:      pointA,
-    point_b:      pointB,
-    timeline:     timeline,
-    linkedin_url: linkedin,
-  };
-
-  const submitBtn = document.querySelector('#email-form-wrap .btn');
-  submitBtn.textContent = 'Sending...';
-  submitBtn.disabled = true;
-
-  fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
-    .then(() => {
-      document.getElementById('email-form-wrap').style.display = 'none';
-      document.getElementById('email-success').style.display   = 'block';
-    })
-    .catch(() => {
-      errorEl.textContent = 'Something went wrong — email us at eco.stepanenko@gmail.com';
-      errorEl.style.display = 'block';
-      submitBtn.textContent = 'Send my action plan →';
-      submitBtn.disabled = false;
-    });
-}
-
-function skipForm() {
-  document.getElementById('email-section').style.display = 'none';
 }
 
 renderQuestions();
