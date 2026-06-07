@@ -1,4 +1,7 @@
+import time
 import requests
+
+CONTAINER_READY_DELAY = 5  # seconds between container creation and publish
 
 
 class ThreadsAuthError(Exception):
@@ -36,6 +39,7 @@ class ThreadsClient:
         return resp.json()["id"]
 
     def _publish(self, creation_id: str) -> str:
+        time.sleep(CONTAINER_READY_DELAY)
         params = {"creation_id": creation_id, "access_token": self._token}
         resp = requests.post(f"{self.BASE_URL}/me/threads_publish", params=params)
         self._check(resp)

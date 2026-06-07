@@ -58,7 +58,7 @@ def run() -> None:
 
     for row in due_rows:
         row_index = row["_row"]
-        retry_count = int(row.get("retry_count", 0))
+        retry_count = int(row.get("retry_count") or 0)
         post_text = row.get("post_text", "")
         first_comment = row.get("first_comment", "")
 

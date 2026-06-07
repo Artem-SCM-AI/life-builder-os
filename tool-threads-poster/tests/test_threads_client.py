@@ -4,6 +4,13 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from threads_client import ThreadsClient, ThreadsAuthError, ThreadsAPIError
 
+# Patch sleep globally so tests don't wait 5 seconds each
+pytestmark = pytest.mark.usefixtures("no_sleep")
+
+@pytest.fixture(autouse=True)
+def no_sleep(monkeypatch):
+    monkeypatch.setattr("threads_client.time.sleep", lambda _: None)
+
 
 def _resp(status_code, json_data):
     r = MagicMock()

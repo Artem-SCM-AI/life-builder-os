@@ -12,18 +12,19 @@ class SheetsClient:
         records = self._sheet.get_all_records()
         due = []
         for i, row in enumerate(records, start=2):
+            row = {k.strip(): v for k, v in row.items()}
             if row.get("status") != "pending":
                 continue
-            if int(row.get("retry_count", 0)) >= 3:
+            if int(row.get("retry_count") or 0) >= 3:
                 continue
-            scheduled = _parse_time(row["scheduled_time"], row["timezone"])
+            scheduled = _parse_time(row.get("scheduled_time", ""), row.get("timezone", ""))
             if scheduled is None or scheduled > now_utc:
                 continue
             due.append({"_row": i, **row})
         return due
 
     def update_row(self, row_index: int, **fields) -> None:
-        headers = self._sheet.row_values(1)
+        headers = [h.strip() for h in self._sheet.row_values(1)]
         for key, value in fields.items():
             if key in headers:
                 col = headers.index(key) + 1
