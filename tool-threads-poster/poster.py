@@ -28,9 +28,16 @@ def run() -> None:
     for row in due_rows:
         row_index = row["_row"]
         retry_count = int(row.get("retry_count", 0))
+        post_text = row.get("post_text", "")
+        first_comment = row.get("first_comment", "")
+
+        if not post_text:
+            sheets.update_row(row_index, status="failed", error="post_text is empty")
+            send_alert(tg_token, tg_chat, f"⚠️ Threads: row {row_index} skipped — post_text is empty")
+            continue
 
         try:
-            post_id = threads.create_post(row["post_text"])
+            post_id = threads.create_post(post_text)
         except ThreadsAuthError as e:
             sheets.update_row(row_index, status="auth_error", error=str(e))
             send_alert(tg_token, tg_chat, f"Threads: token expired\n{e}")
@@ -48,7 +55,7 @@ def run() -> None:
 
         posted_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         try:
-            threads.create_reply(post_id, row["first_comment"])
+            threads.create_reply(post_id, first_comment)
             sheets.update_row(
                 row_index,
                 status="posted",
