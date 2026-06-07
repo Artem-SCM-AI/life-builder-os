@@ -76,3 +76,8 @@ def test_update_row_sets_cell():
     updated_fields = {call[0][2] for call in calls}
     assert "posted" in updated_fields
     assert "abc123" in updated_fields
+
+
+def test_skips_invalid_scheduled_time():
+    client, _ = _make_client([_row(time="not-a-date")])
+    assert client.get_due_rows(NOW) == []
