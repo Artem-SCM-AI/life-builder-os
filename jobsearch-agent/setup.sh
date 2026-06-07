@@ -286,3 +286,102 @@ echo ""
 echo -e "${GREEN}✓ Analysis complete. See above for your keyword list.${NC}"
 echo ""
 read -p "  ⏸  Subscribe to those alerts now, then press Enter to continue..."
+
+# ── TECHNICAL SETUP ───────────────────────────────────────────
+section "🔧 Technical Setup"
+echo "  Now we connect to your tools."
+echo "  Video timestamps are in the product README."
+echo ""
+
+read -p "Apify API key (from apify.com → Settings → API): " APIFY_KEY
+echo ""
+read -p "Gmail address (the one with job alerts): " GMAIL_ADDR
+echo ""
+echo "Gmail App Password setup:"
+echo "  Google Account → Security → 2-Step Verification → App Passwords"
+echo "  App = Mail, Device = Mac → Generate → copy the 16-character password"
+echo ""
+read -p "Gmail App Password (16 characters, no spaces): " GMAIL_PASS
+echo ""
+echo "Notion setup (video shows this in detail):"
+echo "  notion.so/my-integrations → New integration → copy 'Internal Integration Secret'"
+read -p "Notion integration token (starts with secret_): " NOTION_TOKEN
+echo ""
+echo "  Open your Notion workspace page → copy the ID from the URL"
+echo "  URL format: notion.so/Your-Page-Name-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+echo "  The ID is the 32-character string at the end"
+read -p "Notion parent page ID: " NOTION_PAGE_ID
+echo ""
+read -p "Daily run time — hour (0–23, default 8): " RUN_HOUR
+read -p "Daily run time — minute (0–59, default 0): " RUN_MIN
+RUN_HOUR="${RUN_HOUR:-8}"
+RUN_MIN="${RUN_MIN:-0}"
+
+# Write config.env
+cat > "$CONFIG_FILE" << CONFIG
+# Job Search Agent — Configuration
+# Generated: $(date '+%Y-%m-%d')
+
+USER_NAME="$Q_NAME"
+APIFY_API_KEY="$APIFY_KEY"
+GMAIL_ADDRESS="$GMAIL_ADDR"
+GMAIL_APP_PASSWORD="$GMAIL_PASS"
+NOTION_TOKEN="$NOTION_TOKEN"
+NOTION_PARENT_PAGE_ID="$NOTION_PAGE_ID"
+NOTION_PIPELINE_DB_ID=""
+DAILY_RUN_HOUR="$RUN_HOUR"
+DAILY_RUN_MINUTE="$RUN_MIN"
+CONFIG
+
+echo -e "${GREEN}✓ Config saved${NC}"
+
+# ── NOTION DB SETUP ───────────────────────────────────────────
+echo ""
+echo "⚙️  Creating your Notion pipeline database..."
+echo "    (Takes about 30 seconds)"
+
+NOTION_OUTPUT=$(cd "$INSTALL_DIR" && claude \
+  --allowedTools "mcp__plugin_marketing_notion__*" \
+  --permission-mode bypassPermissions \
+  -p "$(cat "$INSTALL_DIR/agents/setup_notion_agent.md")" \
+  2>/dev/null)
+
+DB_ID=$(echo "$NOTION_OUTPUT" | grep "NOTION_PIPELINE_DB_ID=" | cut -d'=' -f2 | tr -d ' "')
+if [ -n "$DB_ID" ]; then
+  sed -i '' "s/NOTION_PIPELINE_DB_ID=\"\"/NOTION_PIPELINE_DB_ID=\"$DB_ID\"/" "$CONFIG_FILE"
+  echo -e "${GREEN}✓ Notion pipeline created${NC}"
+else
+  echo ""
+  echo "⚠️  Could not auto-create Notion DB."
+  echo "   Open Notion, create a database named 'Job Search Pipeline',"
+  echo "   copy its ID from the URL, and paste it here:"
+  read -p "   Notion DB ID: " MANUAL_DB_ID
+  sed -i '' "s/NOTION_PIPELINE_DB_ID=\"\"/NOTION_PIPELINE_DB_ID=\"$MANUAL_DB_ID\"/" "$CONFIG_FILE"
+fi
+
+# ── CRONTAB ───────────────────────────────────────────────────
+ORCH_MIN=$(( (RUN_MIN + 15) % 60 ))
+ORCH_HOUR=$RUN_HOUR
+[ $(( RUN_MIN + 15 )) -ge 60 ] && ORCH_HOUR=$(( (RUN_HOUR + 1) % 24 ))
+
+CRON_JOBS="$RUN_MIN $RUN_HOUR * * 1-5 $INSTALL_DIR/run_agent.sh jobs
+$ORCH_MIN $ORCH_HOUR * * 1-5 $INSTALL_DIR/run_agent.sh orchestrator"
+
+(crontab -l 2>/dev/null; echo ""; echo "# Job Search Agent"; echo "$CRON_JOBS") | crontab -
+echo -e "${GREEN}✓ Schedule set: weekdays at ${RUN_HOUR}:$(printf '%02d' $RUN_MIN)${NC}"
+
+# ── DONE ─────────────────────────────────────────────────────
+echo ""
+echo -e "${GREEN}════════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}  ✅ SETUP COMPLETE                                  ${NC}"
+echo -e "${GREEN}════════════════════════════════════════════════════${NC}"
+echo ""
+echo "  Your pipeline: ready in Notion"
+echo "  Agent runs: weekdays at ${RUN_HOUR}:$(printf '%02d' $RUN_MIN)"
+echo ""
+echo "  To run manually right now:"
+echo "    bash $INSTALL_DIR/run_agent.sh jobs"
+echo ""
+echo "  To view logs:"
+echo "    cat $INSTALL_DIR/data/jobs.log"
+echo ""
