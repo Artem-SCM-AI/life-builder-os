@@ -212,3 +212,77 @@ Generated: $(date '+%Y-%m-%d')
 PROFILE
 
 echo -e "${GREEN}✓ Profile saved to $PROFILE_FILE${NC}"
+
+# ── SECTION 8: RESUME ─────────────────────────────────────────
+section "📄 SECTION 8 of 8 — Your resume"
+tip "Plain text only. Remove tables, columns, graphics. More detail = better tailored resumes."
+
+echo "Paste your full resume below."
+echo "When done, type END on a new line and press Enter."
+echo ""
+
+Q_RESUME=""
+while IFS= read -r line; do
+  [ "$line" = "END" ] && break
+  Q_RESUME="${Q_RESUME}${line}"$'\n'
+done
+
+# Append resume to profile
+cat >> "$PROFILE_FILE" << RESUME
+
+## Resume
+$Q_RESUME
+RESUME
+
+echo -e "${GREEN}✓ Resume saved${NC}"
+
+# ── BONUS TASK: 3 IDEAL JOBS ──────────────────────────────────
+echo ""
+echo -e "${BLUE}════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}  🎯 BONUS TASK — Your 3 ideal jobs                 ${NC}"
+echo -e "${BLUE}  Most important step. Watch video section 3 first. ${NC}"
+echo -e "${BLUE}════════════════════════════════════════════════════${NC}"
+echo ""
+echo "  Go to LinkedIn (or any job site) right now."
+echo "  Find 3 jobs where you think: 'I could do this. This is me.'"
+echo "  For each: open the listing → copy the full description → paste below."
+echo ""
+echo -e "${YELLOW}  ⏸  Take your time. This step makes everything sharper.${NC}"
+echo ""
+read -p "  Press Enter when ready to paste job #1..."
+
+JOBS_FILE="$DATA_DIR/ideal_jobs_raw.md"
+echo "# 3 Ideal Jobs — Raw Input" > "$JOBS_FILE"
+echo "Generated: $(date '+%Y-%m-%d')" >> "$JOBS_FILE"
+
+for i in 1 2 3; do
+  echo ""
+  echo "──── JOB #$i ──────────────────────────────────────────────────"
+  echo "Paste job description. Type END on a new line when done."
+  echo ""
+  JOB_TEXT=""
+  while IFS= read -r line; do
+    [ "$line" = "END" ] && break
+    JOB_TEXT="${JOB_TEXT}${line}"$'\n'
+  done
+  echo "" >> "$JOBS_FILE"
+  echo "## Job #$i" >> "$JOBS_FILE"
+  echo "$JOB_TEXT" >> "$JOBS_FILE"
+  [ $i -lt 3 ] && read -p "  ✓ Saved. Press Enter for job #$((i+1))..."
+done
+
+echo ""
+echo "⚙️  Analyzing your 3 ideal jobs..."
+echo "    (This takes about 60 seconds)"
+echo ""
+
+cd "$INSTALL_DIR" && claude \
+  --allowedTools "Bash,Read,Write" \
+  --permission-mode bypassPermissions \
+  -p "$(cat "$INSTALL_DIR/agents/jobs_analysis_agent.md")" \
+  2>/dev/null
+
+echo ""
+echo -e "${GREEN}✓ Analysis complete. See above for your keyword list.${NC}"
+echo ""
+read -p "  ⏸  Subscribe to those alerts now, then press Enter to continue..."
