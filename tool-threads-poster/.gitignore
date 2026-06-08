@@ -1,6 +1,6 @@
-config.env
+config.*.env
 credentials.json
 .venv/
 __pycache__/
 *.pyc
-poster.log
+*.log

@@ -1,5 +1,7 @@
+import argparse
 import os
 import re
+import sys
 import time
 from datetime import datetime, timezone
 
@@ -43,8 +45,8 @@ def split_into_parts(text: str, max_chars: int = MAX_CHARS) -> list[str]:
     return parts or [text]
 
 
-def run() -> None:
-    load_dotenv("config.env")
+def run(config_path: str = "config.env") -> None:
+    load_dotenv(config_path)
 
     threads = ThreadsClient(os.environ["THREADS_ACCESS_TOKEN"])
     sheets = SheetsClient(
@@ -129,4 +131,7 @@ def run() -> None:
 
 
 if __name__ == "__main__":
-    run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", default="config.env", help="Path to .env config file")
+    args = parser.parse_args()
+    run(config_path=args.config)
