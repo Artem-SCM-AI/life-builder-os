@@ -17,4 +17,4 @@ if [ ! -d ".venv" ]; then
 fi
 
 source .venv/bin/activate
-python poster.py --config "$CONFIG"
+python poster.py --config "$CONFIG" --account "$ACCOUNT"
