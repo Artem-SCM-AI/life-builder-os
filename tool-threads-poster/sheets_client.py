@@ -4,9 +4,9 @@ import pytz
 
 
 class SheetsClient:
-    def __init__(self, credentials_path: str, spreadsheet_id: str):
+    def __init__(self, credentials_path: str, spreadsheet_id: str, sheet_tab: str):
         gc = gspread.service_account(filename=credentials_path)
-        self._sheet = gc.open_by_key(spreadsheet_id).sheet1
+        self._sheet = gc.open_by_key(spreadsheet_id).worksheet(sheet_tab)
 
     def get_due_rows(self, now_utc: datetime) -> list[dict]:
         records = self._sheet.get_all_records()

@@ -11,15 +11,23 @@ HEADERS = [
 ]
 
 
-def _make_client(records):
+def _make_client(records, sheet_tab="monetizer-biz"):
     with patch("sheets_client.gspread.service_account") as mock_gc:
         mock_sheet = MagicMock()
         mock_sheet.get_all_records.return_value = records
         mock_sheet.row_values.return_value = HEADERS
-        mock_gc.return_value.open_by_key.return_value.sheet1 = mock_sheet
-        client = SheetsClient("creds.json", "sheet_id")
+        mock_gc.return_value.open_by_key.return_value.worksheet.return_value = mock_sheet
+        client = SheetsClient("creds.json", "sheet_id", sheet_tab=sheet_tab)
         client._sheet = mock_sheet
         return client, mock_sheet
+
+
+def test_opens_correct_worksheet_tab():
+    with patch("sheets_client.gspread.service_account") as mock_gc:
+        mock_spreadsheet = MagicMock()
+        mock_gc.return_value.open_by_key.return_value = mock_spreadsheet
+        SheetsClient("creds.json", "sheet_id", sheet_tab="artem-org-ua")
+        mock_spreadsheet.worksheet.assert_called_once_with("artem-org-ua")
 
 
 def _row(status="pending", retry_count=0, time="2026-06-08 07:00", tz="ET"):
