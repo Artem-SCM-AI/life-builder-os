@@ -265,3 +265,23 @@ def test_posted_partial_when_continuation_reply_fails(
     # No sleep — we broke out before the else clause
     mock_sleep.assert_not_called()
     mock_alert.assert_called_once()
+
+
+@patch("poster.load_dotenv")
+@patch("poster.time.sleep")
+@patch("poster.send_alert")
+@patch("poster.SheetsClient")
+@patch("poster.ThreadsClient")
+def test_run_passes_sheet_tab_to_sheets_client(
+    mock_tc, mock_sc, mock_alert, mock_sleep, mock_dotenv, monkeypatch
+):
+    _setup_env(monkeypatch)
+    mock_tc.return_value = MagicMock()
+    mock_sc.return_value = MagicMock()
+    mock_sc.return_value.get_due_rows.return_value = []
+
+    from poster import run
+    run(sheet_tab="artem-org-ua")
+
+    _, kwargs = mock_sc.call_args
+    assert kwargs.get("sheet_tab") == "artem-org-ua"

@@ -45,13 +45,14 @@ def split_into_parts(text: str, max_chars: int = MAX_CHARS) -> list[str]:
     return parts or [text]
 
 
-def run(config_path: str = "config.env") -> None:
+def run(config_path: str = "config.env", sheet_tab: str = "monetizer-biz") -> None:
     load_dotenv(config_path)
 
     threads = ThreadsClient(os.environ["THREADS_ACCESS_TOKEN"])
     sheets = SheetsClient(
         os.environ["GOOGLE_CREDENTIALS_PATH"],
         os.environ["SPREADSHEET_ID"],
+        sheet_tab=sheet_tab,
     )
     tg_token = os.environ["TELEGRAM_TOKEN"]
     tg_chat = os.environ["TELEGRAM_CHAT_ID"]
@@ -133,5 +134,6 @@ def run(config_path: str = "config.env") -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="config.env", help="Path to .env config file")
+    parser.add_argument("--account", default="monetizer-biz", help="Account slug (used as sheet tab name)")
     args = parser.parse_args()
-    run(config_path=args.config)
+    run(config_path=args.config, sheet_tab=args.account)
