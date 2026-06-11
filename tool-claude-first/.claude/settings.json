@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(python3:*)",
+      "Bash(markitdown:*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Session ended — run /session-journal to log this session'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'f=\"$CLAUDE_TOOL_INPUT_FILE_PATH\"; ext=\"${f##*.}\"; if [[ \"$ext\" =~ ^(pdf|docx|xlsx|pptx|doc|xls)$ ]]; then markitdown \"$f\" 2>/dev/null && exit 2; fi; exit 0'"
+          }
+        ]
+      }
+    ]
+  }
+}
