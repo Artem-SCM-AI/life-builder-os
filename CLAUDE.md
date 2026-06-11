@@ -83,7 +83,7 @@ Do not make direct repo edits outside a GSD workflow unless explicitly asked to 
 
 Do not wait for explicit "goodbye" — update at any clear task or topic conclusion.
 
-If `hot.md` content contradicts a memory file in `~/.claude/projects/memory/` — flag it at session start. Do not silently overwrite memory files; Artem decides which is correct.
+If `hot.md` content contradicts a memory file in `~/.claude/projects/-Users-artem-Claude-v-1-0/memory/` — flag it at session start. Do not silently overwrite memory files; Artem decides which is correct.
 
 ---
 
