@@ -67,6 +67,26 @@ Do not make direct repo edits outside a GSD workflow unless explicitly asked to 
 
 ---
 
+## Session Protocol
+
+**FIRST ACTION in every session, before any response or tool use:**
+
+1. Read `/Users/artem/Claude v 1.0/hot.md` using the Read tool.
+   - If the file does not exist → create it from `MEMORY.md` + most recent `journal/YYYY-MM.md` entry.
+   - If `last_updated` is more than 3 days ago → rebuild from `MEMORY.md` + most recent journal entry before treating it as current context.
+2. Proceed with work informed by the snapshot.
+
+**At every natural stopping point, or when Artem signals end of session:**
+
+1. Update `/Users/artem/Claude v 1.0/hot.md`: refresh Current Focus, add a dated Recent Sessions entry, update Open Decisions and Blockers to reflect session outcome. Keep file under 500 words.
+2. Write dated entry to `journal/YYYY-MM.md` (per feedback_journal_rule).
+
+Do not wait for explicit "goodbye" — update at any clear task or topic conclusion.
+
+If `hot.md` content contradicts a memory file in `~/.claude/projects/memory/` — flag it at session start. Do not silently overwrite memory files; Artem decides which is correct.
+
+---
+
 ## Artem's Code of Honor
 
 1. Know — don't just be confident. Verify before asserting.
