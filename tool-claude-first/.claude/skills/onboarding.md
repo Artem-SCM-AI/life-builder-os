@@ -178,7 +178,81 @@ Set SOCIAL_LINKS = provided links (or empty if skipped).
 
 ## Phase 4 — Automatic Setup
 
-[TO BE ADDED IN NEXT TASK]
+Announce: "Чудово! Тепер налаштую твій workspace. Слідкуй за прогресом."
+
+Execute each step below and announce with ✓ when done.
+
+### 4.1 — Generate CLAUDE.md
+
+Write `CLAUDE.md` in the project root. Replace all placeholders:
+- `{{NAME}}` → NAME
+- `{{ROLE}}` → ROLE
+- `{{GOAL}}` → GOAL
+- `{{USE_CASES}}` → comma-separated list of USE_CASES
+- `{{LANG}}` → "Ukrainian" if LANG=uk, "English" if LANG=en
+- `{{SOCIAL_LINKS}}` → SOCIAL_LINKS if present, otherwise remove that line
+
+Announce: "✓ CLAUDE.md персоналізовано"
+
+### 4.2 — Generate memory/user_profile.md
+
+Write `memory/user_profile.md`. Replace placeholders same as above.
+
+Update `memory/MEMORY.md` — add entry:
+```
+- [user_profile.md](user_profile.md) — Who [NAME] is: [ROLE], goals, use cases
+```
+
+Announce: "✓ memory/ з твоїм профілем створено"
+
+### 4.3 — Install Superpowers plugin
+
+Say:
+"Встановлюємо базові скіли. Виконай цю команду в терміналі VS Code (Terminal → New Terminal):"
+
+```bash
+claude plugin install superpowers@claude-plugins-official
+```
+
+Wait for user to confirm it ran.
+Announce: "✓ Базові скіли встановлено (brainstorming, writing-plans, verification)"
+
+### 4.4 — Install role bundle skills
+
+If BUNDLE contains A:
+Say: "Встановлюємо скіли для контенту:"
+```bash
+claude plugin install marketing@knowledge-work-plugins
+```
+Announce: "✓ Скіли контенту і маркетингу встановлено"
+
+If BUNDLE contains B or C only (no A):
+Skip marketing plugin. Announce: "✓ Базових скілів достатньо для твоєї ролі"
+
+### 4.5 — Confirm hooks
+
+Say: "✓ Stop hook для журналу сесій — активний (налаштований у .claude/settings.json)"
+Say: "✓ MarkItDown hook — активний (PDF/Word/Excel → Markdown автоматично)"
+
+### 4.6 — MCP setup
+
+For each service in MCP_LIST, in order (Notion first if present, then Google Workspace, then Telegram, then GitHub):
+
+Say:
+"Підключаємо [SERVICE]. [One sentence what it enables for this specific role].
+Готовий підключити зараз? **Так** / **Пропустити — зроблю пізніше**"
+
+If "Так":
+- Guide through the relevant mcp-guide (tell user to open `mcp-guides/[service].md`)
+- After token entered: edit `.mcp.json` together — fill in the token value
+- Announce: "✓ [SERVICE] підключено"
+
+If "Пропустити":
+- Append to `setup-todo.md`:
+  `- [ ] [SERVICE] — підключити → [mcp-guides/[service].md](mcp-guides/[service].md)`
+- Announce: "Записав у setup-todo.md — повернешся коли буде час"
+
+After all MCP items processed: announce "✓ MCP налаштування завершено"
 
 ## Phase 5 — Demo
 
