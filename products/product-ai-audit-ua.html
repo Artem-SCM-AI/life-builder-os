@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Аудит Профілю - Life Builder OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d0d0d; --bg2: #141414; --bg3: #1c1c1c;
+  --border: #2a2a2a; --accent: #ff6d3b; --accent-hover: #ff7d4f;
+  --text: #ffffff; --text2: #a0a0a0; --text3: #888888;
+  --green: #22c55e; --red: #ef4444; --blue: #3b82f6;
+}
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; hyphens: none; -webkit-hyphens: none; word-break: normal; overflow-wrap: break-word; }
+
+.topbar { background: rgba(13,13,13,.95); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+.topbar-brand { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+.topbar-sep { color: var(--border); font-size: 13px; }
+.topbar-product { font-size: 13px; color: var(--text3); }
+
+.screen { display: none; max-width: 560px; margin: 0 auto; padding: 40px 24px 80px; }
+.screen.active { display: block; }
+
+.brand-label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.brand-label::before { content: ''; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+h1 { font-size: 28px; font-weight: 900; line-height: 1.15; letter-spacing: -.5px; margin-bottom: 12px; }
+h1 .hl { background: linear-gradient(90deg, var(--accent), #ff9a6c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.subtitle { font-size: 15px; color: var(--text2); line-height: 1.65; margin-bottom: 24px; }
+.welcome-title { font-size: 32px; font-weight: 900; line-height: 1.15; letter-spacing: -.6px; margin-bottom: 16px; }
+.welcome-sub { font-size: 17px; color: var(--text2); line-height: 1.65; margin-bottom: 28px; }
+.q-label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+.q-title { font-size: 20px; font-weight: 800; line-height: 1.2; letter-spacing: -.3px; margin-bottom: 8px; }
+.q-sub { font-size: 14px; color: var(--text2); margin-bottom: 24px; line-height: 1.5; }
+
+.back-nav { font-size: 13px; color: var(--text3); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 18px; padding: 6px 0; -webkit-tap-highlight-color: transparent; }
+.back-nav:hover, .back-nav:active { color: var(--accent); }
+
+.progress-wrap { margin-bottom: 28px; }
+.progress-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.progress-label { font-size: 13px; color: var(--text3); }
+.progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
+.progress-track { height: 4px; background: var(--bg3); border-radius: 4px; }
+.progress-fill { height: 4px; background: var(--accent); border-radius: 4px; box-shadow: 0 0 8px rgba(255,109,59,.5); transition: width .3s ease; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--accent); color: #fff; padding: 14px 24px; border-radius: 10px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; transition: background .15s, transform .15s, box-shadow .15s; width: 100%; font-family: inherit; min-height: 52px; -webkit-tap-highlight-color: transparent; }
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(255,109,59,.3); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.cat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; cursor: pointer; transition: border-color .15s, background .15s; position: relative; overflow: hidden; min-height: 110px; -webkit-tap-highlight-color: transparent; }
+.cat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); transition: background .15s; }
+.cat-card.selected { border-color: var(--accent); background: rgba(255,109,59,.06); }
+.cat-card.selected::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.cat-card:hover:not(.selected) { border-color: #444; }
+.cat-emoji { font-size: 26px; margin-bottom: 10px; display: block; }
+.cat-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.cat-sub { font-size: 12px; color: var(--text2); line-height: 1.4; }
+
+.role-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.role-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: border-color .15s, background .15s; font-size: 14px; font-weight: 600; min-height: 54px; display: flex; align-items: center; -webkit-tap-highlight-color: transparent; }
+.role-item:hover { border-color: #444; }
+.role-item.selected { border-color: var(--accent); background: rgba(255,109,59,.06); color: var(--accent); }
+
+.opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.opt-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 14px; cursor: pointer; transition: border-color .15s, background .15s; text-align: center; min-height: 92px; -webkit-tap-highlight-color: transparent; }
+.opt-card:hover { border-color: #444; }
+.opt-card.selected { border-color: var(--accent); background: rgba(255,109,59,.06); }
+.opt-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+.opt-label { font-size: 13px; font-weight: 700; }
+.opt-sub { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.35; }
+
+.opt-grid-5 > .opt-card:last-child { grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; gap: 14px; text-align: left; min-height: 58px; padding: 14px 18px; }
+.opt-grid-5 > .opt-card:last-child .opt-icon { font-size: 22px; margin-bottom: 0; flex-shrink: 0; }
+
+.pain-question { font-size: 19px; font-weight: 800; line-height: 1.3; letter-spacing: -.3px; margin-bottom: 28px; }
+.pain-opts { display: flex; flex-direction: column; gap: 12px; }
+.pain-opt { border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px; cursor: pointer; transition: border-color .15s, background .15s; display: flex; align-items: center; gap: 14px; min-height: 72px; -webkit-tap-highlight-color: transparent; }
+.pain-opt:hover { border-color: #444; }
+.pain-opt.selected-hate { border-color: var(--red); background: rgba(239,68,68,.07); }
+.pain-opt.selected-routine { border-color: var(--blue); background: rgba(59,130,246,.07); }
+.pain-opt.selected-ok { border-color: var(--green); background: rgba(34,197,94,.07); }
+.pain-opt-icon { font-size: 26px; flex-shrink: 0; }
+.pain-opt-text { flex: 1; }
+.pain-opt-label { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.pain-opt-desc { font-size: 13px; color: var(--text2); line-height: 1.4; }
+
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.tool-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 14px; cursor: pointer; transition: border-color .15s, background .15s; display: flex; align-items: center; gap: 10px; min-height: 56px; -webkit-tap-highlight-color: transparent; }
+.tool-card:hover { border-color: #444; }
+.tool-card.selected { border-color: var(--accent); background: rgba(255,109,59,.06); }
+.tool-check { width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all .15s; flex-shrink: 0; }
+.tool-card.selected .tool-check { background: var(--accent); border-color: var(--accent); }
+.tool-card.selected .tool-check::after { content: '✓'; color: #fff; font-weight: 800; }
+.tool-name { font-size: 13px; font-weight: 700; }
+
+/* RESULTS */
+.score-block { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; margin-bottom: 20px; position: relative; overflow: hidden; }
+.score-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.score-label { font-size: 12px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.score-num { font-size: 48px; font-weight: 900; color: var(--accent); letter-spacing: -2px; line-height: 1; margin-bottom: 4px; }
+.score-unit { font-size: 18px; font-weight: 700; color: var(--text2); }
+.score-sub { font-size: 14px; color: var(--text2); line-height: 1.5; margin-bottom: 14px; }
+.score-bar { height: 6px; background: var(--bg3); border-radius: 6px; margin-bottom: 12px; }
+.score-bar-fill { height: 6px; border-radius: 6px; background: linear-gradient(90deg, var(--accent), #ff9a6c); box-shadow: 0 0 10px rgba(255,109,59,.4); transition: width .6s ease; }
+.savings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(34,197,94,.07); border: 1px solid rgba(34,197,94,.15); border-radius: 8px; }
+.savings-label { font-size: 13px; color: var(--text2); }
+.savings-value { font-size: 16px; font-weight: 800; color: var(--green); }
+
+.auto-cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+.auto-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px; position: relative; overflow: hidden; }
+.auto-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; background: var(--accent); }
+.auto-num { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.auto-title { font-size: 16px; font-weight: 800; margin-bottom: 12px; }
+.auto-state { display: flex; flex-direction: column; gap: 8px; }
+.auto-state-row { border-radius: 8px; padding: 11px 13px; }
+.auto-state-row.is-before { background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.12); }
+.auto-state-row.is-after  { background: rgba(34,197,94,.06);  border: 1px solid rgba(34,197,94,.12); }
+.auto-state-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; display: block; }
+.auto-state-label.is-before { color: #fca5a5; }
+.auto-state-label.is-after  { color: #86efac; }
+.auto-state-text { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+.email-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; position: relative; overflow: hidden; }
+.email-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.email-section h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.email-sub { font-size: 14px; color: var(--text2); margin-bottom: 20px; line-height: 1.5; }
+.form-field { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; display: block; }
+.form-input { width: 100%; padding: 13px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; font-family: inherit; outline: none; transition: border-color .15s; min-height: 50px; }
+.form-input:focus { border-color: var(--accent); }
+.form-input::placeholder { color: var(--text3); }
+.submit-error { font-size: 13px; color: var(--red); margin-top: 8px; }
+.submit-success { text-align: center; padding: 10px 0; }
+.submit-success .success-icon { font-size: 40px; margin-bottom: 12px; }
+.submit-success h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.submit-success p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.skip-link { display: block; text-align: center; font-size: 13px; color: var(--text3); margin-top: 12px; cursor: pointer; text-decoration: underline; }
+
+.escape-link { display: block; text-align: center; font-size: 13px; color: var(--text3); margin-top: 16px; cursor: pointer; }
+.escape-link:hover { color: var(--accent); }
+
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 22px 0; }
+.stat-block { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 12px; text-align: center; }
+.stat-num { font-size: 26px; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 5px; letter-spacing: -1px; }
+.stat-lbl { font-size: 11px; color: var(--text3); line-height: 1.4; }
+
+.gate-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 28px 24px; position: relative; overflow: hidden; }
+.gate-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), #ff9a6c); }
+.gate-emoji { font-size: 40px; margin-bottom: 14px; display: block; text-align: center; }
+.gate-title { font-size: 20px; font-weight: 900; text-align: center; margin-bottom: 6px; letter-spacing: -.3px; }
+.gate-sub { font-size: 14px; color: var(--text2); text-align: center; margin-bottom: 24px; line-height: 1.55; }
+.barrier-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.barrier-opt { border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text2); transition: border-color .15s, background .15s, color .15s; -webkit-tap-highlight-color: transparent; }
+.barrier-opt:hover { border-color: #444; }
+.barrier-opt.selected { border-color: var(--accent); background: rgba(255,109,59,.06); color: var(--text); font-weight: 600; }
+.barrier-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; display: block; }
+
+.share-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; margin-bottom: 16px; position: relative; overflow: hidden; }
+.share-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), #ff9a6c); }
+.share-card-brand { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+.share-card-role { font-size: 17px; font-weight: 900; margin-bottom: 14px; letter-spacing: -.2px; }
+.share-card-score { display: flex; gap: 10px; margin-bottom: 16px; }
+.share-card-score-item { flex: 1; background: var(--bg3); border-radius: 8px; padding: 10px 12px; }
+.share-card-score-num { font-size: 22px; font-weight: 900; color: var(--accent); line-height: 1; letter-spacing: -1px; }
+.share-card-score-lbl { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.share-card-autos { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.share-card-auto { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text2); line-height: 1.4; }
+.share-card-auto-num { font-size: 11px; font-weight: 800; color: var(--accent); background: rgba(255,109,59,.1); border-radius: 4px; padding: 2px 6px; flex-shrink: 0; margin-top: 1px; }
+.share-card-footer { font-size: 12px; color: var(--text3); border-top: 1px solid var(--border); padding-top: 12px; }
+
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 20px; font-size: 14px; font-weight: 700; color: var(--text); cursor: pointer; width: 100%; font-family: inherit; transition: border-color .15s, background .15s; margin-bottom: 16px; min-height: 50px; -webkit-tap-highlight-color: transparent; }
+.share-btn:hover { border-color: var(--accent); color: var(--accent); }
+.share-copied { color: var(--green); border-color: var(--green); }
+
+.social-links { display: flex; flex-direction: column; gap: 10px; }
+.social-link { display: flex; align-items: center; gap: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; text-decoration: none; color: var(--text); font-size: 14px; font-weight: 600; transition: border-color .15s; min-height: 50px; }
+.social-link:hover { border-color: #444; }
+.social-link-icon { font-size: 20px; flex-shrink: 0; }
+.social-link-meta { flex: 1; }
+.social-link-name { font-size: 13px; font-weight: 700; }
+.social-link-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+
+@media (max-width: 768px) {
+  .pain-opt { padding: 18px 14px; }
+  .pain-opt-label { font-size: 16px; }
+}
+@media (max-width: 480px) {
+  .screen { padding: 28px 16px 60px; }
+  h1 { font-size: 23px; }
+  .welcome-title { font-size: 26px; }
+  .welcome-sub { font-size: 15px; }
+  .pain-question { font-size: 17px; }
+  .opt-card { padding: 14px 10px; }
+  .cat-card { padding: 16px 12px; }
+  .score-num { font-size: 40px; }
+  .auto-title { font-size: 15px; }
+  .auto-state-text { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-brand">Life Builder OS</span>
+  <span class="topbar-sep">·</span>
+  <span class="topbar-product">AI Аудит Профілю</span>
+</div>
+
+<main id="quiz-root">
+  <div id="screen-welcome" class="screen active"></div>
+  <div id="screen-q1" class="screen"></div>
+  <div id="screen-q2" class="screen"></div>
+  <div id="screen-q3" class="screen"></div>
+  <div id="screen-q4" class="screen"></div>
+  <div id="screen-q5" class="screen"></div>
+  <div id="screen-pain" class="screen"></div>
+  <div id="screen-q13" class="screen"></div>
+  <div id="screen-gate" class="screen"></div>
+  <div id="screen-results" class="screen"></div>
+  <div id="screen-escape" class="screen"></div>
+</main>
+
+<script>
+// =====================================================================
+// DATA - 5 categories, 23 roles
+// Each pain: { text, hrs }
+// Each automation: { title, before, after, pains[] }
+// =====================================================================
+const QUIZ_DATA = [
+  // ─────────────────────────────────────────────────────
+  // CATEGORY 1: SALES & MARKETING
+  // ─────────────────────────────────────────────────────
+  {
+    id: 'sales', emoji: '📣', label: 'Продажі та маркетинг',
+    sub: 'Менеджери, маркетологи, контент',
+    roles: [
+      {
+        id: 'sales-mgr', label: 'Менеджер з продажів / SDR',
+        pains: [
+          { text: 'Збираю ліди вручну з різних джерел - сайти, Instagram, довідники', hrs: 3 },
+          { text: 'Вношу контакти в CRM або таблицю після кожного дзвінка', hrs: 1.5 },
+          { text: 'Пишу однотипні листи або повідомлення для кожного клієнта', hrs: 2 },
+          { text: 'Нагадую собі про follow-up в нотатках - часто гублю', hrs: 0.5 },
+          { text: 'Шукаю інформацію про клієнта перед кожним дзвінком вручну', hrs: 1.5 },
+          { text: 'Роблю звіт по продажах наприкінці тижня або місяця вручну', hrs: 1.5 },
+          { text: 'Не розумію яким лідам дати пріоритет - визначаю інтуїтивно', hrs: 0.5 },
+        ],
+        automations: [
+          { title: 'Парсер лідів', pains: [0,1],
+            before: 'Щодня по 2-3 години шукаєш контакти вручну по сайтах, Instagram, довідниках. Копіюєш у Excel - половина інформації застаріла або неточна.',
+            after: 'Скрипт автоматично збирає нові ліди щодня → структурована база в Sheets → Telegram нотифікація тобі. Ти витрачаєш 5 хвилин на перегляд замість 3 годин на збір.' },
+          { title: 'AI-листи з персоналізацією', pains: [2,4],
+            before: 'Кожен лист пишеш вручну "під клієнта" - займає 15-20 хвилин. Більшість все одно схожі між собою, але процес забирає повну увагу.',
+            after: 'Claude бере шаблон + дані клієнта з CRM → генерує персональний лист за 30 секунд. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Follow-up бот', pains: [3,5,6],
+            before: 'Нагадування в голові або нотатках - забуваєш, гублиш ліди. Звіт збираєш вручну щотижня з 10 різних місць.',
+            after: 'Бот нагадує тобі в потрібний час + надсилає клієнту авто-повідомлення по таймеру. Звіт формується автоматично з CRM щотижня.' },
+        ]
+      },
+      {
+        id: 'digital-mkt', label: 'Digital маркетолог / Медіабаєр',
+        pains: [
+          { text: 'Переношу ліди з Facebook/Instagram Lead Ads у CRM або таблицю вручну', hrs: 2 },
+          { text: 'Роблю зведений звіт по кампаніях вручну - збираю з кількох кабінетів', hrs: 3 },
+          { text: 'Пишу рекламні тексти та оголошення для кожного продукту вручну', hrs: 2.5 },
+          { text: 'Моніторю рекламу конкурентів вручну - скриншоти, нотатки', hrs: 2 },
+          { text: 'Налаштовую UTM-мітки та трекінг вручну для кожної кампанії', hrs: 1 },
+          { text: 'Готую ТЗ для дизайнерів і копірайтерів вручну щоразу', hrs: 1.5 },
+          { text: 'Звітую перед клієнтом або керівником - збираю цифри по одній', hrs: 2 },
+        ],
+        automations: [
+          { title: 'Ліди одразу в CRM + Telegram', pains: [0,6],
+            before: 'Після кожної кампанії вручну завантажуєш CSV з лідами, вносиш у CRM. Команда дізнається про нові ліди із запізненням на кілька годин.',
+            after: 'Lead Ads → Make/Zapier → CRM + Telegram нотифікація команді за 1 хвилину. Менеджер телефонує, поки клієнт ще "теплий".' },
+          { title: 'Авто-звіт по рекламі', pains: [1,6],
+            before: 'Щотижня по 2-3 години зводиш дані з Facebook, Google, TikTok кабінетів в один Excel. Однотипна робота яка не додає цінності.',
+            after: 'Скрипт збирає дані з усіх кабінетів → єдиний дашборд у Sheets або PDF-звіт надсилається автоматично щопонеділка.' },
+          { title: 'AI-генератор рекламних текстів', pains: [2,3,4],
+            before: 'Кожне оголошення пишеш вручну - займає 20-40 хвилин на варіант. А/Б тести потребують ще більше ітерацій.',
+            after: 'Продукт + аудиторія → Claude генерує 5-10 варіантів оголошень за 2 хвилини. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+      {
+        id: 'smm', label: 'SMM / Контент-менеджер',
+        pains: [
+          { text: 'Публікую пости вручну на кожній платформі окремо', hrs: 2 },
+          { text: 'Придумую теми та ідеї для контенту щотижня з нуля', hrs: 2 },
+          { text: 'Адаптую один пост для різних платформ вручну - щоразу переписую', hrs: 1.5 },
+          { text: 'Відповідаю на коментарі та DM вручну - до 2 годин на день', hrs: 3 },
+          { text: 'Збираю статистику з кожної платформи в різних кабінетах', hrs: 1.5 },
+          { text: 'Шукаю референси та трендовий контент вручну', hrs: 1.5 },
+          { text: 'Погоджую контент з клієнтом через Telegram - гублю правки і версії', hrs: 1 },
+        ],
+        automations: [
+          { title: 'Мультиплатформний постинг', pains: [0,2],
+            before: 'Один і той самий пост вручну публікуєш на Threads, Instagram, LinkedIn - окремо, з різними форматами. 30-40 хвилин на один матеріал.',
+            after: 'Пишеш один раз → скрипт адаптує під кожну платформу та публікує за розкладом. Ти витрачаєш 5 хвилин замість 40.' },
+          { title: 'AI-генератор контент-плану', pains: [1,5],
+            before: 'Щопонеділка витрачаєш 1-2 години на «а про що писати цього тижня». Ідеї тиснуть або їх немає взагалі.',
+            after: 'Ніша + 3 ключових теми → Claude генерує тижневий план з 7 ідей + готові хуки для кожного поста за 5 хвилин. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Авто-відповіді на DM + аналітика', pains: [3,4,6],
+            before: 'До 2 годин на день відповідаєш в DM на «скільки коштує?», «ви ще берете замовлення?». Паралельно - збираєш статистику вручну з 4 різних кабінетів.',
+            after: 'Бот відповідає на типові DM по скриптам акаунту - без твоєї участі. Авто-збір статистики → єдиний звіт у Sheets щотижня. Ти займаєшся контентом, не інбоксом.' },
+        ]
+      },
+      {
+        id: 'infobiz', label: 'Інфобізнесмен / EdTech',
+        pains: [
+          { text: 'Онбордингую нових студентів вручну - надсилаю доступи, листи, інструкції', hrs: 3 },
+          { text: 'Збираю заявки з лендингу вручну та вношу в таблицю', hrs: 1 },
+          { text: 'Нагадую студентам про вебінари та дедлайни вручну через Telegram', hrs: 1 },
+          { text: 'Перевіряю домашні завдання та даю однотипний фідбек вручну', hrs: 3 },
+          { text: 'Слідкую хто зі студентів відстає або пропав - переглядаю вручну', hrs: 1 },
+          { text: 'Роблю серії follow-up повідомлень після вебінару вручну', hrs: 1.5 },
+          { text: 'Відстежую оплати та виставляю рахунки вручну', hrs: 1 },
+        ],
+        automations: [
+          { title: 'Автоонбординг студента', pains: [0,1],
+            before: 'Після кожної оплати вручну надсилаєш доступи, лист-привітання, інструкції. При 10+ студентах це займає кілька годин на тиждень.',
+            after: 'Оплата → автоматично: доступ в LMS + лист-привітання + перше завдання в Telegram. Студент не чекає - ти нічого не робиш руками.' },
+          { title: 'Авто-нагадування та follow-up', pains: [2,5],
+            before: 'Пишеш кожному вручну «нагадую, вебінар сьогодні» і «як враження після заняття?». При великій групі це займає год на тиждень.',
+            after: 'Система надсилає нагадування за 24h і 1h + серію follow-up після кожного заняття. Ти вивільняєш час для контенту.' },
+          { title: 'AI-фідбек по домашньому завданню', pains: [3,4],
+            before: 'Кожне ДЗ перевіряєш вручну - 10-20 хвилин на студента. При групі 20+ це 3-4 години що могли йти на продукт.',
+            after: 'Студент здає ДЗ → Claude аналізує по твоїх критеріях → готовий структурований фідбек. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+      {
+        id: 'realtor', label: 'Ріелтор / Агент нерухомості',
+        pains: [
+          { text: 'Розміщую одне оголошення вручну на OLX, Dom.ria та в Telegram-групах окремо', hrs: 3 },
+          { text: 'Моніторю нові об\'єкти від власників вручну - щодня переглядаю сайти', hrs: 3 },
+          { text: 'Описую кожен об\'єкт нерухомості вручну для кожного розміщення', hrs: 2 },
+          { text: 'Веду базу клієнтів у блокноті або Excel - регулярно гублю контекст', hrs: 1 },
+          { text: 'Нагадую клієнтам про перегляди та зустрічі вручну', hrs: 0.5 },
+          { text: 'Готую документи та договори вручну для кожної угоди', hrs: 2 },
+          { text: 'Збираю ринкові дані для порівняльного аналізу вручну', hrs: 2 },
+        ],
+        automations: [
+          { title: 'Кросплатформний постинг', pains: [0,2],
+            before: 'Один об\'єкт → 4-5 окремих публікацій з різним форматуванням. Займає 40-60 хвилин на один об\'єкт нерухомості.',
+            after: 'Вводиш параметри об\'єкту один раз → Claude пише опис. Верифікуєш результат, вносиш правки і відправляєш в роботу. Скрипт публікує на обраних майданчиках.' },
+          { title: 'Парсер нових об\'єктів від власників', pains: [1,4],
+            before: 'Щодня по 2-3 години переглядаєш сайти в пошуку «від власника». Поки ти переглядаєш - конкурент вже зателефонував.',
+            after: 'Скрипт сканує OLX кожні 30 хвилин → при новому об\'єкті від власника → миттєвий Telegram алерт. Ти першим телефонуєш.' },
+          { title: 'AI-аналіз ринку + договори', pains: [5,6],
+            before: 'Порівняльний аналіз ринку - 1-2 години вручну: збираєш аналоги, порівнюєш, формулюєш. Договори - шаблони які щоразу правиш вручну.',
+            after: 'Адреса + параметри → Claude збирає ринкові аналоги й формує порівняльну таблицю. Договір генерується по шаблону. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+    ]
+  },
+  // ─────────────────────────────────────────────────────
+  // CATEGORY 2: OPERATIONS & FINANCE
+  // ─────────────────────────────────────────────────────
+  {
+    id: 'ops', emoji: '⚙️', label: 'Операції та фінанси',
+    sub: 'Закупівлі, логістика, фінанси, SC',
+    roles: [
+      {
+        id: 'procurement', label: 'Закупівельник / Procurement manager',
+        pains: [
+          { text: 'Обробляю інвойси від постачальників вручну - вношу дані в таблицю', hrs: 3 },
+          { text: 'Відстежую статус замовлень у кожного постачальника окремо', hrs: 2 },
+          { text: 'Порівнюю пропозиції постачальників вручну в Excel', hrs: 2 },
+          { text: 'Контролюю залишки та формую заявки на поповнення вручну', hrs: 2 },
+          { text: 'Веду листування з постачальниками - шукаю потрібний лист серед сотень', hrs: 2 },
+          { text: 'Звіряю отримані товари з рахунками вручну при прийомці', hrs: 1.5 },
+          { text: 'Відстежую терміни оплат та нагадую про них вручну', hrs: 0.5 },
+        ],
+        automations: [
+          { title: 'Авто-обробка інвойсів', pains: [0,5],
+            before: 'Кожен PDF-інвойс відкриваєш вручну, вносиш дані в таблицю - 10-15 хвилин на документ. При 10+ інвойсах на тиждень це половина робочого дня.',
+            after: 'Кидаєш PDF у папку → MarkItDown конвертує → Claude витягує дані → авто-запис у Sheets. 30 секунд замість 15 хвилин.' },
+          { title: 'Порівняльна таблиця постачальників', pains: [2,4],
+            before: 'Три пропозиції від постачальників → вручну переносиш ціни, умови, терміни в Excel, щоб порівняти. Займає 1-1.5 години.',
+            after: 'Надсилаєш 3 PDF → Claude порівнює по ціні, умовах, репутації → зведена таблиця рекомендацій. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Алерт низьких залишків + авто-заявка', pains: [3,4],
+            before: 'Перевіряєш залишки вручну кілька разів на тиждень. Або дізнаєшся про нестачу коли вже пізно - від виробництва або складу.',
+            after: 'Залишок нижче мінімуму → Telegram алерт тобі + готова заявка постачальнику для підтвердження одним кліком.' },
+        ]
+      },
+      {
+        id: 'logistics', label: 'Логіст / Диспетчер',
+        pains: [
+          { text: 'Відстежую статус відправлень вручну на сайтах перевізників', hrs: 3 },
+          { text: 'Координую водіїв через дзвінки та повідомлення - хаотично', hrs: 3 },
+          { text: 'Веду журнал рейсів та витрат у Excel вручну', hrs: 2 },
+          { text: 'Розраховую виплати водіям вручну в кінці місяця', hrs: 2 },
+          { text: 'Оформлюю накладні та супровідні документи вручну', hrs: 2 },
+          { text: 'Звітую клієнтам про статус доставки вручну', hrs: 1 },
+          { text: 'Планую маршрути без оптимізації - вручну і на інтуїції', hrs: 1.5 },
+        ],
+        automations: [
+          { title: 'Dispatcher Telegram-бот', pains: [1,2,5],
+            before: 'Постійні дзвінки водіям «де ти?», ручний журнал у Excel, клієнти питають про статус - хаос протягом усього дня.',
+            after: 'Водій тисне кнопку "Виїхав / Прибув / Затримка" → авто-лог у Sheets → нотифікація клієнту. Ти бачиш статуси в реальному часі без дзвінків.' },
+          { title: 'Трекінг відправлень → клієнт', pains: [0,5],
+            before: 'По кілька разів на день заходиш на сайти перевізників, перевіряєш статуси, вручну пишеш клієнту "ваше відправлення в дорозі".',
+            after: 'API перевізника → зміна статусу → авто-SMS або Telegram клієнту без твоєї участі. Ти витрачаєш 0 хвилин на трекінг.' },
+          { title: 'Авто-розрахунок виплат водіям', pains: [2,3],
+            before: 'Наприкінці місяця по кілька годин звіряєш журнал рейсів, рахуєш кілометри, умови, надбавки. Є ризик помилок і суперечок.',
+            after: 'Журнал рейсів у Sheets → скрипт автоматично рахує виплати кожному водію по умовах договору → готовий звіт для бухгалтера.' },
+        ]
+      },
+      {
+        id: 'sc-mgr', label: 'SC менеджер / Head of Supply Chain',
+        pains: [
+          { text: 'Відстежую залишки та прогнозую попит вручну в Excel', hrs: 4 },
+          { text: 'Формую замовлення постачальникам вручну на основі аналізу продажів', hrs: 3 },
+          { text: 'Аудитую рахунки 3PL / логістичного партнера - звіряю кожен рядок вручну', hrs: 3 },
+          { text: 'Збираю дані по собівартості товару з різних джерел вручну', hrs: 2 },
+          { text: 'Моніторю KPI команди в різних системах і зводжу в звіт вручну', hrs: 2 },
+          { text: 'Відстежую ETA вантажів та інформую команду вручну', hrs: 1.5 },
+          { text: 'Веду реєстр постачальників та умов договорів вручну', hrs: 1 },
+        ],
+        automations: [
+          { title: 'Авто-розрахунок reorder point', pains: [0,1],
+            before: 'Щотижня по кілька годин в Excel: продажі, залишки, лід-тайм, прогноз. Замовлення запізнюються або надлишки лежать мертвим вантажем.',
+            after: 'Дані продажів + залишки → скрипт розраховує reorder point → Telegram алерт + заготовлений PO для підтвердження одним кліком.' },
+          { title: 'Аудит рахунків логістичного партнера', pains: [2,3],
+            before: 'Рахунок від 3PL - десятки рядків, вручну звіряєш з тарифами. Один клієнт переплатив $91,800 за 8 місяців - ніхто не помітив.',
+            after: 'PDF рахунок → MarkItDown → Claude порівнює кожен рядок з тарифною угодою → список розбіжностей з сумами за 3 хвилини. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'SC дашборд з авто-оновленням', pains: [4,5,6],
+            before: 'KPI, ETA, залишки - в різних системах. Щотижня годину зводиш в один звіт. Команда запитує статус у Telegram замість того щоб дивитись дашборд.',
+            after: 'Єдиний Sheets дашборд: залишки + ETA + KPI команди. Оновлюється автоматично → команда бачить сама без питань до тебе.' },
+        ]
+      },
+      {
+        id: 'accountant', label: 'Бухгалтер / Фінансовий менеджер',
+        pains: [
+          { text: 'Завантажую виписки з банку і вручну розношу по статтях витрат', hrs: 3 },
+          { text: 'Звіряю платежі з виставленими рахунками вручну', hrs: 2 },
+          { text: 'Формую фінансові звіти (P&L, Cash Flow) вручну наприкінці місяця', hrs: 4 },
+          { text: 'Нагадую клієнтам про прострочені оплати вручну', hrs: 0.5 },
+          { text: 'Обробляю первинні документи - акти, накладні, рахунки - вручну', hrs: 3 },
+          { text: 'Веду облік витрат по проєктах у різних таблицях вручну', hrs: 2 },
+          { text: 'Готую дані для звітності вручну - збираю з різних джерел', hrs: 3 },
+        ],
+        automations: [
+          { title: 'Авто-категоризація транзакцій', pains: [0,2,6],
+            before: 'Кожен понеділок - виписки з банку, ручна розноска по статтях. P&L збираєш кілька годин наприкінці місяця.',
+            after: 'Monobank/Privat24 API → Claude категоризує транзакції → P&L оновлюється в Sheets автоматично. Ти відкриваєш - все вже зроблено.' },
+          { title: 'Матчинг платежів з рахунками', pains: [1,3],
+            before: 'Вручну шукаєш «який платіж закриває який рахунок». При 50+ транзакціях на тиждень займає кілька годин і є ризик пропустити.',
+            after: 'Скрипт зіставляє банківські надходження з виставленими рахунками → список несплачених + авто-нагадування клієнтам через Telegram.' },
+          { title: 'Документ → структурований запис', pains: [4,5],
+            before: 'Акт або накладна PDF → відкриваєш, дивишся, вносиш вручну. При великих обсягах первинки це найнуднішa частина роботи.',
+            after: 'PDF → MarkItDown → Claude витягує дані (контрагент, сума, дата, номер) → авто-запис у базу без ручного введення.' },
+        ]
+      },
+      {
+        id: 'pm', label: 'Проєктний менеджер',
+        pains: [
+          { text: 'Збираю статуси задач від команди вручну - пишу в Telegram або на зустрічах', hrs: 2 },
+          { text: 'Оновлюю дорожню карту та план вручну після кожної зміни', hrs: 1.5 },
+          { text: 'Складаю щотижневий звіт для замовника вручну', hrs: 2 },
+          { text: 'Відстежую дедлайни та нагадую команді вручну', hrs: 1 },
+          { text: 'Веду протокол зустрічей та розсилаю action items вручну', hrs: 2 },
+          { text: 'Рахую часові витрати команди та завантаженість вручну', hrs: 1.5 },
+          { text: 'Готую презентації статусу проєкту з різних джерел вручну', hrs: 2 },
+        ],
+        automations: [
+          { title: 'Зустріч → action items авто', pains: [0,4],
+            before: 'Після кожної зустрічі вручну пишеш протокол, виділяєш задачі, визначаєш відповідальних, розсилаєш - 30-60 хвилин на кожну зустріч.',
+            after: 'Транскрипт зустрічі → Claude витягує задачі + відповідальних + дедлайни → готовий протокол. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Авто-звіт для замовника', pains: [1,2,6],
+            before: 'Щотижня годину збираєш дані з task manager, formatуєш, пишеш короткий звіт, надсилаєш. Однотипна робота що потребує повної уваги.',
+            after: 'Скрипт читає task board → Claude форматує тижневий звіт в стилі що подобається замовнику. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Авто-нагадування + трекер часу', pains: [3,5],
+            before: 'Сам пам\'ятаєш дедлайни та нагадуєш команді вручну. Облік часу - або немає взагалі, або в окремому Excel.',
+            after: 'Скрипт перевіряє task board → нагадує виконавцям за 48h і 24h. Команда логує час кнопкою в Telegram → авто-аналітика в Sheets.' },
+        ]
+      },
+    ]
+  },
+  // ─────────────────────────────────────────────────────
+  // CATEGORY 3: HR, SUPPORT, LAW
+  // ─────────────────────────────────────────────────────
+  {
+    id: 'hr', emoji: '👥', label: 'HR, підтримка, право',
+    sub: 'Рекрутери, HR, саппорт, юристи',
+    roles: [
+      {
+        id: 'recruiter', label: 'Рекрутер / TA specialist',
+        pains: [
+          { text: 'Переглядаю резюме на Work.ua та Robota.ua вручну - сотні на день', hrs: 5 },
+          { text: 'Вношу кандидатів у ATS або таблицю вручну', hrs: 2 },
+          { text: 'Пишу однотипні листи кандидатам - запрошення, відмови, нагадування', hrs: 2 },
+          { text: 'Узгоджую час співбесід між кандидатом та менеджером вручну', hrs: 1.5 },
+          { text: 'Збираю фідбек від менеджерів після співбесід вручну', hrs: 1 },
+          { text: 'Складаю опис вакансії вручну для кожного розміщення', hrs: 1.5 },
+          { text: 'Звітую по воронці найму вручну в кінці тижня', hrs: 1 },
+        ],
+        automations: [
+          { title: 'AI-скоринг кандидатів', pains: [0,1],
+            before: 'Щодня по 4-5 годин переглядаєш резюме вручну. З 100 кандидатів релевантних 8-10 - але знаходиш їх тільки після перегляду всіх.',
+            after: 'Парсинг резюме з Work.ua/Robota.ua → Claude оцінює кожне по параметрах вакансії → шорт-ліст топ-10 у Sheets за 10 хвилин. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'AI-генератор вакансій та листів', pains: [2,5,6],
+            before: 'Кожна вакансія - з нуля або з копіпасту. Листи кандидатам - однотипні, але їх багато. Звіт по воронці - вручну наприкінці тижня.',
+            after: 'Параметри ролі → Claude пише повний опис вакансії. Верифікуєш результат, вносиш правки і відправляєш в роботу. Авто-листи по воронці формуються самі.' },
+          { title: 'Авто-координація співбесід', pains: [3],
+            before: 'Вручну узгоджуєш слот між кандидатом і менеджером - серія повідомлень туди-назад займає 30-60 хвилин на одну співбесіду.',
+            after: 'Кандидат обирає слот у боті → подія в Google Calendar менеджера → нагадування обом сторонам. Ти не беруть участі.' },
+        ]
+      },
+      {
+        id: 'hr-mgr', label: 'HR менеджер / People Ops',
+        pains: [
+          { text: 'Готую пакет документів для нового співробітника вручну', hrs: 2 },
+          { text: 'Відстежую відпустки та лікарняні вручну в таблиці', hrs: 1 },
+          { text: 'Збираю фідбек по 360° вручну - надсилаю анкети, збираю відповіді', hrs: 2 },
+          { text: 'Нагадую менеджерам про планові 1-on-1 та performance review вручну', hrs: 0.5 },
+          { text: 'Оновлюю HR-політики та розсилаю оновлення команді вручну', hrs: 1 },
+          { text: 'Веду облік навчань та сертифікацій вручну', hrs: 1 },
+          { text: 'Готую аналітику по відтоку та задоволеності вручну', hrs: 2 },
+        ],
+        automations: [
+          { title: 'Автоонбординг нового співробітника', pains: [0,3],
+            before: 'Кожен новий → вручну збираєш документи, надсилаєш інструкції, налаштовуєш доступи. При 2-3 онбордингах на місяць займає повний день.',
+            after: 'Новий співробітник → авто-чеклист у Telegram + всі документи + доступи в один день. Ти контролюєш, не виконуєш.' },
+          { title: 'Авто-нагадування HR-подій', pains: [1,3,5],
+            before: 'Сам пам\'ятаєш кому закінчується trial, хто давно без 1-on-1, чий сертифікат протерміновується. Щось завжди випадає.',
+            after: 'Sheets із датами → скрипт нагадує HR і менеджеру про trial, 1-on-1, відпустки, навчання за 7 і 3 дні.' },
+          { title: 'AI-генератор HR-документів', pains: [0,4],
+            before: 'Job description, оффер, NDA, KPI картка - щоразу адаптуєш шаблони вручну під нову роль або людину. Займає 30-60 хвилин.',
+            after: 'Параметри ролі або людини → Claude генерує повний документ по корпоративному шаблону за 2 хвилини. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+      {
+        id: 'support', label: 'Керівник підтримки / Customer support',
+        pains: [
+          { text: 'Відповідаю на однотипні питання клієнтів вручну щодня', hrs: 5 },
+          { text: 'Розподіляю тікети між агентами вручну', hrs: 1.5 },
+          { text: 'Відстежую час відповіді та SLA вручну в таблиці', hrs: 1 },
+          { text: 'Збираю та аналізую фідбек клієнтів після закриття тікета вручну', hrs: 1 },
+          { text: 'Оновлюю FAQ та базу знань вручну після кожного нового питання', hrs: 1.5 },
+          { text: 'Готую тижневий звіт по підтримці вручну - обсяг, теми, оцінки', hrs: 2 },
+          { text: 'Навчаю нових агентів вручну - проводжу сесії, пишу інструкції', hrs: 2 },
+        ],
+        automations: [
+          { title: 'AI чат-бот першої лінії', pains: [0,1,4],
+            before: 'До 80% питань - однотипні: «де моє замовлення?», «як повернути?», «які ваші години роботи?». Кожен агент відповідає вручну щодня.',
+            after: 'Claude навчений на FAQ → відповідає в Telegram/Viber сам. До людини потрапляють тільки нестандартні ситуації. Команда скорочується або переходить на складніші задачі.' },
+          { title: 'Авто-CSAT + тижневий аналіз', pains: [3,5],
+            before: 'Після закриття тікета ніхто не питає клієнта як все пройшло. Звіт - ручна зведена таблиця наприкінці тижня.',
+            after: 'Тікет закрито → авто-опитування клієнту → Sheets збирає оцінки → Claude аналізує тренди → готовий звіт. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'AI-база знань для нових агентів', pains: [2,6],
+            before: 'Навчання нового агента - 2-3 дні ручних сесій і написаних інструкцій. База знань застаріла і ніхто її не оновлює системно.',
+            after: 'Архів закритих чатів → Claude формує FAQ + скрипти відповідей + поширені помилки. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+      {
+        id: 'lawyer', label: 'Юрист / Legal assistant',
+        pains: [
+          { text: 'Готую типові договори вручну - копіюю та правлю шаблони щоразу', hrs: 3 },
+          { text: 'Аналізую договори контрагентів вручну - читаю кожен пункт', hrs: 4 },
+          { text: 'Відстежую строки та дедлайни по справах у календарі вручну', hrs: 0.5 },
+          { text: 'Збираю та оформлюю первинні документи для справи вручну', hrs: 2 },
+          { text: 'Пишу однотипні юридичні листи та претензії вручну', hrs: 2 },
+          { text: 'Веду реєстр договорів та строків дії вручну в таблиці', hrs: 1 },
+          { text: 'Шукаю відповідні норми та судову практику вручну', hrs: 2 },
+        ],
+        automations: [
+          { title: 'AI-аналіз договору', pains: [1,6],
+            before: 'Договір контрагента - 20-40 сторінок. Читаєш кожен пункт, позначаєш ризикові, готуєш висновок. Займає 2-4 години на документ.',
+            after: 'PDF договору → MarkItDown → Claude знаходить ризикові пункти, нестандартні умови та суперечності → структурований висновок за 5 хвилин. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'AI-генератор юридичних документів', pains: [0,4],
+            before: 'Типовий договір або претензія - щоразу відкриваєш шаблон, правиш під нового клієнта або ситуацію. 30-60 хвилин на документ.',
+            after: 'Параметри угоди або порушення → Claude генерує повний договір або претензію по твоєму шаблону за 3 хвилини. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Реєстр + авто-нагадування строків', pains: [2,5],
+            before: 'Строки дії договорів - у різних файлах або в голові. Протерміновані договори дізнаєшся постфактум.',
+            after: 'Реєстр договорів у Sheets → скрипт нагадує про закінчення за 30, 14 і 7 днів. Жоден договір не залишається поза увагою.' },
+        ]
+      },
+    ]
+  },
+  // ─────────────────────────────────────────────────────
+  // CATEGORY 4: OWNERS & SELF-EMPLOYED
+  // ─────────────────────────────────────────────────────
+  {
+    id: 'owners', emoji: '🚀', label: 'Власники та самозайняті',
+    sub: 'Бізнес, e-commerce, сервіс, фріланс',
+    roles: [
+      {
+        id: 'ecom', label: 'Власник e-commerce магазину',
+        pains: [
+          { text: 'Синхронізую залишки між постачальником та магазином вручну', hrs: 3 },
+          { text: 'Оновлюю ціни на товари вручну при зміні курсу або постачальника', hrs: 2 },
+          { text: 'Обробляю замовлення та створюю накладні Nova Poshta вручну', hrs: 3 },
+          { text: 'Слідкую за відгуками на маркетплейсах та відповідаю вручну', hrs: 1.5 },
+          { text: 'Аналізую продажі та залишки для закупівлі вручну в Excel', hrs: 2 },
+          { text: 'Надсилаю клієнтам трекінг-номери вручну після відправки', hrs: 1 },
+          { text: 'Веду облік доходів і витрат вручну або не веду взагалі', hrs: 2 },
+        ],
+        automations: [
+          { title: 'Nova Poshta авто-накладна + трекінг', pains: [2,5],
+            before: 'Кожне замовлення - вручну заходиш у Nova Poshta, заповнюєш накладну, копіюєш номер, пишеш клієнту. При 20+ відправках на день - це 2-3 години.',
+            after: 'Оплата → авто-накладна Nova Poshta → SMS/Telegram клієнту з номером відстеження. Ти нічого не заповнюєш і нікому не пишеш.' },
+          { title: 'Синхронізація залишків та цін', pains: [0,1],
+            before: 'Постачальник змінив ціни або залишки → вручну оновлюєш на Prom.ua, Rozetka, в Instagram. При 200+ SKU - це марафон.',
+            after: 'Постачальник оновлює Sheets → скрипт автоматично актуалізує ціни та залишки на всіх майданчиках одночасно.' },
+          { title: 'AI-відповіді на відгуки', pains: [3],
+            before: 'Новий відгук на Rozetka або Prom.ua → заходиш, читаєш, думаєш що написати, відповідаєш вручну. При великих обсягах - відгуки накопичуються.',
+            after: 'Новий відгук → Claude генерує відповідь у стилі магазину → ти підтверджуєш одним кліком або публікується автоматично.' },
+        ]
+      },
+      {
+        id: 'sc-owner', label: 'Власник товарного бізнесу',
+        pains: [
+          { text: 'Відстежую залишки товарів та прогнозую коли робити нове замовлення вручну', hrs: 4 },
+          { text: 'Моніторю ціни конкурентів вручну та коригую свої', hrs: 2 },
+          { text: 'Звіряю рахунки логістичного партнера вручну - шукаю зайві списання', hrs: 2.5 },
+          { text: 'Збираю та відповідаю на відгуки покупців вручну', hrs: 1.5 },
+          { text: 'Складаю замовлення постачальнику вручну та відстежую статус доставки', hrs: 2 },
+          { text: 'Рахую собівартість товару вручну - зводжу по SKU в Excel', hrs: 2 },
+          { text: 'Відстежую рухи товарів і залишки на складі логістичного партнера вручну', hrs: 1 },
+        ],
+        automations: [
+          { title: 'Авто-алерт reorder + готовий PO', pains: [0,4],
+            before: 'Щотижня вручну перевіряєш залишки, рахуєш що потрібно замовити, складаєш PO постачальнику. Або дізнаєшся про нестачу від клієнтів.',
+            after: 'Залишок нижче порогу → Telegram алерт + заготовлений PO для підтвердження одним кліком. Ти не пропускаєш жодного замовлення.' },
+          { title: 'Аудит рахунків логістичного партнера', pains: [2,5],
+            before: 'Рахунок від партнера - десятки рядків. Вручну звіряєш з тарифами. Є реальні кейси переплат у десятки тисяч доларів за рік.',
+            after: 'PDF рахунок → MarkItDown → Claude порівнює з тарифною угодою → список підозрілих нарахувань з сумами за 5 хвилин. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Щоденний моніторинг ринку', pains: [1,3],
+            before: 'Кілька разів на тиждень вручну переглядаєш конкурентів, порівнюєш ціни, читаєш відгуки. Займає час але робиш несистемно.',
+            after: 'Щоранку в Telegram: ціни конкурентів + нові відгуки + зміни в залишках партнера. Зведення за 1 хвилину без ручного пошуку.' },
+        ]
+      },
+      {
+        id: 'smb', label: 'Власник малого бізнесу (МСБ)',
+        pains: [
+          { text: 'Веду облік грошей і витрат вручну або взагалі не веду', hrs: 3 },
+          { text: 'Відповідаю на однотипні питання клієнтів вручну щодня', hrs: 3 },
+          { text: 'Веду базу клієнтів вручну - не знаю хто давно не звертався і кому пора нагадати', hrs: 2 },
+          { text: 'Готую комерційні пропозиції та рахунки вручну щоразу', hrs: 2 },
+          { text: 'Нагадую клієнтам про оплату або повторне звернення вручну', hrs: 0.5 },
+          { text: 'Публікую пости та контент у соцмережах вручну без системи', hrs: 2 },
+          { text: 'Делегую завдання команді через Telegram без чіткого трекінгу', hrs: 1.5 },
+        ],
+        automations: [
+          { title: 'AI чат-бот + повернення клієнтів', pains: [1,2],
+            before: 'Щодня кілька годин у Telegram/Instagram на «скільки коштує?», «чи вільні ви?». Паралельно - не знаєш хто давно не звертався і кому варто написати.',
+            after: 'Бот відповідає на FAQ цілодобово і приймає заявки. Скрипт бачить хто давно не звертався → авто-повідомлення "давно не бачились, є питання?" Ти отримуєш тільки готових клієнтів.' },
+          { title: 'Авто-нагадування про оплату', pains: [3,4],
+            before: 'Прострочений рахунок → вручну пишеш клієнту, чекаєш, знову пишеш. Незручно і займає час що міг іти на розвиток.',
+            after: 'Прострочення → авто-повідомлення клієнту через Telegram/Viber через день, три, тиждень. Тебе в процесі немає.' },
+          { title: 'Тижневий фінансовий звіт', pains: [0],
+            before: 'Де гроші? Скільки зароблено? - або не знаєш, або збираєш вручну наприкінці місяця коли вже нічого не змінити.',
+            after: 'Транзакції з Monobank → авто-категоризація → P&L у Sheets щотижня. Ти бачиш фінансову картину в реальному часі.' },
+        ]
+      },
+      {
+        id: 'horeca', label: 'HoReCa - ресторан, кафе, бар',
+        pains: [
+          { text: 'Обробляю інвойси постачальників вручну та вношу в таблицю', hrs: 2 },
+          { text: 'Відстежую залишки на кухні та барі вручну - часто помиляюсь', hrs: 2 },
+          { text: 'Складаю замовлення постачальникам вручну щотижня', hrs: 1.5 },
+          { text: 'Складаю розклад персоналу вручну та погоджую зміни через Telegram', hrs: 2 },
+          { text: 'Веду облік виторгу та витрат вручну без нормальної аналітики', hrs: 1.5 },
+          { text: 'Нагадую про дні народження постійних клієнтів вручну', hrs: 0.5 },
+          { text: 'Перевіряю терміни придатності продуктів вручну', hrs: 1 },
+        ],
+        automations: [
+          { title: 'Авто-обробка інвойсів постачальників', pains: [0,1],
+            before: 'Кожен рахунок від постачальника → вручну переносиш позиції в таблицю для звірки і обліку. При 5-10 постачальниках це години щотижня.',
+            after: 'Фото або PDF рахунку → MarkItDown → авто-запис у реєстр + звірка з попереднім замовленням. Помилки в рахунках видно одразу.' },
+          { title: 'Щоденний звіт власнику', pains: [4],
+            before: 'Хочеш знати «як пройшов день» - дзвониш менеджеру або сам сидиш в касовій програмі. Аналітика - тільки наприкінці місяця.',
+            after: 'Виторг + витрати + залишок → Telegram тобі щоранку автоматично. Ти бачиш динаміку без дзвінків і ручного збору.' },
+          { title: 'Розклад персоналу → авто-нотифікація', pains: [3],
+            before: 'Оновив розклад у Excel → ще окремо пишеш кожному у Telegram про його зміну. При команді 10+ людей - це 30+ повідомлень щотижня.',
+            after: 'Змінив розклад у Sheets → кожен співробітник автоматично отримує свою зміну в Telegram. Ти нікому нічого не пересилаєш.' },
+        ]
+      },
+      {
+        id: 'beauty', label: 'Beauty & wellness майстер',
+        pains: [
+          { text: 'Записую клієнтів вручну в блокнот або через Telegram - часто плутанина', hrs: 2 },
+          { text: 'Нагадую клієнтам про запис вручну - дзвоню або пишу щоразу', hrs: 1 },
+          { text: 'Веду базу клієнтів вручну - не знаю хто давно не приходив', hrs: 0.5 },
+          { text: 'Відповідаю на питання про ціни та вільний час вручну в Direct / Telegram', hrs: 2 },
+          { text: 'Розраховую вартість послуг та матеріалів вручну', hrs: 0.5 },
+          { text: 'Веду облік оплат вручну - часто забуваю або плутаю', hrs: 0.5 },
+          { text: 'Публікую роботи в Instagram вручну - витрачаю до 30 хвилин на пост', hrs: 1.5 },
+        ],
+        automations: [
+          { title: 'Telegram-бот запису клієнтів', pains: [0,1,3],
+            before: 'Клієнти пишуть в Telegram або Direct, ти погоджуєш час вручну. Плутанина в розкладі, подвійні записи, дзвінки в незручний час.',
+            after: 'Клієнт заходить у бота → обирає послугу + вільний час → підтвердження + нагадування за 24h. Ти нічого не узгоджуєш вручну.' },
+          { title: 'Авто-повернення клієнтів', pains: [2],
+            before: 'Постійний клієнт не приходив 5-6 тижнів. Ти або не помічаєш, або пишеш вручну «як ти там?». Несистемно і незручно.',
+            after: 'Скрипт бачить що клієнт давно не був → авто-повідомлення «є вільний час на цьому тижні, записатись?». Ненав\'язливо і своєчасно.' },
+          { title: 'AI-контент + прайс для Instagram', pains: [4,6],
+            before: 'Гарне фото зроблено, але треба писати підпис, хештеги, CTA - 20-30 хвилин. Окремо - кожен раз рахуєш вартість послуги вручну: матеріали + час + надбавка.',
+            after: 'Фото + стиль → Claude пише продажний підпис з хештегами за 2 хвилини. Верифікуєш результат, вносиш правки і відправляєш в роботу. Прайс-лист формується автоматично по твоїх параметрах.' },
+        ]
+      },
+      {
+        id: 'freelancer', label: 'Фрілансер / Консультант',
+        pains: [
+          { text: 'Виставляю рахунки та відстежую оплати вручну', hrs: 1 },
+          { text: 'Готую комерційні пропозиції та кошториси вручну для кожного клієнта', hrs: 2 },
+          { text: 'Веду протокол зустрічей та надсилаю action items вручну', hrs: 1.5 },
+          { text: 'Відстежую час роботи по кожному проєкту вручну - або взагалі не відстежую', hrs: 2 },
+          { text: 'Онбордингую нових клієнтів вручну - надсилаю файли, договори, інструкції', hrs: 1 },
+          { text: 'Готую звіт про виконану роботу наприкінці місяця вручну', hrs: 1.5 },
+          { text: 'Нагадую клієнтам про дедлайни та необхідні матеріали вручну', hrs: 0.5 },
+        ],
+        automations: [
+          { title: 'Зустріч → action items авто', pains: [2,6],
+            before: 'Після кожного call вручну пишеш «ось протокол і задачі» - 20-40 хвилин. При 5+ дзвінках на тиждень це майже повний день.',
+            after: 'Транскрипт call → Claude виділяє задачі + відповідальних + дедлайни → готовий email клієнту за 2 хвилини. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'AI-комерційна пропозиція', pains: [1],
+            before: 'Кожна КП - з нуля або адаптація старої. Займає 1-2 години. Клієнт може відмовити - і час витрачений даремно.',
+            after: 'Параметри проєкту + бюджет → Claude генерує КП за 3 хвилини. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Авто-трекер часу та оплат', pains: [0,3],
+            before: 'Не знаєш скільки часу пішло на проєкт → не знаєш чи це було вигідно. Рахунки виставляєш «на відчуття».',
+            after: 'Старт/стоп у Telegram → Sheets з аналітикою по клієнтах. Рахунок формується автоматично на основі реального часу.' },
+        ]
+      },
+    ]
+  },
+  // ─────────────────────────────────────────────────────
+  // CATEGORY 5: JOB SEARCH
+  // ─────────────────────────────────────────────────────
+  {
+    id: 'jobsearch', emoji: '🎯', label: 'Шукаю роботу',
+    sub: 'Спеціалісти, кар\'єрний перехід, підприємці',
+    roles: [
+      {
+        id: 'job-specialist', label: 'Спеціаліст / Менеджер',
+        pains: [
+          { text: 'Шукаю вакансії вручну на Work.ua, LinkedIn, Djinni щодня - одні й ті ж', hrs: 4 },
+          { text: 'Адаптую резюме під кожну вакансію вручну - займає до 1 години', hrs: 3 },
+          { text: 'Пишу супровідний лист або cover letter вручну для кожної компанії', hrs: 2.5 },
+          { text: 'Відстежую куди надіслав заявки вручну - або взагалі не відстежую', hrs: 1 },
+          { text: 'Готуюсь до кожної співбесіди вручну - шукаю інфо про компанію та роль', hrs: 2 },
+          { text: 'Не знаю на яку зарплату претендувати - оцінюю ринок інтуїтивно', hrs: 0.5 },
+          { text: 'Після співбесіди забуваю зробити follow-up або не знаю як правильно', hrs: 0.5 },
+        ],
+        automations: [
+          { title: 'Щоденний моніторинг вакансій + трекер', pains: [0,3],
+            before: 'Щодня по 40-60 хвилин переглядаєш Work.ua, LinkedIn, Djinni. 90% вакансій не підходять, але перевіряєш всі. Куди надіслав - або не пам\'ятаєш, або в окремому нотатнику.',
+            after: 'Скрипт парсить платформи щоранку → Claude оцінює відповідність профілю → лише релевантні в Telegram. Кожна подана заявка → авто-запис у Sheets з датою, статусом, контактом.' },
+          { title: 'Резюме + cover letter за 5 хвилин', pains: [1,2],
+            before: 'Вручну переписуєш резюме під кожну JD - 30-60 хвилин на заявку. Cover letter - окремо ще 20 хвилин. При 10+ заявках на тиждень це майже робоча зміна.',
+            after: 'Копіюєш JD → Claude адаптує резюме під ключові слова вакансії + пише cover letter у твоєму стилі. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Підготовка до співбесіди + follow-up', pains: [4,6],
+            before: 'Перед співбесідою годинами гуглиш компанію. Після - або не пишеш follow-up, або шаблонне «дякую за час» яке не запам\'ятовується.',
+            after: 'Назва компанії → Claude готує briefing + 10 вірогідних питань за 5 хвилин. Верифікуєш результат, вносиш правки і відправляєш в роботу. Після співбесіди → персональний thank-you note що підкреслює твою відповідність ролі. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+      {
+        id: 'job-career-change', label: 'Переходжу в нову нішу',
+        pains: [
+          { text: 'Не знаю яких навичок мені бракує для нової ролі - шукаю хаотично', hrs: 3 },
+          { text: 'Не вмію презентувати свій досвід у новій ніші - резюме виглядає нерелевантним', hrs: 2 },
+          { text: 'Шукаю вакансії де беруть без досвіду в новій ніші - вручну по сотні оголошень', hrs: 4 },
+          { text: 'Готуюсь пояснити «чому змінюєш сферу» - не маю переконливої відповіді', hrs: 1 },
+          { text: 'Не знаю як нетворкати в новій ніші - пишу в холодну без системи', hrs: 2 },
+          { text: 'Вивчаю нові інструменти та сертифікати хаотично - без чіткого плану', hrs: 1.5 },
+          { text: 'Не знаю яка зарплата реалістична при переході без досвіду в ніші', hrs: 0.5 },
+        ],
+        automations: [
+          { title: 'Skill Gap аналіз для нової ролі', pains: [0,5],
+            before: 'Переглядаєш вакансії, намагаєшся зрозуміти що потрібно. Несистемно - незрозуміло що вчити першим, де є реальні прогалини.',
+            after: 'Claude аналізує 20 вакансій в цільовій ніші → порівнює з твоїм профілем → пріоритизований список що вчити першим і скільки це займе. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Резюме для career transition', pains: [1,3],
+            before: 'Стандартне резюме виглядає нерелевантно. Рекрутери не розуміють як твій досвід з іншої сфери застосовний до нової ролі.',
+            after: 'Claude переформулює твій досвід через призму нової ролі → виділяє transferable skills → резюме яке «перекладає» твій бекграунд мовою нової ніші. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Персоналізований аутріч в LinkedIn', pains: [3,4],
+            before: 'Пишеш в LinkedIn навмання - більшість не відповідають. Кожне повідомлення з нуля, немає системи, немає follow-up.',
+            after: 'Claude генерує персоналізоване повідомлення для кожного контакту + follow-up серію. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+      {
+        id: 'job-founder', label: 'Підприємець → повертаюсь в найм',
+        pains: [
+          { text: 'Не знаю як описати підприємницький досвід у форматі найманого резюме', hrs: 2 },
+          { text: 'Рекрутери не розуміють навіщо мені найм - часто відмовляють без розгляду', hrs: 1 },
+          { text: 'Шукаю ролі де мій досвід буде цінним - вручну фільтрую сотні вакансій', hrs: 3 },
+          { text: 'Не знаю яка ринкова зарплата на ролі які мені підходять', hrs: 1 },
+          { text: 'Готуюсь до питання «чому пішли з бізнесу» без переконливої відповіді', hrs: 1.5 },
+          { text: 'Не маю класичного резюме - тільки LinkedIn і кейси', hrs: 2 },
+          { text: 'Нетворкаю хаотично - без системи і без конкретного результату', hrs: 2 },
+        ],
+        automations: [
+          { title: 'Конверсія підприємця в найманого', pains: [0,1,5],
+            before: '«Директор власної компанії» без відомих роботодавців - більшість рекрутерів проходять мимо. Незрозуміло як подати цей досвід.',
+            after: 'Claude перетворює підприємницький досвід в корпоративну мову: P&L, team management, KPI, revenue growth - те що цінує HR. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+          { title: 'Таргетований пошук ролей', pains: [2,6],
+            before: 'Більшість вакансій шукають «5 років у великій компанії». Важко знайти ролі де цінують підприємницький background замість класичного CV.',
+            after: 'Скрипт шукає ролі де явно потрібні «builders», засновники, ops leaders → відфільтрований список з поясненням чому кожна роль підходить.' },
+          { title: 'Підготовка до складних питань', pains: [4,6],
+            before: 'Рекрутери питають «чому пішли з бізнесу?» і «чому найм зараз?» - відповідаєш невпевнено без чіткого narrative. Це помітно.',
+            after: 'Claude готує сильні відповіді на 10 найважчих питань для підприємців-кандидатів + narrative який перетворює «вразливість» на конкурентну перевагу. Верифікуєш результат, вносиш правки і відправляєш в роботу.' },
+        ]
+      },
+    ]
+  },
+];
+
+// =====================================================================
+// STATE
+// =====================================================================
+const state = {
+  categoryIdx: null, roleIdx: null,
+  q3: null, q4: null, q5: null,
+  pains: [], painStep: 0, q13: [],
+  gateName: '', gateEmail: '', gateProf: '', gateComment: '',
+  utmParams: {}
+};
+
+// =====================================================================
+// NAVIGATION
+// =====================================================================
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function progressBar(step) {
+  const pct = Math.round(step / 13 * 100);
+  return `<div class="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label">Крок ${step}/13</span>
+      <span class="progress-count">${pct}%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+  </div>`;
+}
+
+// =====================================================================
+// SCREENS
+// =====================================================================
+function renderWelcome() {
+  document.getElementById('screen-welcome').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    <h1 class="welcome-title">Дізнайся що AI зробить замість тебе <span class="hl">вже цього тижня</span></h1>
+    <p class="welcome-sub">Людина витрачає від&nbsp;2 до&nbsp;20&nbsp;годин на тиждень займаючись нудною рутиною або задачами які не дуже любить робити. 3&nbsp;хвилини - і ти знаєш де саме твої години і що з цим зробити.</p>
+    <div class="stat-row">
+      <div class="stat-block"><div class="stat-num">23</div><div class="stat-lbl">ролі та посади</div></div>
+      <div class="stat-block"><div class="stat-num">13</div><div class="stat-lbl">питань про роботу</div></div>
+      <div class="stat-block"><div class="stat-num">3 хв</div><div class="stat-lbl">для результату</div></div>
+    </div>
+    <button class="btn" onclick="goToQ1()">Почати аудит →</button>
+    <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:12px;">Безкоштовно. Без реєстрації для результату.</p>
+  `;
+}
+
+function goToQ1() { renderQ1(); goTo('screen-q1'); }
+
+function renderQ1() {
+  const cats = QUIZ_DATA.map((c,i) => `
+    <div class="cat-card${state.categoryIdx===i?' selected':''}" onclick="selectCategory(${i})">
+      <span class="cat-emoji">${c.emoji}</span>
+      <div class="cat-title">${c.label}</div>
+      <div class="cat-sub">${c.sub}</div>
+    </div>
+  `).join('');
+  const noneCard = `
+    <div class="cat-card cat-card-none" onclick="goToEscapeFromQ1()" style="border-style:dashed;opacity:.7;">
+      <span class="cat-emoji">🤷</span>
+      <div class="cat-title">Тут немає про мене</div>
+      <div class="cat-sub">Розкажу про свою ситуацію</div>
+    </div>
+  `;
+  document.getElementById('screen-q1').innerHTML = `
+    ${progressBar(1)}
+    <span class="back-nav" onclick="renderWelcome();goTo('screen-welcome')">← Назад</span>
+    <div class="q-label">Питання 1 з 13</div>
+    <div class="q-title">Де ти зараз працюєш?</div>
+    <div class="q-sub">Обери категорію яка найближча до твоєї ролі</div>
+    <div class="cat-grid">${cats}${noneCard}</div>
+    <button class="btn" onclick="confirmCategory()" ${state.categoryIdx===null?'disabled':''}>Далі →</button>
+  `;
+}
+
+function selectCategory(i) { state.categoryIdx = i; state.roleIdx = null; renderQ1(); }
+function confirmCategory() { if(state.categoryIdx===null)return; renderQ2(); goTo('screen-q2'); }
+
+function renderQ2() {
+  const cat = QUIZ_DATA[state.categoryIdx];
+  const roles = cat.roles.map((r,i) => `
+    <div class="role-item${state.roleIdx===i?' selected':''}" onclick="selectRole(${i})">${r.label}</div>
+  `).join('');
+  document.getElementById('screen-q2').innerHTML = `
+    ${progressBar(2)}
+    <span class="back-nav" onclick="renderQ1();goTo('screen-q1')">← Назад</span>
+    <div class="q-label">Питання 2 з 13</div>
+    <div class="q-title">Яка твоя роль?</div>
+    <div class="q-sub">Категорія: <strong>${cat.label}</strong></div>
+    <div class="role-list">${roles}</div>
+    <button class="btn" onclick="confirmRole()" ${state.roleIdx===null?'disabled':''}>Далі →</button>
+    <a class="escape-link" onclick="goToEscape()">Не знайшов свою роль? Отримай курс безкоштовно →</a>
+  `;
+}
+
+function selectRole(i) { state.roleIdx = i; renderQ2(); }
+function confirmRole() { if(state.roleIdx===null)return; state.pains=[]; state.painStep=0; renderQ3(); goTo('screen-q3'); }
+
+function renderQ3() {
+  const opts = [
+    { icon: '😌', label: 'Менше 2 годин', sub: 'Рутини мало', v: 'lt2' },
+    { icon: '🙂', label: '2-5 годин', sub: 'Є де оптимізувати', v: '2to5' },
+    { icon: '😓', label: '5-10 годин', sub: 'Значна частина тижня', v: '5to10' },
+    { icon: '🔥', label: 'Більше 10 годин', sub: 'Тонеш у рутині', v: 'gt10' },
+    { icon: '🤔', label: 'Не знаю', sub: 'Самому цікаво підрахувати', v: 'unknown' },
+  ];
+  const cards = opts.map(o => `
+    <div class="opt-card${state.q3===o.v?' selected':''}" onclick="selectQ3('${o.v}')">
+      <span class="opt-icon">${o.icon}</span>
+      <div class="opt-label">${o.label}</div>
+      <div class="opt-sub">${o.sub}</div>
+    </div>
+  `).join('');
+  document.getElementById('screen-q3').innerHTML = `
+    ${progressBar(3)}
+    <span class="back-nav" onclick="renderQ2();goTo('screen-q2')">← Назад</span>
+    <div class="q-label">Питання 3 з 13</div>
+    <div class="q-title">Скільки годин на тиждень іде на рутинні задачі?</div>
+    <div class="q-sub">Копіювання, перенесення даних, однотипні листи, ручні звіти</div>
+    <div class="opt-grid opt-grid-5">${cards}</div>
+    <button class="btn" onclick="goToQ4()" ${!state.q3?'disabled':''}>Далі →</button>
+  `;
+}
+
+function selectQ3(v) { state.q3=v; renderQ3(); }
+function goToQ4() { if(!state.q3)return; renderQ4(); goTo('screen-q4'); }
+
+function renderQ4() {
+  const isJobSearch = QUIZ_DATA[state.categoryIdx].id === 'jobsearch';
+
+  if (isJobSearch) {
+    const opts = [
+      { icon: '🎯', label: 'Цільовий список', sub: 'Маю компанії та ролі де хочу працювати', v: 'targeted' },
+      { icon: '📨', label: 'Масова розсилка', sub: 'Відправляю скрізь де бачу підходящу вакансію', v: 'mass' },
+      { icon: '🤝', label: 'Нетворкінг', sub: 'Через знайомих, LinkedIn, спільноти', v: 'network' },
+      { icon: '🌀', label: 'Хаотично', sub: 'Немає системи - як вийде', v: 'chaos' },
+    ];
+    const cards = opts.map(o => `
+      <div class="opt-card${state.q4===o.v?' selected':''}" onclick="selectQ4('${o.v}')">
+        <span class="opt-icon">${o.icon}</span>
+        <div class="opt-label">${o.label}</div>
+        <div class="opt-sub">${o.sub}</div>
+      </div>
+    `).join('');
+    document.getElementById('screen-q4').innerHTML = `
+      ${progressBar(4)}
+      <span class="back-nav" onclick="renderQ3();goTo('screen-q3')">← Назад</span>
+      <div class="q-label">Питання 4 з 13</div>
+      <div class="q-title">Як виглядає твій пайплайн пошуку роботи?</div>
+      <div class="q-sub">Як зараз відбувається процес - від пошуку вакансії до відправки заявки</div>
+      <div class="opt-grid">${cards}</div>
+      <button class="btn" onclick="goToQ5()" ${!state.q4?'disabled':''}>Далі →</button>
+    `;
+  } else {
+    const opts = [
+      { icon: '📊', label: 'Excel / Google Sheets', sub: 'Таблиці - основний інструмент', v: 'sheets' },
+      { icon: '💼', label: 'CRM система', sub: 'AmoCRM, Bitrix24, HubSpot', v: 'crm' },
+      { icon: '📝', label: 'Нотатки / блокнот', sub: 'Паперовий або Telegram', v: 'notes' },
+      { icon: '🧠', label: 'У голові', sub: 'Ніде не фіксую системно', v: 'head' },
+    ];
+    const cards = opts.map(o => `
+      <div class="opt-card${state.q4===o.v?' selected':''}" onclick="selectQ4('${o.v}')">
+        <span class="opt-icon">${o.icon}</span>
+        <div class="opt-label">${o.label}</div>
+        <div class="opt-sub">${o.sub}</div>
+      </div>
+    `).join('');
+    document.getElementById('screen-q4').innerHTML = `
+      ${progressBar(4)}
+      <span class="back-nav" onclick="renderQ3();goTo('screen-q3')">← Назад</span>
+      <div class="q-label">Питання 4 з 13</div>
+      <div class="q-title">Де зберігаєш робочі дані?</div>
+      <div class="q-sub">Клієнти, угоди, задачі, фінанси - де це живе?</div>
+      <div class="opt-grid">${cards}</div>
+      <button class="btn" onclick="goToQ5()" ${!state.q4?'disabled':''}>Далі →</button>
+    `;
+  }
+}
+
+function selectQ4(v) { state.q4=v; renderQ4(); }
+function goToQ5() { if(!state.q4)return; renderQ5(); goTo('screen-q5'); }
+
+function renderQ5() {
+  const isJobSearch = QUIZ_DATA[state.categoryIdx].id === 'jobsearch';
+  const opts = isJobSearch ? [
+    { icon: '🌱', label: 'Нещодавно почав', sub: 'До місяця', v: 'lt1m' },
+    { icon: '⏳', label: 'Кілька місяців', sub: '1-3 місяці', v: '1to3m' },
+    { icon: '🔥', label: 'Давно шукаю', sub: 'Понад 3 місяці', v: 'gt3m' },
+    { icon: '🎯', label: 'Ще не починав', sub: 'Планую найближчим часом', v: 'planning' },
+  ] : [
+    { icon: '🙋', label: 'Тільки я', sub: 'Соло або самозайнятий', v: 'solo' },
+    { icon: '👥', label: '2-5 людей', sub: 'Маленька команда', v: 'small' },
+    { icon: '🏢', label: '6-20 людей', sub: 'Середня команда', v: 'mid' },
+    { icon: '🏭', label: 'Більше 20', sub: 'Великий відділ або компанія', v: 'large' },
+  ];
+  const title = isJobSearch ? 'Як довго вже шукаєш роботу?' : 'Скільки людей у твоїй команді?';
+  const sub   = isJobSearch ? 'Це не впливає на результат - просто цікаво' : 'Або у твоєму відділі, якщо ти частина великої компанії';
+  const cards = opts.map(o => `
+    <div class="opt-card${state.q5===o.v?' selected':''}" onclick="selectQ5('${o.v}')">
+      <span class="opt-icon">${o.icon}</span>
+      <div class="opt-label">${o.label}</div>
+      <div class="opt-sub">${o.sub}</div>
+    </div>
+  `).join('');
+  document.getElementById('screen-q5').innerHTML = `
+    ${progressBar(5)}
+    <span class="back-nav" onclick="renderQ4();goTo('screen-q4')">← Назад</span>
+    <div class="q-label">Питання 5 з 13</div>
+    <div class="q-title">${title}</div>
+    <div class="q-sub">${sub}</div>
+    <div class="opt-grid">${cards}</div>
+    <button class="btn" onclick="startPains()" ${!state.q5?'disabled':''}>Далі →</button>
+  `;
+}
+
+function selectQ5(v) { state.q5=v; renderQ5(); }
+function startPains() { if(!state.q5)return; state.painStep=0; renderPain(); goTo('screen-pain'); }
+
+function backPain() {
+  if(state.painStep > 0) { state.painStep--; renderPain(); window.scrollTo(0,0); }
+  else { renderQ5(); goTo('screen-q5'); }
+}
+
+function renderPain() {
+  const role = QUIZ_DATA[state.categoryIdx].roles[state.roleIdx];
+  const step = state.painStep;
+  const qNum = 6 + step;
+  const pain = role.pains[step];
+  const current = state.pains[step];
+
+  const opts = [
+    { cls:'hate',    score:2, icon:'😤', label:'Ненавиджу це',       desc:'Витрачаю час і нерви' },
+    { cls:'routine', score:1, icon:'😑', label:'Рутина, але терплю', desc:'Роблю, але хотів би не робити' },
+    { cls:'ok',      score:0, icon:'✅', label:'Не проблема',        desc:'Справляюсь або не стосується' },
+  ];
+  const optHtml = opts.map(o => `
+    <div class="pain-opt${current===o.score?' selected-'+o.cls:''}" onclick="selectPain(${o.score})">
+      <span class="pain-opt-icon">${o.icon}</span>
+      <div class="pain-opt-text">
+        <div class="pain-opt-label">${o.label}</div>
+        <div class="pain-opt-desc">${o.desc}</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('screen-pain').innerHTML = `
+    ${progressBar(qNum)}
+    <span class="back-nav" onclick="backPain()">← Назад</span>
+    <div class="q-label">Питання ${qNum} з 13</div>
+    <div class="pain-question">${pain.text}</div>
+    <div class="pain-opts">${optHtml}</div>
+    ${current !== undefined ? `<button class="btn" style="margin-top:20px" onclick="nextPain()">Далі →</button>` : ''}
+  `;
+}
+
+function selectPain(score) { state.pains[state.painStep]=score; renderPain(); }
+
+function nextPain() {
+  if(state.pains[state.painStep]===undefined) return;
+  state.painStep++;
+  if(state.painStep < 7) { renderPain(); window.scrollTo(0,0); }
+  else { renderQ13(); goTo('screen-q13'); }
+}
+
+const AI_TOOLS = [
+  {id:'chatgpt',label:'ChatGPT'}, {id:'claude',label:'Claude'},
+  {id:'make',label:'Make / Zapier'}, {id:'n8n',label:'n8n'},
+  {id:'copilot',label:'Copilot / Gemini'}, {id:'none',label:'Не використовую нічого'},
+];
+
+function renderQ13() {
+  const cards = AI_TOOLS.map(t => `
+    <div class="tool-card${state.q13.includes(t.id)?' selected':''}" onclick="toggleTool('${t.id}')">
+      <div class="tool-check"></div>
+      <div class="tool-name">${t.label}</div>
+    </div>
+  `).join('');
+  document.getElementById('screen-q13').innerHTML = `
+    ${progressBar(13)}
+    <span class="back-nav" onclick="state.painStep=6;renderPain();goTo('screen-pain')">← Назад</span>
+    <div class="q-label">Питання 13 з 13</div>
+    <div class="q-title">Які AI-інструменти вже використовуєш?</div>
+    <div class="q-sub">Можна обрати кілька</div>
+    <div class="tool-grid">${cards}</div>
+    <button class="btn" onclick="renderGate();goTo('screen-gate')">Показати мій AI-аудит →</button>
+  `;
+}
+
+function toggleTool(id) {
+  if(state.q13.includes(id)) { state.q13=state.q13.filter(x=>x!==id); }
+  else if(id==='none') { state.q13=['none']; }
+  else { state.q13=state.q13.filter(x=>x!=='none'); state.q13.push(id); }
+  renderQ13();
+}
+
+// =====================================================================
+// RESULTS
+// =====================================================================
+// =====================================================================
+// GATE - email capture before results
+// =====================================================================
+function renderGate() {
+  document.getElementById('screen-gate').innerHTML = `
+    <span class="back-nav" onclick="renderQ13();goTo('screen-q13')">← Назад</span>
+    <div class="gate-section">
+      <span class="gate-emoji">🎯</span>
+      <div class="gate-title">Твій AI-аудит готовий</div>
+      <div class="gate-sub">Так, це можна скіпнути - і ти як я і обіцяв отримаєш свій результат.<br><br>Але заповнивши форму ти отримаєш персоналізований гайд як працювати менше / ефективніше / за більше грошей / з меншими витратами. Вибери своє.</div>
+
+      <div class="form-field">
+        <label class="form-label">Ім'я</label>
+        <input class="form-input" id="gate-name" type="text" placeholder="Як тебе звати?" autocomplete="given-name" value="${state.gateName}" oninput="state.gateName=this.value" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Професія</label>
+        <input class="form-input" id="gate-prof" type="text" placeholder="Твоя посада або рід діяльності" value="${state.gateProf||''}" oninput="state.gateProf=this.value" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="gate-email" type="email" placeholder="твій@email.com" inputmode="email" autocomplete="email" value="${state.gateEmail}" oninput="state.gateEmail=this.value" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Коментар</label>
+        <textarea class="form-input" id="gate-comment" placeholder="Що ти хотів би отримати від AI та автоматизації?" rows="3" style="resize:none;height:auto;min-height:80px" oninput="state.gateComment=this.value">${state.gateComment||''}</textarea>
+      </div>
+
+      <button class="btn" onclick="submitGate()">Отримати персоналізований план →</button>
+      <div id="gate-error" class="submit-error" style="display:none"></div>
+    </div>
+    <p class="skip-link" onclick="sendAnonAndShowResults()">Пропустити і подивитись результат →</p>
+  `;
+}
+
+function submitGate() {
+  const name    = document.getElementById('gate-name').value.trim();
+  const prof    = document.getElementById('gate-prof').value.trim();
+  const email   = document.getElementById('gate-email').value.trim();
+  const comment = document.getElementById('gate-comment').value.trim();
+  const errEl   = document.getElementById('gate-error');
+  if (!name)  { errEl.textContent='Введи своє ім\'я'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent='Введи коректний email'; errEl.style.display='block'; return; }
+  errEl.style.display='none';
+
+  state.gateName    = name;
+  state.gateEmail   = email;
+  state.gateProf    = prof;
+  state.gateComment = comment;
+
+  sendToSheets(buildPayload());
+  showResults();
+}
+
+const FORM_URL = 'https://script.google.com/macros/s/AKfycbzfBe87y7FsxcCEm_4OU_RG0u7SsVKhKtsmWb1wthedrL5dW86637Duyb-6-WlMopkflw/exec';
+
+const HOURS_LABELS    = { lt2:'Менше 2 годин', '2to5':'2-5 годин', '5to10':'5-10 годин', gt10:'Більше 10 годин', unknown:'Не знаю' };
+const STORAGE_LABELS  = { sheets:'Excel / Google Sheets', crm:'CRM система', notes:'Нотатки / блокнот', head:'У голові' };
+const PIPELINE_LABELS = { targeted:'Цільовий список', mass:'Масова розсилка', network:'Нетворкінг', chaos:'Хаотично' };
+const TEAM_LABELS     = { solo:'Тільки я', small:'2-5 людей', mid:'6-20 людей', large:'Більше 20' };
+const SEARCH_LABELS   = { lt1m:'До місяця', '1to3m':'1-3 місяці', gt3m:'Понад 3 місяці', planning:'Ще не починав' };
+const SCORE_LABELS    = ['Не проблема', 'Рутина', 'Ненавиджу'];
+
+function buildPayload(overrides = {}) {
+  const cat  = QUIZ_DATA[state.categoryIdx];
+  const role = cat.roles[state.roleIdx];
+  const isJobSearch = cat.id === 'jobsearch';
+
+  const total = role.pains.reduce((s,p,i) => s + ((state.pains[i]||0)>0 ? p.hrs : 0), 0);
+  const topPains = role.pains.map((p,i)=>({hrs:p.hrs*(state.pains[i]||0),text:p.text}))
+    .sort((a,b)=>b.hrs-a.hrs).slice(0,2).map(x=>x.text);
+
+  const toolLabels = Object.fromEntries(AI_TOOLS.map(t=>[t.id,t.label]));
+
+  const painFields = {};
+  role.pains.forEach((p,i) => {
+    painFields[`pain_${i+1}`]       = p.text;
+    painFields[`pain_${i+1}_score`] = SCORE_LABELS[state.pains[i] ?? 0];
+  });
+
+  return {
+    product:      'P-AI-Audit-UA',
+    first_name:   state.gateName  || 'anon',
+    email:        state.gateEmail || '',
+    profession:   state.gateProf  || '',
+    comment:      state.gateComment || '',
+    category:     cat.label,
+    role_id:      role.id,
+    job_title:    role.label,
+    main_task:    topPains[0] || '',
+    pain2:        topPains[1] || '',
+    score:        Math.round(total * 10) / 10,
+    hours_self:   HOURS_LABELS[state.q3]    || state.q3 || '',
+    data_storage: isJobSearch ? (PIPELINE_LABELS[state.q4] || state.q4 || '') : (STORAGE_LABELS[state.q4] || state.q4 || ''),
+    team_size:    isJobSearch ? (SEARCH_LABELS[state.q5]   || state.q5 || '') : (TEAM_LABELS[state.q5]    || state.q5 || ''),
+    ai_tools:     state.q13.map(id => toolLabels[id] || id).join(', '),
+    ...painFields,
+    ...state.utmParams,
+    ...overrides,
+  };
+}
+
+function sendToSheets(payload) {
+  fetch(FORM_URL + '?' + new URLSearchParams(payload)).catch(()=>{});
+}
+
+function sendAnonAndShowResults() {
+  sendToSheets(buildPayload({ first_name: 'anon', email: '' }));
+  showResults();
+}
+
+function submitResultsEmail() {
+  const email = (document.getElementById('results-email')?.value||'').trim();
+  const errEl = document.getElementById('results-email-error');
+  if (!email || !email.includes('@')) { errEl.textContent='Введи коректний email'; errEl.style.display='block'; return; }
+  errEl.style.display='none';
+  state.gateEmail = email;
+  sendToSheets(buildPayload());
+  const section = document.getElementById('results-email-section');
+  if (section) section.innerHTML = `
+    <div style="text-align:center;padding:10px 0">
+      <div style="font-size:36px;margin-bottom:10px">🎉</div>
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px">Готово!</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.55">Чекай - надішлю персональний план найближчим часом.</div>
+    </div>
+  `;
+}
+
+function showResults() {
+  const cat  = QUIZ_DATA[state.categoryIdx];
+  const role = cat.roles[state.roleIdx];
+
+  // Calculate real hours based on pain ratings
+  let totalHrs = 0;
+  role.pains.forEach((p, i) => {
+    if ((state.pains[i] || 0) > 0) totalHrs += p.hrs;
+  });
+  totalHrs = Math.round(totalHrs * 10) / 10;
+
+  const savedHrs  = Math.round(totalHrs * 0.8 * 10) / 10;
+  const newHrs    = Math.round(totalHrs * 0.2 * 10) / 10;
+  const pctOfWeek = Math.min(Math.round(totalHrs / 45 * 100), 100);
+
+  // Sort automations by max pain score
+  const sorted = [...role.automations].sort((a, b) => {
+    const aMax = Math.max(...a.pains.map(i => state.pains[i] || 0));
+    const bMax = Math.max(...b.pains.map(i => state.pains[i] || 0));
+    return bMax - aMax;
+  });
+
+  const autoHtml = sorted.map((a, i) => `
+    <div class="auto-card">
+      <div class="auto-num">Автоматизація ${i+1}/3</div>
+      <div class="auto-title">${a.title}</div>
+      <div class="auto-state">
+        <div class="auto-state-row is-before">
+          <span class="auto-state-label is-before">Зараз</span>
+          <div class="auto-state-text">${a.before}</div>
+        </div>
+        <div class="auto-state-row is-after">
+          <span class="auto-state-label is-after">Буде</span>
+          <div class="auto-state-text">${a.after}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  let scoreMsg, scoreColor;
+  if (totalHrs === 0) {
+    scoreMsg = 'У тебе мало рутини або ти вже автоматизував основне.';
+  } else if (pctOfWeek >= 30) {
+    scoreMsg = 'Критичний рівень - більше третини тижня йде на автоматизовані задачі.';
+  } else if (pctOfWeek >= 15) {
+    scoreMsg = 'Є що звільнити - кілька годин на тиждень вже змінять відчуття від роботи.';
+  } else {
+    scoreMsg = 'Невеликий потенціал, але кожна звільнена година важлива.';
+  }
+
+  document.getElementById('screen-results').innerHTML = `
+    <span class="back-nav" onclick="renderGate();goTo('screen-gate')">← Назад</span>
+    <div class="brand-label">Твій результат</div>
+    <h1>AI аудит: <span class="hl">${role.label}</span></h1>
+
+    <div class="score-block">
+      <div class="score-label">Рутина на тиждень</div>
+      <div><span class="score-num">${totalHrs}</span> <span class="score-unit">год/тиж</span></div>
+      <div class="score-sub">${scoreMsg}</div>
+      <div class="score-bar">
+        <div class="score-bar-fill" style="width:${pctOfWeek}%"></div>
+      </div>
+      ${totalHrs > 0 ? `
+      <div class="savings-row">
+        <span class="savings-label">З AI: ~${newHrs} год/тиж замість ${totalHrs}</span>
+        <span class="savings-value">↑ Звільниш ${savedHrs} год (${Math.round(savedHrs/totalHrs*100)}%)</span>
+      </div>` : ''}
+    </div>
+
+    <button class="btn" style="margin-bottom:28px" onclick="renderGate();goTo('screen-gate')">
+      🎯 Отримати персональний план вивчення AI
+    </button>
+
+    <h2 style="font-size:16px;font-weight:800;margin-bottom:14px;">Топ-3 автоматизації для тебе:</h2>
+    <div class="auto-cards">${autoHtml}</div>
+
+    <div class="share-card" id="share-card">
+      <div class="share-card-brand">Life Builder OS · AI Аудит</div>
+      <div class="share-card-role">${role.label}</div>
+      <div class="share-card-score">
+        <div class="share-card-score-item">
+          <div class="share-card-score-num">${totalHrs}<span style="font-size:13px;font-weight:600"> год</span></div>
+          <div class="share-card-score-lbl">рутини на тиждень</div>
+        </div>
+        ${totalHrs > 0 ? `<div class="share-card-score-item">
+          <div class="share-card-score-num">${savedHrs}<span style="font-size:13px;font-weight:600"> год</span></div>
+          <div class="share-card-score-lbl">можна звільнити (${Math.round(savedHrs/totalHrs*100)}%)</div>
+        </div>` : ''}
+      </div>
+      <div class="share-card-autos">
+        ${sorted.map((a,i) => `<div class="share-card-auto"><span class="share-card-auto-num">${i+1}/3</span>${a.title}</div>`).join('')}
+      </div>
+      <div class="share-card-footer">lifebuilder.gumroad.com · @artem.org.ua</div>
+    </div>
+
+    <button class="share-btn" id="share-btn" onclick="shareResult()">
+      <span>↑</span> Поділитись результатом
+    </button>
+
+    ${state.gateName ? `<p style="font-size:13px;color:var(--text2);text-align:center;margin-bottom:20px">План надіслано на <strong>${state.gateEmail}</strong></p>` : ''}
+
+    <h2 style="font-size:14px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">Залишатись на звʼязку</h2>
+    <div class="social-links">
+      <a class="social-link" href="https://www.threads.net/@artem.org.ua" target="_blank" rel="noopener">
+        <span class="social-link-icon">🧵</span>
+        <div class="social-link-meta">
+          <div class="social-link-name">@artem.org.ua</div>
+          <div class="social-link-sub">Threads - будую в публічному режимі</div>
+        </div>
+        <span style="color:var(--text3);font-size:13px">→</span>
+      </a>
+      <a class="social-link" href="mailto:eco.stepanenko@gmail.com">
+        <span class="social-link-icon">✉️</span>
+        <div class="social-link-meta">
+          <div class="social-link-name">eco.stepanenko@gmail.com</div>
+          <div class="social-link-sub">Написати напряму</div>
+        </div>
+        <span style="color:var(--text3);font-size:13px">→</span>
+      </a>
+    </div>
+
+    ${!state.gateEmail ? `
+    <div id="results-email-section" style="margin-top:24px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)"></div>
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px;">Хочеш персональний план?</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.55;">Залиш email - надішлю персоналізований список: що вчити і з чого почати саме для тебе.</div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="results-email" type="email" placeholder="твій@email.com" inputmode="email" autocomplete="email" />
+      </div>
+      <button class="btn" onclick="submitResultsEmail()">Надіслати →</button>
+      <div id="results-email-error" class="submit-error" style="display:none"></div>
+    </div>` : ''}
+  `;
+
+  goTo('screen-results');
+
+  // Animate score bar
+  setTimeout(() => {
+    const fill = document.querySelector('.score-bar-fill');
+    if (fill) fill.style.width = pctOfWeek + '%';
+  }, 100);
+}
+
+
+// =====================================================================
+// SHARE
+// =====================================================================
+async function shareResult() {
+  const role   = QUIZ_DATA[state.categoryIdx].roles[state.roleIdx];
+  const total  = role.pains.reduce((s,p,i) => s + ((state.pains[i]||0)>0 ? p.hrs : 0), 0);
+  const saved  = Math.round(total * 0.8 * 10) / 10;
+  const sorted = [...role.automations].sort((a,b) =>
+    Math.max(...b.pains.map(i=>state.pains[i]||0)) - Math.max(...a.pains.map(i=>state.pains[i]||0))
+  );
+
+  const shareText = [
+    `🤖 Мій AI-аудит - ${role.label}`,
+    ``,
+    total > 0 ? `⏱ ${total} год/тиж рутини → звільняю ${saved} год з AI` : '',
+    ``,
+    `Топ-3 автоматизації:`,
+    ...sorted.map((a,i) => `${i+1}/3 ${a.title}`),
+    ``,
+    `Перевір свій профіль →`,
+    `lifebuilder.gumroad.com`,
+    `@artem.org.ua`
+  ].filter(l => l !== null).join('\n');
+
+  const btn  = document.getElementById('share-btn');
+  const card = document.getElementById('share-card');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span style="animation:spin .8s linear infinite;display:inline-block">⏳</span> Генерую картку...';
+
+  try {
+    const canvas = await html2canvas(card, {
+      backgroundColor: '#141414',
+      scale: 2,
+      logging: false,
+      useCORS: true,
+      allowTaint: true
+    });
+
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], 'ai-audit-result.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text: shareText }).catch(()=>{});
+      } else if (navigator.share) {
+        await navigator.share({ text: shareText }).catch(()=>{});
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'ai-audit-result.png'; a.click();
+        URL.revokeObjectURL(url);
+        await navigator.clipboard.writeText(shareText).catch(()=>{});
+        btn.classList.add('share-copied');
+        btn.innerHTML = '<span>✓</span> Картку збережено + текст скопійовано';
+        setTimeout(() => {
+          btn.classList.remove('share-copied');
+          btn.innerHTML = '<span>↑</span> Поділитись результатом';
+          btn.disabled = false;
+        }, 3000);
+        return;
+      }
+      btn.innerHTML = '<span>↑</span> Поділитись результатом';
+      btn.disabled = false;
+    }, 'image/png');
+
+  } catch(e) {
+    await navigator.clipboard.writeText(shareText).catch(()=>{});
+    btn.classList.add('share-copied');
+    btn.innerHTML = '<span>✓</span> Текст скопійовано в буфер';
+    setTimeout(() => {
+      btn.classList.remove('share-copied');
+      btn.innerHTML = '<span>↑</span> Поділитись результатом';
+      btn.disabled = false;
+    }, 2500);
+  }
+}
+
+// =====================================================================
+// ESCAPE HATCH
+// =====================================================================
+function goToEscapeFromQ1() {
+  renderEscapeForm({ backFn: 'renderQ1();goTo(\'screen-q1\')', backLabel: '← Повернутись до тесту' });
+}
+
+function goToEscape() {
+  renderEscapeForm({ backFn: 'renderQ2();goTo(\'screen-q2\')', backLabel: '← Повернутись до тесту' });
+}
+
+function renderEscapeForm({ backFn, backLabel }) {
+  document.getElementById('screen-escape').innerHTML = `
+    <div class="brand-label">Розкажи про себе</div>
+    <h1>Отримай <span class="hl">персональний план</span></h1>
+    <p class="subtitle">Залиш дані - надішлю вступний матеріал по AI автоматизаціях саме для твоєї сфери.</p>
+    <div class="form-field">
+      <label class="form-label">Ім'я</label>
+      <input class="form-input" id="esc-name" type="text" placeholder="Як тебе звати?" autocomplete="given-name" />
+    </div>
+    <div class="form-field">
+      <label class="form-label">Чим займаєшся</label>
+      <input class="form-input" id="esc-role" type="text" placeholder="Посада, рід діяльності або сфера" />
+    </div>
+    <div class="form-field">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="esc-email" type="email" placeholder="твій@email.com" inputmode="email" autocomplete="email" />
+    </div>
+    <button class="btn" onclick="submitEscape()">Отримати матеріал →</button>
+    <div id="esc-error" class="submit-error" style="display:none"></div>
+    <p style="font-size:13px;color:var(--text3);text-align:center;margin-top:16px;cursor:pointer;text-decoration:underline" onclick="${backFn}">${backLabel}</p>
+  `;
+  goTo('screen-escape');
+}
+
+function submitEscape() {
+  const name  = document.getElementById('esc-name').value.trim();
+  const role  = document.getElementById('esc-role').value.trim();
+  const email = document.getElementById('esc-email').value.trim();
+  const errEl = document.getElementById('esc-error');
+  if (!name)  { errEl.textContent='Введи своє ім\'я'; errEl.style.display='block'; return; }
+  if (!role)  { errEl.textContent='Розкажи чим займаєшся'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent='Введи коректний email'; errEl.style.display='block'; return; }
+  errEl.style.display='none';
+
+  const FORM_URL = 'https://script.google.com/macros/s/AKfycbzfBe87y7FsxcCEm_4OU_RG0u7SsVKhKtsmWb1wthedrL5dW86637Duyb-6-WlMopkflw/exec';
+  fetch(FORM_URL + '?' + new URLSearchParams({product:'P-AI-Audit-Escape', first_name:name, job_title:role, email, ...state.utmParams})).catch(()=>{});
+
+  document.getElementById('screen-escape').innerHTML = `
+    <div style="text-align:center;padding:60px 0">
+      <div style="font-size:48px;margin-bottom:16px">📬</div>
+      <h1 style="font-size:22px;margin-bottom:10px">Готово!</h1>
+      <p style="color:var(--text2);font-size:14px;line-height:1.6">Надіслав на <strong>${email}</strong>.<br>Якщо не бачиш - перевір «Спам».</p>
+      <button class="btn" style="margin-top:28px;max-width:220px" onclick="goToQ1()">← Пройти тест</button>
+    </div>
+  `;
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k => {
+    if(p.get(k)) state.utmParams[k]=p.get(k);
+  });
+  renderWelcome();
+})();
+</script>
+</body>
+</html>
