@@ -256,8 +256,54 @@ After all MCP items processed: announce "✓ MCP налаштування зав
 
 ## Phase 5 — Demo
 
-[TO BE ADDED IN NEXT TASK]
+Select DEMO_TASK from this table using ROLE. If USE_CASES narrows it further, pick the most relevant variant.
+
+| Role | Demo task |
+|------|-----------|
+| Продажник | Draft a cold outreach email for one prospect — ask for prospect name/company |
+| Digital маркетолог | Build a 1-week content calendar for one channel — ask which channel |
+| SMM / контент-менеджер | Write one post in their tone of voice — ask for topic |
+| Інфобізнесмен | Outline a 5-email welcome sequence — ask for product/offer name |
+| Ріелтор | Write a property listing description — ask for 3 key facts about the property |
+| Закупівельник | Create a supplier comparison template — ask for 3 criteria that matter most |
+| Логіст / диспетчер | Draft a shipment delay notification — ask for carrier and estimated delay |
+| SC менеджер | Build a vendor scorecard template — ask for top 4 evaluation criteria |
+| Бухгалтер | Structure a monthly expense summary template — ask for main cost categories |
+| Проєктний менеджер | Create a project kickoff checklist — ask for project type |
+| Рекрутер | Write a job description for one role — ask for role title and 3 key requirements |
+| HR менеджер | Draft an onboarding checklist for new hires — ask for team/department |
+| Керівник підтримки | Create an FAQ template for top 5 questions — ask for product/service type |
+| Юрист | Summarize key clauses from a contract — ask user to paste or upload a sample contract |
+| E-commerce власник | Generate a reorder alert template for top SKUs — ask for product category |
+| Amazon seller | Write A+ content bullet points for one product — ask for product name and key benefit |
+| Власник МСБ | Draft a one-page business summary — ask for business name and what it does |
+| HoReCa / ресторан | Write 3 Instagram captions for this week — ask for this week's special or event |
+| Beauty & wellness майстер | Write a client follow-up message after appointment — ask for service type |
+| Фрілансер / консультант | Draft a project proposal for one service — ask for service name and target client |
+
+Say:
+"Зараз покажу як це все працює разом. Ось задача на 2 хвилини під твою роль: **[DEMO_TASK description]**. Підтвердь або дай свій варіант."
+
+Execute the demo task using the installed skills and workspace context.
 
 ## Phase 6 — Finish
 
-[TO BE ADDED IN NEXT TASK]
+Count: N_SKILLS = number of skills installed. N_MCP_DONE = MCP services connected. N_MCP_TODO = MCP services in setup-todo.md.
+
+Say:
+
+"Твій workspace готовий:
+→ CLAUDE.md персоналізований під [NAME]
+→ memory/ з профілем і ціллю
+→ [N_SKILLS] скілів встановлено
+→ [N_MCP_DONE] MCP підключено[, [N_MCP_TODO] у setup-todo.md] якщо є
+
+Тепер у кожній новій сесії Claude знає хто ти, що ти будуєш і для чого.
+Команди які ти матимеш: /brainstorming · /writing-plans · /session-journal · та інші.
+
+---
+
+Раз на 2 тижні — нова фіча Claude Code + реальний кейс як її використати.
+$5/міс → [Tribute link]"
+
+If user asks what to do next: suggest running `/brainstorming` on their Q3 goal.
