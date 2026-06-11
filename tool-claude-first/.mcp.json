@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-notion"],
+      "env": {
+        "NOTION_API_KEY": "REPLACE_WITH_YOUR_NOTION_TOKEN"
+      }
+    },
+    "google-workspace": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-gdrive"],
+      "env": {
+        "GDRIVE_CREDENTIALS_FILE": "REPLACE_WITH_PATH_TO_credentials.json"
+      }
+    },
+    "telegram": {
+      "command": "npx",
+      "args": ["-y", "mcp-telegram"],
+      "env": {
+        "TELEGRAM_BOT_TOKEN": "REPLACE_WITH_YOUR_BOT_TOKEN"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "REPLACE_WITH_YOUR_PAT"
+      }
+    }
+  }
+}
