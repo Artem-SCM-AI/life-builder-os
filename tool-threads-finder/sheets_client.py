@@ -58,10 +58,12 @@ class SheetsClient:
         ws.append_row([
             datetime.now(timezone.utc).isoformat(),
             our_reply_id, their_comment_id, commenter, comment_text,
-            str(telegram_msg_id), 'pending',
+            str(telegram_msg_id),  # stored as string for sheet lookup
+            'pending',
         ])
 
     def find_their_comment_id(self, telegram_msg_id: str) -> str | None:
+        # telegram_msg_id passed as str; internally already converted from int by caller
         rows = self._get_or_create('Reply Map', REPLY_MAP_COLUMNS).get_all_records()
         for r in rows:
             if str(r.get('telegram_msg_id', '')) == str(telegram_msg_id):
