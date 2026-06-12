@@ -2,17 +2,17 @@ import pytest
 from unittest.mock import MagicMock, patch, call
 from datetime import datetime, timezone, timedelta
 
-def make_post(post_id='p1', text='обробляю інвойси вручну щодня', hours_ago=1):
+def make_post(post_id='p1', text='обробляю інвойси від постачальників вручну кожен робочий день', hours_ago=1):
     ts = (datetime.now(timezone.utc) - timedelta(hours=hours_ago)).strftime('%Y-%m-%dT%H:%M:%SZ')
     return {'id': post_id, 'text': text, 'timestamp': ts, 'username': 'user1'}
 
 def run_searcher(sheets_mock, threads_mock, claude_mock):
+    import importlib, searcher
+    importlib.reload(searcher)
     with patch('searcher.SheetsClient', return_value=sheets_mock), \
          patch('searcher.ThreadsClient', return_value=threads_mock), \
          patch('searcher.ClaudeClient', return_value=claude_mock), \
          patch('searcher.load_config', return_value=MagicMock()):
-        import importlib, searcher
-        importlib.reload(searcher)
         searcher.run()
 
 def test_exits_early_when_daily_cap_reached():
@@ -73,11 +73,11 @@ def test_posts_reply_and_logs_for_qualifying_post():
 def test_exits_on_sheets_load_failure():
     sheets = MagicMock()
     sheets.seen_ids.side_effect = Exception("Sheets down")
+    import importlib, searcher
+    importlib.reload(searcher)
     with patch('searcher.SheetsClient', return_value=sheets), \
          patch('searcher.ThreadsClient', return_value=MagicMock()), \
          patch('searcher.ClaudeClient', return_value=MagicMock()), \
          patch('searcher.load_config', return_value=MagicMock()), \
          pytest.raises(SystemExit):
-        import importlib, searcher
-        importlib.reload(searcher)
         searcher.run()

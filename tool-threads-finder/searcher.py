@@ -2,42 +2,24 @@ import sys
 import logging
 from datetime import datetime, timezone, timedelta
 
+from config import load_config
+from sheets_client import SheetsClient
+from threads_client import ThreadsClient
+from claude_client import ClaudeClient
+
 MAX_REPLIES_PER_DAY = 8
 MAX_POST_AGE_HOURS = 3
-MIN_POST_LENGTH = 20
+MIN_POST_LENGTH = 40
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 log = logging.getLogger(__name__)
 
 
-def _bootstrap_defaults(g: dict) -> None:
-    """Populate module globals with real implementations if tests have not
-    already patched them.  Called once per reload; skipped if the name is
-    already present (i.e. a mock was injected by patch() before reload)."""
-    if 'load_config' not in g:
-        from config import load_config as _lc
-        g['load_config'] = _lc
-    if 'SheetsClient' not in g:
-        from sheets_client import SheetsClient as _SC
-        g['SheetsClient'] = _SC
-    if 'ThreadsClient' not in g:
-        from threads_client import ThreadsClient as _TC, ThreadsAPIError as _TAE
-        g['ThreadsClient'] = _TC
-        g['ThreadsAPIError'] = _TAE
-    if 'ClaudeClient' not in g:
-        from claude_client import ClaudeClient as _CC
-        g['ClaudeClient'] = _CC
-
-
-_bootstrap_defaults(globals())
-
-
 def run() -> None:
-    _g = globals()
-    cfg = _g['load_config']()
+    cfg = load_config()
 
     try:
-        sheets = _g['SheetsClient'](cfg.sheets_id, cfg.credentials_path)
+        sheets = SheetsClient(cfg.sheets_id, cfg.credentials_path)
         seen = sheets.seen_ids()
         today_count = sheets.replies_today()
     except Exception as e:
@@ -48,8 +30,8 @@ def run() -> None:
         log.info(f"Daily cap reached ({today_count}/{MAX_REPLIES_PER_DAY})")
         return
 
-    threads = _g['ThreadsClient'](cfg.threads_token)
-    claude = _g['ClaudeClient'](cfg.anthropic_key)
+    threads = ThreadsClient(cfg.threads_token)
+    claude = ClaudeClient(cfg.anthropic_key)
     cutoff = datetime.now(timezone.utc) - timedelta(hours=MAX_POST_AGE_HOURS)
 
     for segment, keywords in sheets.keyword_tabs():
