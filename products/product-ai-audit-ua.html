@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Аудит Профілю - Life Builder OS</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -1331,7 +1330,7 @@ function showResults() {
     </div>
 
     <button class="share-btn" id="share-btn" onclick="shareResult()">
-      <span>↑</span> Поділитись результатом
+      <span>↑</span> Поділитись в Threads
     </button>
 
     ${state.gateName ? `<p style="font-size:13px;color:var(--text2);text-align:center;margin-bottom:20px">План надіслано на <strong>${state.gateEmail}</strong></p>` : ''}
@@ -1390,71 +1389,52 @@ async function shareResult() {
   const sorted = [...role.automations].sort((a,b) =>
     Math.max(...b.pains.map(i=>state.pains[i]||0)) - Math.max(...a.pains.map(i=>state.pains[i]||0))
   );
+  const top3 = sorted.slice(0, 3);
 
   const shareText = [
-    `🤖 Мій AI-аудит - ${role.label}`,
+    `Пройшов AI-аудит — ${role.label}.`,
     ``,
-    total > 0 ? `⏱ ${total} год/тиж рутини → звільняю ${saved} год з AI` : '',
+    total > 0
+      ? `${saved} год/тиж можна делегувати автоматизаціям і AI замість того щоб робити це вручну.`
+      : `Знайшов потенціал для делегування рутинних задач автоматизаціям і AI.`,
     ``,
-    `Топ-3 автоматизації:`,
-    ...sorted.map((a,i) => `${i+1}/3 ${a.title}`),
+    `Топ-3 процеси:`,
+    ...top3.map(a => `• ${a.title}`),
     ``,
-    `Перевір свій профіль →`,
-    `lifebuilder.gumroad.com`,
-    `@artem.org.ua`
-  ].filter(l => l !== null).join('\n');
+    `Перевір себе: lifebuilder.gumroad.com`,
+  ].join('\n');
 
-  const btn  = document.getElementById('share-btn');
-  const card = document.getElementById('share-card');
-
+  const btn = document.getElementById('share-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span style="animation:spin .8s linear infinite;display:inline-block">⏳</span> Генерую картку...';
+  btn.innerHTML = '⏳ Готую текст...';
 
   try {
-    const canvas = await html2canvas(card, {
-      backgroundColor: '#141414',
-      scale: 2,
-      logging: false,
-      useCORS: true,
-      allowTaint: true
-    });
-
-    canvas.toBlob(async (blob) => {
-      const file = new File([blob], 'ai-audit-result.png', { type: 'image/png' });
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], text: shareText }).catch(()=>{});
-      } else if (navigator.share) {
-        await navigator.share({ text: shareText }).catch(()=>{});
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'ai-audit-result.png'; a.click();
-        URL.revokeObjectURL(url);
-        await navigator.clipboard.writeText(shareText).catch(()=>{});
-        btn.classList.add('share-copied');
-        btn.innerHTML = '<span>✓</span> Картку збережено + текст скопійовано';
-        setTimeout(() => {
-          btn.classList.remove('share-copied');
-          btn.innerHTML = '<span>↑</span> Поділитись результатом';
-          btn.disabled = false;
-        }, 3000);
-        return;
-      }
-      btn.innerHTML = '<span>↑</span> Поділитись результатом';
-      btn.disabled = false;
-    }, 'image/png');
-
+    if (navigator.share) {
+      await navigator.share({ text: shareText });
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      btn.classList.add('share-copied');
+      btn.innerHTML = '✓ Скопійовано — вставляй в Threads';
+      setTimeout(() => {
+        btn.classList.remove('share-copied');
+        btn.innerHTML = '↑ Поділитись в Threads';
+        btn.disabled = false;
+      }, 3000);
+      return;
+    }
   } catch(e) {
     await navigator.clipboard.writeText(shareText).catch(()=>{});
     btn.classList.add('share-copied');
-    btn.innerHTML = '<span>✓</span> Текст скопійовано в буфер';
+    btn.innerHTML = '✓ Скопійовано в буфер';
     setTimeout(() => {
       btn.classList.remove('share-copied');
-      btn.innerHTML = '<span>↑</span> Поділитись результатом';
+      btn.innerHTML = '↑ Поділитись в Threads';
       btn.disabled = false;
     }, 2500);
   }
+
+  btn.innerHTML = '↑ Поділитись в Threads';
+  btn.disabled = false;
 }
 
 // =====================================================================
