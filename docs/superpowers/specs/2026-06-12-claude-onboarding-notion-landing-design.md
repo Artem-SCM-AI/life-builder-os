@@ -8,9 +8,13 @@
 
 ## Overview
 
-A Notion page that serves as a landing page for the "Claude Code Перше знайомство" product. Target: cold/new Ukrainian-speaking audience (managers, marketers, SMM, freelancers). Distribution model: free lead magnet — subscribe to Telegram channel → get ZIP from pinned post.
+A Notion page that serves as a landing page for the "Claude Перше знайомство" product. Target: cold/new Ukrainian-speaking audience (managers, marketers, SMM, freelancers) — **zero IT experience assumed**. Distribution model: free lead magnet — subscribe to Telegram channel → get ZIP from pinned post.
 
 **Promised outcome:** людина підписується на канал, завантажує ZIP, запускає `/onboarding` і за 15 хв отримує прокачаний Claude workspace.
+
+**Key positioning rules:**
+- Never say "Claude Code" — always "Claude". "Code" alienates non-technical users.
+- No technical jargon in user-facing copy: no "CLAUDE.md", "memory", "hooks", "skills", "MCP" — use plain Ukrainian equivalents.
 
 ---
 
@@ -20,75 +24,88 @@ A Notion page that serves as a landing page for the "Claude Code Перше зн
 - **Gate:** Subscribe to Telegram channel (handle TBD — confirm actual `t.me/` URL, dots not allowed in Telegram usernames)
 - **Delivery:** ZIP file in pinned post of the channel
 - **Video guide:** also in pinned post (referenced in Step 2 on the landing page)
+- **Requirement:** Paid Claude plan ($20/month+) — free plan not supported. Surfaced prominently before CTA.
 
 ---
 
-## Page Structure — 6 Sections
+## Page Structure — 8 Blocks
 
 ### 1. Hero Block
 
-Notion implementation: dark full-width **page cover** (solid dark color or dark image) + page icon `⚡` + page title as H1. The cover sits at the top; text blocks sit below it in the standard Notion layout — there is no text overlay on the cover.
+Notion implementation: dark full-width **page cover** + page icon `⚡` + H1 title. Text blocks sit below the cover — no text overlay on the cover image.
 
 - **Page icon:** ⚡
-- **Page cover:** solid dark (`#0d0d0d` equivalent — use a dark image or Notion's darkest cover option)
-- **H1 title:** `Claude Code. Налаштований під тебе.`
-- **Eyebrow** (small text above H1, styled as a callout or colored text block): `⚡ Claude Code · Безкоштовно`
-- **Subtitle** (paragraph below H1): `15 хвилин — і у тебе є персональний AI-асистент який знає хто ти, пам'ятає контекст, і вміє те що потрібно саме для твоєї роботи.`
-- **Badge** (inline callout or bold paragraph): `⏱ 15 хв · одна команда`
+- **Page cover:** solid dark image (Notion's darkest cover option)
+- **Eyebrow** (small colored text above H1): `⚡ Claude · Безкоштовно`
+- **H1 title:** `Claude. Налаштований під тебе.`
+- **Subtitle:** `15 хвилин — і у тебе є персональний AI-асистент який знає хто ти, пам'ятає контекст, і вміє те що потрібно саме для твоєї роботи.`
+- **Badges (two inline callouts):**
+  - `🙌 Без жодного IT досвіду` — orange-tinted background
+  - `⏱ 15 хв · одна команда` — default background
 
-### 2. Callout — Main Hook
+### 2. Callout — Main Hook (two consecutive blocks)
 
-Two consecutive callout blocks (Notion doesn't support dividers inside a single callout).
-
-**Callout 1** — orange background:
+**Callout 1** — orange background (`#fff3ee`, orange left border):
 > Замість **базового Клода** — **прокачаний workspace** що знає хто ти, пам'ятає контекст між сесіями, і вміє те що потрібно саме для твоєї роботи.
 
-**Callout 2** — default/light background, smaller feel:
+**Callout 2** — gray/default background (smaller feel, secondary point):
 > І ще одне: правильний сетап **економить токени**. Клод не витрачає їх щоразу на з'ясування хто ти і що тобі треба — ти витискаєш **максимум з пакета на $20**.
 
-### 3. Feature Grid — "Що ти отримуєш"
-
-**H2:** `Що ти отримуєш`
-
-2-column layout (Notion columns). Each column contains 3 callout blocks. Notion's darkest native callout background is "Gray" — use that for the dark card effect. Last card uses "Orange" background as accent.
-
-| Emoji | Title | Description |
-|-------|-------|-------------|
-| 📄 | Персональний CLAUDE.md | Клод знає твоє ім'я, роль і поточну ціль — без пояснень щоразу |
-| 🧠 | Memory-профіль | Пам'ятає контекст між сесіями. Не треба повторювати хто ти |
-| ⚡ | Skills під твою роль | SMM, маркетолог, рекрутер — кожен отримує свій набір навичок |
-| 🔗 | MCP: Notion, Sheets, Telegram | Клод читає таблиці і створює задачі прямо з розмови |
-| 🪝 | Автоматичні хуки | Журнал сесій сам пишеться. PDF і Word читаються без конвертації |
-| 🎯 *(orange accent)* | Демо під твою роль | Перший реальний результат — одразу після налаштування |
-
-### 4. Steps — "Як це працює"
-
-**H2:** `Як це працює`
-
-Numbered list. Each item: bold title + plain text description on next line.
-
-1. **Підпишись на Telegram-канал** — там у закріпленому пості лежить ZIP-архів з workspace
-2. **Завантаж ZIP і відкрий у Claude Code** — розпакуй архів, відкрий папку в Claude Code. *(окремий рядок курсивом:* `▶ відеоінструкція — у закріпленому пості каналу`*)*
-3. **Напиши `/onboarding`** — Claude проведе тебе через 6 питань і налаштує все автоматично. ~15 хвилин.
-
-### 5. Role Tags — "Для кого це"
+### 3. "Для кого це" — No-Tech Banner + Role Tags
 
 **H2:** `Для кого це`
 
-Notion doesn't have pill tags natively. Implementation: use `inline code` formatting for each role on a single paragraph line — renders as monospace chips with gray background.
+**Dark banner block** (callout with dark/gray background, full width) — comes first, before the role tags:
 
-13 roles: `📣 SMM` `📊 Маркетолог` `💼 Продажник` `🤝 Рекрутер` `📦 SC менеджер` `🛒 E-commerce` `⚖️ Юрист` `🏗️ PM` `🧾 Бухгалтер` `🏪 МСБ` `✂️ Beauty` `🍽️ HoReCa` `💻 Фрілансер`
+> 🙌 **Жодного IT досвіду не потрібно**
+> Якщо ти ніколи не чув слова "термінал" — **це саме для тебе**. Весь процес — це розмова з Claude. Він запитує, ти відповідаєш, він налаштовує.
 
-### 6. CTA Block
+**Role tags** (below the banner). Notion workaround: `inline code` formatting for each role on a single wrapping paragraph.
 
-**H2:** (none — let the callout speak)
+13 roles: `📣 SMM` `📊 Маркетолог` `💼 Продажник` `🤝 Рекрутер` `📦 SC менеджер` `🛒 E-commerce` `⚖️ Юрист` `🏗️ Проєктний менеджер` `🧾 Бухгалтер` `🏪 Власник МСБ` `✂️ Beauty & wellness` `🍽️ HoReCa` `💻 Фрілансер`
 
-Large callout block, orange background, centered text (use a Notion callout with orange color).
+### 4. "Що ти отримуєш" — Feature Grid
 
-- **Title line (bold):** `Підпишись — і забирай`
+**H2:** `Що ти отримуєш`
+
+2-column layout (Notion columns). 3 callout blocks per column. Notion native backgrounds: "Gray" for dark cards, "Orange" for accent card.
+
+| Emoji | Title | Description |
+|-------|-------|-------------|
+| 📄 | Персональний профіль | Claude знає твоє ім'я, роль і поточну ціль — без пояснень щоразу |
+| 🧠 | Пам'ять між сесіями | Пам'ятає контекст між сесіями. Не треба повторювати хто ти |
+| ⚡ | Навички під твою роль | SMM, маркетолог, рекрутер — кожен отримує свій набір навичок |
+| 🔗 | Підключення Notion, Sheets, Telegram | Claude читає таблиці і створює задачі прямо з розмови |
+| 🪝 | Автоматика | Журнал сесій сам пишеться. PDF і Word читаються без конвертації |
+| 🎯 *(orange accent)* | Перший результат одразу | Демо під твою роль — прямо після налаштування |
+
+### 5. "Як це працює" — 3 Steps
+
+**H2:** `Як це працює`
+
+Numbered list. Bold title + plain text on next line.
+
+1. **Підпишись на Telegram-канал** — там у закріпленому пості лежить ZIP-архів з workspace
+2. **Завантаж ZIP і відкрий у Claude** — розпакуй архів, відкрий папку в Claude.
+   *(italic line below:* `▶ відеоінструкція — у закріпленому пості каналу`*)*
+3. **Напиши `/onboarding`** — Claude проведе тебе через 6 питань і налаштує все автоматично. ~15 хвилин.
+
+**Note:** Never mention "Claude Code" — just "Claude". Installation = Claude desktop app (claude.ai/code), explained in the video guide.
+
+### 6. Warning Callout — Paid Plan Required
+
+Yellow callout block (`#fef9c3` background, yellow left border). Placed **between steps and CTA** — cannot be missed before clicking subscribe.
+
+> ⚠️ **Важливо перед стартом:** це працює тільки на платних тарифах Claude ($20/міс і вище). Безкоштовний план не підтримується. Якщо ти ще не підписаний — це перший крок.
+
+### 7. CTA Block
+
+Large callout, orange background, centered.
+
+- **Bold title:** `Підпишись — і забирай`
 - **Body:** `Підписуєшся на канал → відкриваєш закріплений пост → завантажуєш ZIP. Далі 15 хвилин і твій Claude знає хто ти.`
-- **Button:** Notion button block → links to Telegram channel. Label: `Підписатись на канал →`
-- **Footer line (small/italic):** `безкоштовно назавжди`
+- **Button:** Notion button block → Telegram channel link. Label: `Підписатись на канал →`
+- **Footer (italic):** `безкоштовно назавжди`
 
 ---
 
@@ -96,12 +113,12 @@ Large callout block, orange background, centered text (use a Notion callout with
 
 | Design intent | Notion reality | Workaround |
 |--------------|----------------|------------|
-| `#0d0d0d` dark cards | No custom hex colors | Use "Gray" callout background |
+| `#0d0d0d` dark cards | No custom hex colors | "Gray" callout background |
 | Orange accent card | ✓ Native | "Orange" callout background |
 | Dark hero with text overlay | Not possible | Page cover + text blocks below |
 | Pill/tag chips | No native tags | `inline code` formatting |
 | Divider inside callout | Not supported | Two separate callout blocks |
-| Custom button styling | Limited | Notion button block (available in 2024+) |
+| Custom button styling | Limited | Notion button block (2024+) |
 
 ---
 
