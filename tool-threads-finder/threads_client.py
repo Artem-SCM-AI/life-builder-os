@@ -26,6 +26,7 @@ class ThreadsClient:
                 "fields": "id,text,timestamp,username,permalink",
                 "access_token": self._token,
             },
+            timeout=10,
         )
         self._check(resp)
         return resp.json().get("data", [])
@@ -40,16 +41,25 @@ class ThreadsClient:
                 "reply_to_id": post_id,
                 "access_token": self._token,
             },
+            timeout=10,
         )
         self._check(resp)
-        creation_id = resp.json()["id"]
+        data = resp.json()
+        creation_id = data.get("id")
+        if not creation_id:
+            raise ThreadsAPIError("No creation_id in /me/threads response")
         time.sleep(CONTAINER_READY_DELAY)
         pub = requests.post(
             f"{BASE_URL}/me/threads_publish",
             params={"creation_id": creation_id, "access_token": self._token},
+            timeout=10,
         )
         self._check(pub)
-        return pub.json()["id"]
+        pub_data = pub.json()
+        result_id = pub_data.get("id")
+        if not result_id:
+            raise ThreadsAPIError("No id in /me/threads_publish response")
+        return result_id
 
     def get_replies(self, thread_id: str) -> list[dict]:
         """Get replies to one of our comments."""
@@ -59,6 +69,7 @@ class ThreadsClient:
                 "fields": "id,text,timestamp,username",
                 "access_token": self._token,
             },
+            timeout=10,
         )
         self._check(resp)
         return resp.json().get("data", [])
@@ -67,4 +78,4 @@ class ThreadsClient:
         if resp.status_code == 401:
             raise ThreadsAuthError("Access token expired or invalid")
         if not resp.ok:
-            raise ThreadsAPIError(f"API error {resp.status_code}: {resp.text}")
+            raise ThreadsAPIError(f"API error {resp.status_code}: {resp.text[:200]}")
