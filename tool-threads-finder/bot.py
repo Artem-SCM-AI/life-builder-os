@@ -88,9 +88,16 @@ async def main() -> None:
     )
     async with app:
         await app.start()
-        asyncio.create_task(monitor_replies())
+        monitor_task = asyncio.create_task(monitor_replies())
         await app.updater.start_polling()
-        await asyncio.Event().wait()
+        try:
+            await asyncio.Event().wait()
+        finally:
+            monitor_task.cancel()
+            try:
+                await monitor_task
+            except asyncio.CancelledError:
+                pass
 
 
 if __name__ == '__main__':
