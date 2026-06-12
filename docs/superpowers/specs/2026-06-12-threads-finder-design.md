@@ -26,55 +26,72 @@ tool-threads-finder/
 
 ## Component 1: searcher.py
 
-**Trigger:** cron every 5 minutes.
+**Trigger:** cron every 5 minutes. Stateless — reads state from Sheets on every run.
 
 **Flow:**
-1. Load `seen_ids` from Sheets `Log` tab (post_id column)
+1. Load `seen_ids` from Sheets `Log` tab (post_id column, last 30 days only)
 2. Load `replies_today` count from Sheets `Log` where date = today
-3. For each keyword tab in Sheets (`Sales & Marketing`, `Ops & Finance`, `HR & Legal`, `Owners`, `Job Seekers`):
+3. If `replies_today >= 8`: exit immediately, no API calls
+4. For each keyword tab in Sheets (all tabs except `Log` and `Reply Map`):
    - Read active keywords (active = TRUE)
-   - For each keyword: `threads_keyword_search?q=keyword`
+   - For each keyword: `GET /threads/search?q={keyword}&fields=id,text,timestamp,username`
    - Filter posts: not in seen_ids · not older than 3h · text length > 40 chars
-   - If `replies_today >= 8`: stop, exit
-   - Call Claude: generate reply in Artem's voice (~150 chars, Ukrainian)
+   - Call Claude: generate reply in Artem's voice (≤ 280 chars, Ukrainian)
    - Post reply via `threads_manage_replies`
    - Append to Sheets `Log`: timestamp, segment, keyword, post_id, post_text, our_reply_id, our_reply_text
    - `replies_today++`
+   - If `replies_today >= 8`: stop
+
+**Error handling:**
+- Sheets load failure → exit immediately, log error, do not post (prevents duplicate replies on next run)
+- Threads API error on a single post → skip that post, continue
+- Claude API error → skip that post, continue
 
 **Safeguards:**
-- Hard cap: 8 replies/day (counted from Log tab, survives restarts)
-- seen_ids always loaded from Sheets (not in-memory, survives restarts)
-- Minimum post length filter: avoids one-word posts and spam
+- Hard cap: 8 replies/day — checked at start and enforced per-reply
+- seen_ids window: last 30 days (posts older than that won't surface in search)
+- Minimum post length: 40 chars — filters one-liners and spam
 
 ---
 
 ## Component 2: bot.py
 
-**Trigger:** persistent daemon, two async tasks.
+**Trigger:** persistent daemon, two concurrent async tasks.
 
 ### Task 1 — Threads Reply Monitor (every 5 min)
 
-1. Load `our_reply_id` values from Sheets `Log` for the last 7 days
-2. For each: `GET /{our_reply_id}/replies` via `threads_read_replies`
-3. Filter: not in Sheets `Reply Map` (by threads comment_id)
-4. For each new reply:
-   - Send Telegram message to Artem with: commenter handle, comment text, link to original post
-   - Save to Sheets `Reply Map`: timestamp, our_reply_id, commenter, comment_text, telegram_msg_id, status=pending
+1. Load `our_reply_id` values from Sheets `Log` (last 7 days)
+2. Load known `their_comment_id` values from Sheets `Reply Map`
+3. For each `our_reply_id`: `GET /{our_reply_id}/replies`
+4. For each reply not in `Reply Map`:
+   - Send Telegram notification to Artem:
+     ```
+     💬 Відповідь на твій коментар
+
+     Від: @{commenter_handle}
+     "{comment_text}"
+
+     Пост: {original_post_url}
+     ```
+   - Save to Sheets `Reply Map`: timestamp, our_reply_id, their_comment_id, commenter, comment_text, telegram_msg_id, status=pending
+
+**Implementation note:** `GET /{our_reply_id}/replies` reads replies to a reply (not only to top-level posts). This is the expected behavior of `threads_read_replies` but should be verified against the live API during initial testing.
 
 ### Task 2 — Telegram Listener (long polling)
 
-1. On incoming message:
-   - If message is a reply to a known bot notification → look up `threads_post_id` from `Reply Map` by `telegram_msg_id`
-   - Post Artem's text as reply on Threads
-   - Update `Reply Map` status → `replied`
-   - Confirm to Artem: "✅ Опубліковано"
-   - If message is NOT a reply to a notification → ignore silently
+1. On incoming Telegram message:
+   - If message is a reply to a known bot notification:
+     - Look up `their_comment_id` from `Reply Map` by `telegram_msg_id`
+     - Post Artem's text as reply to `their_comment_id` on Threads
+     - Update `Reply Map`: status → `replied`
+     - Confirm to Artem: "✅ Опубліковано"
+   - If message is NOT a reply to a known notification: ignore silently
 
 ---
 
 ## Google Sheets Structure
 
-**One spreadsheet, six tabs:**
+**One spreadsheet, seven tabs:**
 
 | Tab | Columns |
 |---|---|
@@ -84,19 +101,19 @@ tool-threads-finder/
 | `Owners` | keyword, active |
 | `Job Seekers` | keyword, active |
 | `Log` | timestamp, segment, keyword, post_id, post_text, our_reply_id, our_reply_text |
-| `Reply Map` | timestamp, our_reply_id, commenter, comment_text, telegram_msg_id, status |
+| `Reply Map` | timestamp, our_reply_id, their_comment_id, commenter, comment_text, telegram_msg_id, status |
 
-**Keyword tabs:** Adding a segment = adding a new tab. searcher.py reads all tabs except `Log` and `Reply Map` automatically. Tab name = segment label used in Log. Disabling a keyword = set active = FALSE.
+**Keyword tabs:** Tab name = segment label logged to `Log`. searcher.py reads every tab except `Log` and `Reply Map` — adding a new segment requires no code change. Disabling a keyword: set active = FALSE.
 
 ---
 
 ## Claude Reply Generation
 
-Single API call per qualifying post. Prompt includes:
-- ICP segment (derived from which keyword tab matched)
+Single API call per qualifying post. Prompt context:
+- ICP segment (tab name)
 - Original post text
-- Artem's voice rules: direct, Ukrainian, no coaching language, no em-dashes, adds one concrete insight, soft offer or question at the end
-- Hard constraint: output ≤ 280 chars
+- Voice rules: direct, Ukrainian, no coaching language, no em-dashes, one concrete insight, soft offer or question at the end
+- Hard output constraint: ≤ 280 chars
 
 No pre-classification step. Keywords are specific enough to imply intent.
 
@@ -108,14 +125,8 @@ No pre-classification step. Keywords are specific enough to imply intent.
 |---|---|
 | `threads_basic` | Both |
 | `threads_keyword_search` | searcher.py |
-| `threads_manage_replies` | searcher.py + bot.py |
+| `threads_manage_replies` | searcher.py + bot.py Task 2 |
 | `threads_read_replies` | bot.py Task 1 |
-
----
-
-## Known Scope Boundary (v1)
-
-The system monitors replies to our **automated comments only**. If Artem replies via Telegram and the person responds again, that second reply is NOT automatically detected — Artem continues the conversation in Threads directly. Full conversation thread monitoring is v2.
 
 ---
 
@@ -123,32 +134,41 @@ The system monitors replies to our **automated comments only**. If Artem replies
 
 ```
 THREADS_ACCESS_TOKEN=
-CLAUDE_API_KEY=
+ANTHROPIC_API_KEY=
 GOOGLE_SHEETS_ID=
+GOOGLE_CREDENTIALS_JSON=credentials.json   # path to service account file
 TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=        # Artem's personal chat ID — bot sends notifications here
+TELEGRAM_CHAT_ID=                          # Artem's personal chat ID
 ```
+
+---
 
 ## Startup
 
 ```bash
-# cron (every 5 min):
-*/5 * * * * cd /path/to/tool-threads-finder && python searcher.py
+# cron (every 5 min) — use absolute path:
+*/5 * * * * cd /Users/artem/tool-threads-finder && python searcher.py >> searcher.log 2>&1
 
-# daemon (persistent):
-python bot.py --account artem-org-ua
+# daemon:
+python bot.py
 ```
+
+---
+
+## Known Scope Boundary (v1)
+
+The system monitors replies to our automated comments only. If Artem replies via Telegram and the person responds again, that second reply is not automatically detected — Artem continues the conversation in Threads directly. Full multi-turn monitoring is v2.
 
 ---
 
 ## Initial Keyword List (from ICP)
 
-**Sales & Marketing:** "збираю ліди вручну", "CRM вручну", "звіт по рекламі вручну", "публікую пости вручну", "переношу ліди вручну"
+| Segment | Keywords |
+|---|---|
+| Sales & Marketing | "збираю ліди вручну", "CRM вручну", "звіт по рекламі вручну", "публікую пости вручну", "переношу ліди вручну" |
+| Ops & Finance | "обробляю інвойси вручну", "відстежую залишки вручну", "розношу витрати вручну", "відстежую відправлення вручну" |
+| HR & Legal | "переглядаю резюме вручну", "відповідаю на питання клієнтів вручну", "готую договори вручну" |
+| Owners | "відповідаю клієнтам вручну", "записую клієнтів вручну", "веду облік вручну", "хочу автоматизувати" |
+| Job Seekers | "шукаю вакансії вручну", "адаптую резюме вручну" |
 
-**Ops & Finance:** "обробляю інвойси вручну", "відстежую залишки вручну", "розношу витрати вручну", "відстежую відправлення вручну"
-
-**HR & Legal:** "переглядаю резюме вручну", "відповідаю на питання клієнтів вручну", "готую договори вручну"
-
-**Owners:** "відповідаю клієнтам вручну", "хочу автоматизувати", "записую клієнтів вручну", "веду облік вручну"
-
-**Job Seekers:** "шукаю вакансії вручну", "адаптую резюме вручну"
+Note: "хочу автоматизувати" is a broad keyword with a higher false-positive rate — monitor and tune after first week.
