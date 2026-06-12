@@ -36,8 +36,16 @@ INITIAL_KEYWORDS = {
 
 def setup():
     cfg = load_config()
-    gc = gspread.service_account(filename=cfg.credentials_path)
-    ss = gc.open_by_key(cfg.sheets_id)
+    try:
+        gc = gspread.service_account(filename=cfg.credentials_path)
+    except FileNotFoundError:
+        print(f"Error: credentials file not found at {cfg.credentials_path}")
+        raise
+    try:
+        ss = gc.open_by_key(cfg.sheets_id)
+    except gspread.SpreadsheetNotFound:
+        print(f"Error: Sheet not found or not accessible: {cfg.sheets_id}")
+        raise
     existing = {ws.title for ws in ss.worksheets()}
 
     for tab_name, keywords in INITIAL_KEYWORDS.items():
