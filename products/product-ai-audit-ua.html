@@ -814,7 +814,8 @@ const state = {
   q3: null, q4: null, q5: null,
   pains: [], painStep: 0, q13: [],
   gateName: '', gateEmail: '', gateProf: '', gateComment: '',
-  utmParams: {}
+  utmParams: {},
+  submitted: false,
 };
 
 // =====================================================================
@@ -1142,6 +1143,7 @@ function renderGate() {
 }
 
 function submitGate() {
+  if (state.submitted) return;
   const name    = document.getElementById('gate-name').value.trim();
   const prof    = document.getElementById('gate-prof').value.trim();
   const email   = document.getElementById('gate-email').value.trim();
@@ -1151,10 +1153,14 @@ function submitGate() {
   if (!email || !email.includes('@')) { errEl.textContent='Введи коректний email'; errEl.style.display='block'; return; }
   errEl.style.display='none';
 
+  state.submitted   = true;
   state.gateName    = name;
   state.gateEmail   = email;
   state.gateProf    = prof;
   state.gateComment = comment;
+
+  const btn = document.querySelector('#screen-gate .btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Відправляємо...'; }
 
   sendToSheets(buildPayload());
   showResults();
@@ -1218,11 +1224,15 @@ function sendAnonAndShowResults() {
 }
 
 function submitResultsEmail() {
+  if (state.submitted) return;
   const email = (document.getElementById('results-email')?.value||'').trim();
   const errEl = document.getElementById('results-email-error');
   if (!email || !email.includes('@')) { errEl.textContent='Введи коректний email'; errEl.style.display='block'; return; }
   errEl.style.display='none';
+  state.submitted = true;
   state.gateEmail = email;
+  const btn = document.querySelector('#results-email-section .btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Відправляємо...'; }
   sendToSheets(buildPayload());
   const section = document.getElementById('results-email-section');
   if (section) section.innerHTML = `
