@@ -10,7 +10,6 @@ def test_build_prompt_includes_all_labeled_sections():
         "user_profile": "profile info here",
     }
     prompt = build_prompt(context)
-
     assert "[USER PROFILE]" in prompt
     assert "profile info here" in prompt
     assert "[CURRENT PROJECTS & STATE — hot.md]" in prompt
@@ -20,16 +19,31 @@ def test_build_prompt_includes_all_labeled_sections():
     assert "Ukrainian" in prompt
 
 
-def test_generate_briefing_calls_haiku_model():
-    mock_client = MagicMock()
-    mock_client.messages.create.return_value.content = [MagicMock(text="Брифінг готовий")]
+def test_generate_briefing_calls_claude_cli():
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = "Брифінг готовий"
 
-    with patch("briefing.Anthropic", return_value=mock_client):
-        result = generate_briefing("test prompt", "test-api-key")
+    with patch("briefing.subprocess.run", return_value=mock_result) as mock_run:
+        result = generate_briefing("test prompt")
 
     assert result == "Брифінг готовий"
-    mock_client.messages.create.assert_called_once_with(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=400,
-        messages=[{"role": "user", "content": "test prompt"}],
+    mock_run.assert_called_once_with(
+        ["/Users/artem/.local/bin/claude", "--print", "test prompt"],
+        capture_output=True,
+        text=True,
+        timeout=60,
     )
+
+
+def test_generate_briefing_raises_on_nonzero_exit():
+    mock_result = MagicMock()
+    mock_result.returncode = 1
+    mock_result.stderr = "auth error"
+
+    with patch("briefing.subprocess.run", return_value=mock_result):
+        try:
+            generate_briefing("test prompt")
+            assert False, "Should have raised"
+        except RuntimeError as e:
+            assert "auth error" in str(e)

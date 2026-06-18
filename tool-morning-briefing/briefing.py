@@ -1,11 +1,13 @@
 import argparse
 import os
+import subprocess
 
-from anthropic import Anthropic
 from dotenv import load_dotenv
 
 from reader import read_context
 from sender import send_error_alert, send_telegram
+
+CLAUDE_PATH = "/Users/artem/.local/bin/claude"
 
 PROMPT_TEMPLATE = """You are Artem's morning assistant. Generate his daily briefing in Ukrainian.
 
@@ -36,14 +38,16 @@ def build_prompt(context: dict) -> str:
     return PROMPT_TEMPLATE.format(**context)
 
 
-def generate_briefing(prompt: str, api_key: str) -> str:
-    client = Anthropic(api_key=api_key)
-    message = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=400,
-        messages=[{"role": "user", "content": prompt}],
+def generate_briefing(prompt: str) -> str:
+    result = subprocess.run(
+        [CLAUDE_PATH, "--print", prompt],
+        capture_output=True,
+        text=True,
+        timeout=60,
     )
-    return message.content[0].text
+    if result.returncode != 0:
+        raise RuntimeError(f"Claude CLI error: {result.stderr.strip()}")
+    return result.stdout.strip()
 
 
 def main() -> None:
@@ -55,7 +59,6 @@ def main() -> None:
 
     token = os.environ["TELEGRAM_TOKEN"]
     chat_id = os.environ["TELEGRAM_CHAT_ID"]
-    api_key = os.environ["ANTHROPIC_API_KEY"]
 
     try:
         context = read_context(
@@ -64,7 +67,7 @@ def main() -> None:
             user_profile_path=os.environ["USER_PROFILE_PATH"],
         )
         prompt = build_prompt(context)
-        briefing = generate_briefing(prompt, api_key)
+        briefing = generate_briefing(prompt)
 
         if args.dry_run:
             print(briefing)
