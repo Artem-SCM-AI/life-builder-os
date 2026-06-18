@@ -208,7 +208,7 @@ Announce: "✓ memory/ з твоїм профілем створено"
 ### 4.3 — Install Superpowers plugin
 
 Say:
-"Встановлюємо базові скіли. Виконай цю команду в терміналі VS Code (Terminal → New Terminal):"
+"Встановлюємо базові скіли. Виконай цю команду в терміналі Claude Code (кнопка Terminal внизу або меню View → Terminal):"
 
 ```bash
 claude plugin install superpowers@claude-plugins-official

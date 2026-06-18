@@ -2,309 +2,389 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FlowerOS — Архітектура v3</title>
   <style>
+    @page {
+      size: A4 landscape;
+      margin: 12mm 14mm;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       background: #0f172a;
       color: #e2e8f0;
-      line-height: 1.5;
-      padding: 32px;
+      line-height: 1.4;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
-    h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.4rem; color: #f1f5f9; }
-    h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.25rem; color: #f1f5f9; }
-    .subtitle { color: #64748b; margin-bottom: 1.25rem; font-size: 0.9rem; }
 
-    .arch-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:14px 0; }
-    .abox { border-radius:10px; padding:11px 13px; font-size:0.78rem; }
-    .abox-title { font-weight:700; font-size:0.85rem; margin-bottom:7px; }
-    .abox-items { color:#cbd5e1; padding-left:0; }
-    .abox-items li { list-style:none; margin:3px 0; }
-    .abox-items li::before { content:"→ "; color:#475569; }
+    h2 { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 2px; }
+    h3 { font-size: 0.9rem; font-weight: 700; color: #93c5fd; margin-bottom: 6px; }
+    .subtitle { font-size: 0.74rem; color: #475569; margin-bottom: 8px; }
 
-    .c-core    { background:#1e3a5f; border:2px solid #3b82f6; }
-    .c-ext     { background:#1e293b; border:2px solid #475569; }
-    .c-api     { background:#1a2e1a; border:2px solid #22c55e; }
-    .c-storage { background:#2e1e3a; border:2px solid #a855f7; }
-    .c-user    { background:#2e1a1a; border:2px solid #f87171; }
-    .c-ai      { background:#1e1a3a; border:2px solid #a855f7; }
-    .c-pay     { background:#2e2a1a; border:2px solid #fde047; }
-    .c-loyal   { background:#1a2a2e; border:2px solid #22d3ee; }
-
-    .c-core    .abox-title { color:#93c5fd; }
-    .c-ext     .abox-title { color:#94a3b8; }
-    .c-api     .abox-title { color:#86efac; }
-    .c-storage .abox-title { color:#d8b4fe; }
-    .c-user    .abox-title { color:#fca5a5; }
-    .c-ai      .abox-title { color:#c4b5fd; }
-    .c-pay     .abox-title { color:#fde047; }
-    .c-loyal   .abox-title { color:#67e8f9; }
-
-    .section-label { grid-column:1/-1; font-size:0.7rem; color:#475569; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin-bottom:-4px; margin-top:4px; }
-
-    .db-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:8px; }
-    .db-table { background:#1a0f2e; padding:8px; border-radius:6px; font-size:0.72rem; }
-    .db-name { color:#d8b4fe; font-weight:700; margin-bottom:4px; }
-    .db-fields { color:#64748b; line-height:1.5; }
-
-    .flow-block { background:#0f172a; border-radius:8px; padding:11px 13px; font-size:0.78rem; font-family:monospace; color:#94a3b8; margin-bottom:8px; border-left:3px solid #1e293b; }
-    .flow-block h4 { margin:0 0 7px; font-size:0.82rem; }
-
-    .tag { display:inline-block; font-size:0.66rem; padding:1px 5px; border-radius:3px; margin-left:4px; font-weight:600; }
-    .t-r  { background:#14532d; color:#86efac; }
-    .t-w  { background:#3a1a1a; color:#fca5a5; }
-    .t-e  { background:#1a1a3a; color:#93c5fd; }
-    .t-ai { background:#1e1a3a; color:#c4b5fd; }
-    .t-l  { background:#0e2a2e; color:#67e8f9; }
-
-    .fl-blue   { color:#93c5fd; }
-    .fl-green  { color:#86efac; }
-    .fl-yellow { color:#fde047; }
-    .fl-purple { color:#d8b4fe; }
-    .fl-ok     { color:#a3e635; }
-    .fl-pink   { color:#f9a8d4; }
-    .fl-cyan   { color:#67e8f9; }
-
-    .flows-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-    @media print {
-      body { padding: 16px; }
-      .arch-grid { gap: 7px; }
-      .abox { padding: 8px 10px; }
+    /* Each section group (label + row) stays together */
+    .section-group {
+      break-inside: avoid;
+      margin-bottom: 7px;
     }
+
+    .section-label {
+      font-size: 0.6rem;
+      color: #334155;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 4px;
+    }
+
+    /* ── Component rows ── */
+    .arch-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      break-inside: avoid;
+    }
+
+    /* ── Component boxes ── */
+    .abox {
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      break-inside: avoid;
+    }
+    .abox-title { font-weight: 700; font-size: 0.76rem; margin-bottom: 5px; }
+    .abox-items { color: #cbd5e1; padding-left: 0; }
+    .abox-items li { list-style: none; margin: 2px 0; }
+    .abox-items li::before { content: "→ "; color: #334155; }
+
+    .c-core    { background: #1e3a5f; border: 2px solid #3b82f6; }
+    .c-ext     { background: #1e293b; border: 2px solid #475569; }
+    .c-api     { background: #1a2e1a; border: 2px solid #22c55e; }
+    .c-storage { background: #2e1e3a; border: 2px solid #a855f7; }
+    .c-user    { background: #2e1a1a; border: 2px solid #f87171; }
+    .c-ai      { background: #1e1a3a; border: 2px solid #a855f7; }
+    .c-pay     { background: #2e2a1a; border: 2px solid #fde047; }
+    .c-loyal   { background: #1a2a2e; border: 2px solid #22d3ee; }
+
+    .c-core    .abox-title { color: #93c5fd; }
+    .c-ext     .abox-title { color: #94a3b8; }
+    .c-api     .abox-title { color: #86efac; }
+    .c-storage .abox-title { color: #d8b4fe; }
+    .c-user    .abox-title { color: #fca5a5; }
+    .c-ai      .abox-title { color: #c4b5fd; }
+    .c-pay     .abox-title { color: #fde047; }
+    .c-loyal   .abox-title { color: #67e8f9; }
+
+    /* ── Bot Engine inner ── */
+    .bot-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .states-box {
+      background: #0a1020;
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: 0.65rem;
+      color: #475569;
+    }
+    .states-box .lbl { color: #93c5fd; margin-bottom: 2px; font-weight: 600; }
+
+    /* ── Tags ── */
+    .tag {
+      display: inline-block;
+      font-size: 0.58rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-left: 3px;
+      font-weight: 600;
+    }
+    .t-r  { background: #14532d; color: #86efac; }
+    .t-w  { background: #3a1a1a; color: #fca5a5; }
+    .t-e  { background: #1a1a3a; color: #93c5fd; }
+
+    /* ── LMachine note ── */
+    .lm-note {
+      margin-top: 5px;
+      background: #0a1f24;
+      border-radius: 4px;
+      padding: 5px 7px;
+      font-size: 0.64rem;
+      color: #334155;
+    }
+    .lm-note span { color: #67e8f9; }
+
+    /* ── Storage ── */
+    .storage-box {
+      background: #2e1e3a;
+      border: 2px solid #a855f7;
+      border-radius: 8px;
+      padding: 9px 11px;
+      break-inside: avoid;
+    }
+    .storage-title { color: #d8b4fe; font-weight: 700; font-size: 0.76rem; margin-bottom: 3px; }
+    .storage-note  { font-size: 0.65rem; color: #475569; margin-bottom: 7px; }
+
+    .db-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 5px;
+    }
+    .db-table { background: #1a0f2e; padding: 6px 7px; border-radius: 5px; font-size: 0.64rem; break-inside: avoid; }
+    .db-name   { color: #d8b4fe; font-weight: 700; margin-bottom: 3px; }
+    .db-fields { color: #475569; line-height: 1.45; }
+    .db-note   { color: #22d3ee; }
+
+    /* ── Flows ── */
+    .flows-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+    .flow-block {
+      background: #0a1020;
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      color: #94a3b8;
+      border-left: 3px solid #1e293b;
+      break-inside: avoid;
+    }
+    .flow-block h4 { margin: 0 0 5px; font-size: 0.74rem; font-family: system-ui, sans-serif; }
+
+    .fl-blue   { color: #93c5fd; }
+    .fl-green  { color: #86efac; }
+    .fl-yellow { color: #fde047; }
+    .fl-purple { color: #d8b4fe; }
+    .fl-ok     { color: #a3e635; }
+    .fl-pink   { color: #f9a8d4; }
+    .fl-cyan   { color: #67e8f9; }
+
+    .footer { font-size: 0.6rem; color: #1e293b; text-align: right; margin-top: 8px; }
   </style>
 </head>
 <body>
 
-<h2>FlowerOS — Архітектура v3 (фінальна)</h2>
-<p class="subtitle">З LMachine як loyalty backend · Дніпро пілот · 2026-06-10</p>
+<h2>FlowerOS — Архітектура v3</h2>
+<p class="subtitle">Дніпро пілот · 7% комісія · LMachine loyalty backend · Flora24 bidirectional · 2026-06-10</p>
 
-<div class="arch-grid">
-<div class="section-label">Актори</div>
-
-<div class="abox c-user">
-  <div class="abox-title">👤 Клієнт</div>
-  <ul class="abox-items">
-    <li>Реєстрація + онбординг</li>
-    <li>Кілька профілів (вільна мітка)</li>
-    <li>Шерить профіль via deep link</li>
-    <li>Підтверджує замовлення</li>
-    <li>Платить (3 способи)</li>
-    <li>Спілкується з AI флористом</li>
-  </ul>
-</div>
-
-<div class="abox c-user">
-  <div class="abox-title">👨‍💼 Менеджер</div>
-  <ul class="abox-items">
-    <li>Telegram-чат точки</li>
-    <li>Отримує нові замовлення</li>
-    <li>Надсилає фото букету</li>
-    <li>Підтверджує cash/термінал</li>
-    <li>Отримує escalation від AI</li>
-  </ul>
-</div>
-
-<div class="abox c-ext">
-  <div class="abox-title">📱 Telegram API</div>
-  <ul class="abox-items">
-    <li>N токенів (1 на магазин)</li>
-    <li>Webhook mode</li>
-    <li>sendMessage / sendPhoto</li>
-    <li>InlineKeyboard</li>
-    <li>Deep links (profile share)</li>
-  </ul>
-</div>
-
-<div class="abox c-ext">
-  <div class="abox-title">📋 Config Manager</div>
-  <ul class="abox-items">
-    <li>shops/shop_N.yaml</li>
-    <li>bot_token</li>
-    <li>airtable_base_id</li>
-    <li>lmachine_shop_id</li>
-    <li>manager_chat_id</li>
-  </ul>
-</div>
-
-<div class="section-label">Ядро</div>
-
-<div class="abox c-core" style="grid-column:1/3">
-  <div class="abox-title">⚙️ Bot Engine</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <ul class="abox-items">
-      <li>Один Python-сервіс</li>
-      <li>N екземплярів (per token)</li>
-      <li>Async ConversationHandler</li>
-      <li>Middleware: auth, logging</li>
-      <li>FastAPI для вебхуків</li>
-    </ul>
-    <div style="background:#0f172a;border-radius:6px;padding:8px;font-size:0.72rem;color:#64748b">
-      <div style="color:#93c5fd;margin-bottom:4px">Conversation states:</div>
-      ONBOARDING<br>IDLE<br>REMINDER_FLOW<br>ORDER_FLOW<br>PAYMENT_FLOW<br>SUPPORT_MODE<br>PROFILE_SHARE
+<!-- ACTORS -->
+<div class="section-group">
+  <div class="section-label">Актори</div>
+  <div class="arch-row">
+    <div class="abox c-user">
+      <div class="abox-title">👤 Клієнт</div>
+      <ul class="abox-items">
+        <li>Реєстрація + онбординг</li>
+        <li>Кілька профілів (вільна мітка)</li>
+        <li>Шерить профіль via deep link</li>
+        <li>Підтверджує замовлення</li>
+        <li>Платить (3 способи)</li>
+        <li>Спілкується з AI флористом</li>
+      </ul>
+    </div>
+    <div class="abox c-user">
+      <div class="abox-title">👨‍💼 Менеджер</div>
+      <ul class="abox-items">
+        <li>Telegram-чат точки</li>
+        <li>Отримує нові замовлення</li>
+        <li>Надсилає фото букету</li>
+        <li>Підтверджує cash/термінал</li>
+        <li>Отримує escalation від AI</li>
+      </ul>
+    </div>
+    <div class="abox c-ext">
+      <div class="abox-title">📱 Telegram API</div>
+      <ul class="abox-items">
+        <li>N токенів (1 на магазин)</li>
+        <li>Webhook mode</li>
+        <li>sendMessage / sendPhoto</li>
+        <li>InlineKeyboard</li>
+        <li>Deep links (profile share)</li>
+      </ul>
+    </div>
+    <div class="abox c-ext">
+      <div class="abox-title">📋 Config Manager</div>
+      <ul class="abox-items">
+        <li>shops/shop_N.yaml</li>
+        <li>bot_token</li>
+        <li>airtable_base_id</li>
+        <li>lmachine_shop_id</li>
+        <li>manager_chat_id</li>
+      </ul>
     </div>
   </div>
 </div>
 
-<div class="abox c-core">
-  <div class="abox-title">⏰ Scheduler</div>
-  <ul class="abox-items">
-    <li>Щоденний скан дат</li>
-    <li>Нагадування за 2 дні</li>
-    <li>Сезонні кампанії</li>
-    <li>Таймаут оплати (2 год)</li>
-    <li>Re-engagement (раз/рік)</li>
-  </ul>
-</div>
-
-<div class="abox c-ai">
-  <div class="abox-title">🤖 AI Support Agent</div>
-  <ul class="abox-items">
-    <li>claude-haiku-4-5</li>
-    <li>System: флорист + FAQ</li>
-    <li>Context: профіль + замовлення</li>
-    <li>Tool: get_stock() ← Flora24</li>
-    <li>Tool: get_balance() ← LMachine</li>
-    <li>Tool: escalate_to_manager()</li>
-  </ul>
-  <div style="margin-top:6px;font-size:0.72rem;color:#64748b">~$0.001/розмова</div>
-</div>
-
-<div class="section-label">Зовнішні інтеграції</div>
-
-<div class="abox c-loyal">
-  <div class="abox-title">🏆 LMachine Client</div>
-  <ul class="abox-items">
-    <li>POST /users — реєстрація <span class="tag t-w">WRITE</span></li>
-    <li>POST /transactions — покупка <span class="tag t-w">WRITE</span></li>
-    <li>POST /referrals — реферал <span class="tag t-w">WRITE</span></li>
-    <li>POST /redeem — списання <span class="tag t-w">WRITE</span></li>
-    <li>GET /balance — залишок <span class="tag t-r">READ</span></li>
-    <li>GET /user/stats — тир, прогрес <span class="tag t-r">READ</span></li>
-    <li>GET /referral-link <span class="tag t-r">READ</span></li>
-  </ul>
-  <div style="margin-top:6px;background:#0a1f24;border-radius:6px;padding:7px;font-size:0.72rem;color:#64748b">
-    <span style="color:#67e8f9">Відповідальність LMachine:</span><br>
-    кешбек 3/5/7% · тири · реферали<br>
-    +3% за готівку · пасивний дохід<br>
-    ліміти списання по тирах
+<!-- CORE -->
+<div class="section-group">
+  <div class="section-label">Ядро</div>
+  <div class="arch-row">
+    <div class="abox c-core" style="grid-column:span 2">
+      <div class="abox-title">⚙️ Bot Engine</div>
+      <div class="bot-inner">
+        <ul class="abox-items">
+          <li>Один Python-сервіс</li>
+          <li>N екземплярів (per token)</li>
+          <li>Async ConversationHandler</li>
+          <li>Middleware: auth, logging</li>
+          <li>FastAPI для вебхуків</li>
+        </ul>
+        <div class="states-box">
+          <div class="lbl">Conversation states:</div>
+          ONBOARDING · IDLE<br>REMINDER_FLOW<br>ORDER_FLOW<br>PAYMENT_FLOW<br>SUPPORT_MODE<br>PROFILE_SHARE
+        </div>
+      </div>
+    </div>
+    <div class="abox c-core">
+      <div class="abox-title">⏰ Scheduler</div>
+      <ul class="abox-items">
+        <li>Щоденний скан дат</li>
+        <li>Нагадування за 2 дні</li>
+        <li>Сезонні кампанії</li>
+        <li>Таймаут оплати (2 год)</li>
+        <li>Re-engagement (раз/рік)</li>
+      </ul>
+      <div style="margin-top:4px;font-size:0.62rem;color:#334155">APScheduler async</div>
+    </div>
+    <div class="abox c-ai">
+      <div class="abox-title">🤖 AI Support Agent</div>
+      <ul class="abox-items">
+        <li>claude-haiku-4-5</li>
+        <li>System: флорист + FAQ</li>
+        <li>Context: профіль + замовлення</li>
+        <li>Tool: get_stock() ← Flora24</li>
+        <li>Tool: get_balance() ← LMachine</li>
+        <li>Tool: escalate_to_manager()</li>
+      </ul>
+      <div style="margin-top:4px;font-size:0.62rem;color:#334155">~$0.001/розмова</div>
+    </div>
   </div>
 </div>
 
-<div class="abox c-api">
-  <div class="abox-title">🌸 Flora24 Client</div>
-  <ul class="abox-items">
-    <li>GET /stock <span class="tag t-r">READ</span></li>
-    <li>POST /preorders <span class="tag t-w">WRITE</span></li>
-    <li>GET /calendar <span class="tag t-r">READ</span></li>
-    <li>Cache залишків 5 хв</li>
-    <li>Retry + rate limiting</li>
-  </ul>
-</div>
-
-<div class="abox c-pay">
-  <div class="abox-title">💳 Payment Handler</div>
-  <ul class="abox-items">
-    <li>Онлайн → Monobank link <span class="tag t-e">webhook</span></li>
-    <li>Готівка → +3% cashback flag</li>
-    <li>Термінал → менеджер ✅</li>
-    <li>Будь-який метод → LMachine tx</li>
-    <li>→ Airtable Transactions</li>
-  </ul>
-</div>
-
-<div class="abox c-api">
-  <div class="abox-title">🔗 Profile Share Engine</div>
-  <ul class="abox-items">
-    <li>Генерує deep link</li>
-    <li>t.me/bot?start=p_[token]</li>
-    <li>Отримувач задає власну мітку</li>
-    <li>Нейтральна мова скрізь</li>
-    <li>→ Airtable Profiles (is_shared)</li>
-  </ul>
-</div>
-
-<div class="section-label">Сховище</div>
-
-<div class="abox c-storage" style="grid-column:1/-1">
-  <div class="abox-title">🗄️ Airtable — операційна БД (1 base per shop)</div>
-  <div style="font-size:0.72rem;color:#64748b;margin-bottom:8px">Cashback-логіка → LMachine. Airtable = операції, замовлення, аналітика, AI knowledge base.</div>
-  <div class="db-grid">
-    <div class="db-table"><div class="db-name">Shops</div><div class="db-fields">id, name, city<br>bot_token_ref<br>manager_chat_id<br>lmachine_shop_id<br>commission_pct</div></div>
-    <div class="db-table"><div class="db-name">Users</div><div class="db-fields">tg_id, shop_id<br>name, phone<br>lmachine_user_id<br>joined_at<br><span style="color:#67e8f9">(баланс → LMachine)</span></div></div>
-    <div class="db-table"><div class="db-name">Profiles</div><div class="db-fields">user_id, relation_label<br>dates[], flowers[]<br>vase_h, forbidden[]<br>is_shared, source_user_id</div></div>
-    <div class="db-table"><div class="db-name">Orders</div><div class="db-fields">user_id, profile_id<br>status, budget<br>photo_url, flora24_ref<br>payment_method<br>delivery_addr/time</div></div>
-    <div class="db-table"><div class="db-name">Transactions</div><div class="db-fields">order_id, amount<br>commission_amt<br>payment_method<br>mono_invoice_id<br>lmachine_tx_id<br>paid_at</div></div>
-    <div class="db-table"><div class="db-name">Campaigns</div><div class="db-fields">shop_id, flower_type<br>sent_at, sent_count<br>opened, converted</div></div>
-    <div class="db-table"><div class="db-name">ShopKnowledge</div><div class="db-fields">shop_id, category<br>question, answer<br>(FAQ для AI агента)</div></div>
-    <div class="db-table"><div class="db-name">SupportChats</div><div class="db-fields">user_id, started_at<br>messages_json<br>escalated, resolved_by</div></div>
+<!-- INTEGRATIONS -->
+<div class="section-group">
+  <div class="section-label">Зовнішні інтеграції</div>
+  <div class="arch-row">
+    <div class="abox c-loyal">
+      <div class="abox-title">🏆 LMachine Client</div>
+      <ul class="abox-items">
+        <li>POST /users — реєстрація <span class="tag t-w">WRITE</span></li>
+        <li>POST /transactions — покупка <span class="tag t-w">WRITE</span></li>
+        <li>POST /referrals — реферал <span class="tag t-w">WRITE</span></li>
+        <li>POST /redeem — списання <span class="tag t-w">WRITE</span></li>
+        <li>GET /balance <span class="tag t-r">READ</span></li>
+        <li>GET /user/stats <span class="tag t-r">READ</span></li>
+        <li>GET /referral-link <span class="tag t-r">READ</span></li>
+      </ul>
+      <div class="lm-note"><span>Відповідальність:</span> кешбек 3/5/7% · тири · реферали · +3% готівка · ліміти списання</div>
+    </div>
+    <div class="abox c-api">
+      <div class="abox-title">🌸 Flora24 Client</div>
+      <ul class="abox-items">
+        <li>GET /stock <span class="tag t-r">READ</span></li>
+        <li>POST /preorders <span class="tag t-w">WRITE</span></li>
+        <li>GET /calendar <span class="tag t-r">READ</span></li>
+        <li>Cache залишків 5 хв</li>
+        <li>Retry + rate limiting</li>
+      </ul>
+    </div>
+    <div class="abox c-pay">
+      <div class="abox-title">💳 Payment Handler</div>
+      <ul class="abox-items">
+        <li>Онлайн → Monobank link <span class="tag t-e">webhook</span></li>
+        <li>Готівка → +3% cashback flag</li>
+        <li>Термінал → менеджер ✅</li>
+        <li>Будь-який метод → LMachine tx</li>
+        <li>→ Airtable Transactions</li>
+      </ul>
+    </div>
+    <div class="abox c-api">
+      <div class="abox-title">🔗 Profile Share Engine</div>
+      <ul class="abox-items">
+        <li>Генерує deep link</li>
+        <li>t.me/bot?start=p_[token]</li>
+        <li>Отримувач задає власну мітку</li>
+        <li>Нейтральна мова скрізь</li>
+        <li>→ Airtable Profiles (is_shared)</li>
+      </ul>
+    </div>
   </div>
 </div>
+
+<!-- STORAGE -->
+<div class="section-group">
+  <div class="section-label">Сховище</div>
+  <div class="storage-box">
+    <div class="storage-title">🗄️ Airtable — операційна БД (1 base per shop)</div>
+    <div class="storage-note">Cashback-логіка → LMachine. Airtable = операції, замовлення, аналітика, AI knowledge base.</div>
+    <div class="db-grid">
+      <div class="db-table"><div class="db-name">Shops</div><div class="db-fields">id, name, city<br>bot_token_ref<br>manager_chat_id<br>lmachine_shop_id<br>commission_pct</div></div>
+      <div class="db-table"><div class="db-name">Users</div><div class="db-fields">tg_id, shop_id<br>name, phone<br>lmachine_user_id<br>joined_at<br><span class="db-note">(баланс → LMachine)</span></div></div>
+      <div class="db-table"><div class="db-name">Profiles</div><div class="db-fields">user_id<br>relation_label<br>dates[], flowers[]<br>vase_h, forbidden[]<br>is_shared, source_user_id</div></div>
+      <div class="db-table"><div class="db-name">Orders</div><div class="db-fields">user_id, profile_id<br>status, budget<br>photo_url, flora24_ref<br>payment_method<br>delivery_addr/time</div></div>
+      <div class="db-table"><div class="db-name">Transactions</div><div class="db-fields">order_id, amount<br>commission_amt<br>payment_method<br>mono_invoice_id<br>lmachine_tx_id<br>paid_at</div></div>
+      <div class="db-table"><div class="db-name">Campaigns</div><div class="db-fields">shop_id<br>flower_type<br>campaign_type<br>sent_at, sent_count<br>opened, converted</div></div>
+      <div class="db-table"><div class="db-name">ShopKnowledge</div><div class="db-fields">shop_id, category<br>question, answer<br><span class="db-note">(FAQ → AI агент)</span></div></div>
+      <div class="db-table"><div class="db-name">SupportChats</div><div class="db-fields">user_id, started_at<br>messages_json<br>escalated<br>resolved_by</div></div>
+    </div>
+  </div>
 </div>
 
-<h3 style="color:#93c5fd;margin:20px 0 10px">Ключові потоки</h3>
-<div class="flows-grid">
-
-<div class="flow-block" style="border-left-color:#f87171">
-  <h4 style="color:#fca5a5">👤 Реєстрація</h4>
-  <div><span class="fl-pink">Клієнт</span>: /start → онбординг-анкета</div>
-  <div>→ <span class="fl-purple">Airtable</span>: Users (create)</div>
-  <div>→ <span class="fl-cyan">LMachine</span>: create_user(tg_id, referrer_id) <span class="tag t-w">WRITE</span></div>
-  <div><span class="fl-ok">→ Клієнт отримує loyalty card ID</span></div>
+<!-- FLOWS -->
+<div class="section-group">
+  <div class="section-label" style="margin-top:2px">Ключові потоки даних</div>
+  <div class="flows-grid">
+    <div class="flow-block" style="border-left-color:#f87171">
+      <h4 style="color:#fca5a5">👤 Реєстрація</h4>
+      <div><span class="fl-pink">Клієнт</span>: /start → онбординг-анкета</div>
+      <div>→ <span class="fl-purple">Airtable</span>: Users (create)</div>
+      <div>→ <span class="fl-cyan">LMachine</span>: create_user(tg_id, referrer_id) <span class="tag t-w">WRITE</span></div>
+      <div><span class="fl-ok">→ Клієнт отримує loyalty card ID</span></div>
+    </div>
+    <div class="flow-block" style="border-left-color:#3b82f6">
+      <h4 style="color:#93c5fd">🔔 Нагадування</h4>
+      <div><span class="fl-blue">Scheduler</span> → <span class="fl-purple">Airtable</span>: профілі +2 дні</div>
+      <div>→ <span class="fl-green">Flora24</span>: get_stock(flowers) <span class="tag t-r">READ</span></div>
+      <div>→ <span class="fl-cyan">LMachine</span>: get_balance(user_id) <span class="tag t-r">READ</span></div>
+      <div>→ <span class="fl-pink">Клієнт</span>: "До [дати] 2 дні. Є [квіти]. Кешбек: X грн"</div>
+    </div>
+    <div class="flow-block" style="border-left-color:#22c55e">
+      <h4 style="color:#86efac">🛒 Замовлення → Оплата</h4>
+      <div><span class="fl-pink">Клієнт</span>: бюджет → обирає спосіб оплати</div>
+      <div>→ <span class="fl-green">Flora24</span>: create_preorder() <span class="tag t-w">WRITE</span></div>
+      <div>→ <span class="fl-purple">Airtable</span>: Orders (pending_photo)</div>
+      <div>→ <span class="fl-pink">Менеджер</span>: нотифікація → фото → клієнт</div>
+      <div><span class="fl-yellow">Готівка</span>: +3% → менеджер ✅ · <span class="fl-ok">Онлайн</span>: webhook ✅</div>
+      <div>→ <span class="fl-cyan">LMachine</span>: record_transaction() <span class="tag t-w">WRITE</span></div>
+    </div>
+    <div class="flow-block" style="border-left-color:#22d3ee">
+      <h4 style="color:#67e8f9">🏆 Loyalty Card</h4>
+      <div><span class="fl-pink">Клієнт</span>: /card або кнопка</div>
+      <div>→ <span class="fl-cyan">LMachine</span>: get_user_stats() <span class="tag t-r">READ</span></div>
+      <div>Бот: баланс · тир · прогрес до наступного тиру</div>
+      <div>→ <span class="fl-cyan">LMachine</span>: get_referral_link() <span class="tag t-r">READ</span></div>
+      <div><span class="fl-ok">Клієнт ділиться посиланням → новий юзер</span></div>
+    </div>
+    <div class="flow-block" style="border-left-color:#a855f7">
+      <h4 style="color:#c4b5fd">🔗 Profile Share</h4>
+      <div><span class="fl-pink">Власник</span>: /share → deep link (profile_id)</div>
+      <div>→ надсилає у будь-якому месенджері</div>
+      <div><span class="fl-pink">Отримувач</span>: відкриває бот → бачить профіль</div>
+      <div>→ задає власну мітку (вільний текст)</div>
+      <div><span class="fl-ok">→ Scheduler нагадує отримувачу про ці дати</span></div>
+    </div>
+    <div class="flow-block" style="border-left-color:#7c3aed">
+      <h4 style="color:#c4b5fd">🤖 AI Support</h4>
+      <div>[💬 Запитати флориста] → AI Agent</div>
+      <div>Context: ShopKnowledge + профіль + замовлення</div>
+      <div>Tools: get_stock() · get_balance() · escalate()</div>
+      <div>Не впевнений → escalate_to_manager()</div>
+      <div>→ Менеджер отримує контекст розмови</div>
+    </div>
+  </div>
 </div>
 
-<div class="flow-block" style="border-left-color:#3b82f6">
-  <h4 style="color:#93c5fd">🔔 Нагадування</h4>
-  <div><span class="fl-blue">Scheduler</span> → <span class="fl-purple">Airtable</span>: профілі +2 дні</div>
-  <div>→ <span class="fl-green">Flora24</span>: get_stock(flowers) <span class="tag t-r">READ</span></div>
-  <div>→ <span class="fl-cyan">LMachine</span>: get_balance(user_id) <span class="tag t-r">READ</span></div>
-  <div>→ <span class="fl-pink">Клієнт</span>: "До [дати] 2 дні. Є [квіти]. Ваш кешбек: 240 грн"</div>
-</div>
-
-<div class="flow-block" style="border-left-color:#22c55e">
-  <h4 style="color:#86efac">🛒 Замовлення → Оплата</h4>
-  <div><span class="fl-pink">Клієнт</span>: бюджет → обирає спосіб оплати</div>
-  <div>→ <span class="fl-green">Flora24</span>: create_preorder() <span class="tag t-w">WRITE</span></div>
-  <div>→ <span class="fl-purple">Airtable</span>: Orders (pending_photo)</div>
-  <div>→ <span class="fl-pink">Менеджер</span>: нотифікація → фото → клієнт</div>
-  <div><span class="fl-yellow">Готівка</span>: +3% flag → менеджер ✅</div>
-  <div><span class="fl-ok">Онлайн</span>: Monobank webhook → auto ✅</div>
-  <div>→ <span class="fl-cyan">LMachine</span>: record_transaction() <span class="tag t-w">WRITE</span></div>
-  <div>→ <span class="fl-purple">Airtable</span>: Transactions (lmachine_tx_id)</div>
-</div>
-
-<div class="flow-block" style="border-left-color:#22d3ee">
-  <h4 style="color:#67e8f9">🏆 Loyalty Card</h4>
-  <div><span class="fl-pink">Клієнт</span>: /card або кнопка</div>
-  <div>→ <span class="fl-cyan">LMachine</span>: get_user_stats() <span class="tag t-r">READ</span></div>
-  <div>Бот показує: баланс · тир · прогрес · реф. лінк</div>
-  <div>→ <span class="fl-cyan">LMachine</span>: get_referral_link() <span class="tag t-r">READ</span></div>
-  <div><span class="fl-ok">Клієнт ділиться → новий юзер</span></div>
-</div>
-
-<div class="flow-block" style="border-left-color:#a855f7">
-  <h4 style="color:#c4b5fd">🔗 Profile Share</h4>
-  <div><span class="fl-pink">Власник</span>: /share → deep link</div>
-  <div>→ надсилає комусь у будь-якому месенджері</div>
-  <div><span class="fl-pink">Отримувач</span>: відкриває → задає мітку (вільний текст)</div>
-  <div><span class="fl-ok">→ Scheduler нагадує отримувачу про ці дати</span></div>
-</div>
-
-<div class="flow-block" style="border-left-color:#7c3aed">
-  <h4 style="color:#c4b5fd">🤖 AI Support</h4>
-  <div>[💬 Запитати флориста] → AI Agent</div>
-  <div>Context: ShopKnowledge + профіль + замовлення</div>
-  <div>Tools: get_stock() · get_balance() · escalate()</div>
-  <div>Не впевнений → escalate → Менеджер отримує контекст</div>
-</div>
-
-</div>
-
-<div style="margin-top:24px;font-size:0.7rem;color:#334155;text-align:right">
-  FlowerOS Architecture v3 · 2026-06-10
-</div>
+<div class="footer">FlowerOS Architecture v3 · 2026-06-10</div>
 
 </body>
 </html>

@@ -12,7 +12,7 @@ class SheetsClient:
         records = self._sheet.get_all_records()
         due = []
         for i, row in enumerate(records, start=2):
-            row = {k.strip(): v for k, v in row.items()}
+            row = {k.strip(): (v.strip() if isinstance(v, str) else v) for k, v in row.items()}
             if row.get("status") != "pending":
                 continue
             if int(row.get("retry_count") or 0) >= 3:

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Артем Степаненко — будую AI-автоматизацію для тих хто не технар. Безкоштовні інструменти, реальні кейси, консультація.">
+  <title>Артем Степаненко — AI-автоматизація без коду</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    :root {
+      --bg:           #ffffff;
+      --surface:      #f8fafc;
+      --surface-blue: #f0f6ff;
+      --accent:       #1d4ed8;
+      --accent-h:     #1e3a8a;
+      --accent-light: #eff6ff;
+      --accent-mid:   #dbeafe;
+      --text:         #0f172a;
+      --text-2:       #475569;
+      --text-m:       #64748b;
+      --border:       #e2e8f0;
+      --border-s:     #cbd5e1;
+      --r-card:       12px;
+      --r-btn:        8px;
+      --shadow:       0 1px 4px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
+      --max:          1000px;
+      --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); font-size: 15px; line-height: 1.65; color: var(--text); background: var(--bg); }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    @media (min-width: 768px)  { .wrap { padding: 0 32px; } }
+    @media (min-width: 1200px) { .wrap { padding: 0 40px; } }
+
+    /* NAV */
+    .nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+    .nav-row { max-width: var(--max); margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .nav-logo { font-weight: 800; font-size: 15px; letter-spacing: -.2px; }
+    .nav-logo em { color: var(--accent); font-style: normal; }
+    .nav-links { display: none; gap: 24px; align-items: center; }
+    @media (min-width: 768px) { .nav-links { display: flex; } }
+    .nav-links a { font-size: 14px; color: var(--text-2); font-weight: 500; transition: color .15s; }
+    .nav-links a:hover { color: var(--text); }
+    .btn-nav { padding: 8px 16px; background: var(--accent); color: #fff; border-radius: var(--r-btn); font-size: 14px; font-weight: 600; transition: background .15s; white-space: nowrap; }
+    .btn-nav:hover { background: var(--accent-h); }
+
+    /* INTRO */
+    .intro { padding: 52px 0 44px; border-bottom: 1px solid var(--border); }
+    .intro-row { display: flex; flex-direction: column; gap: 20px; }
+    @media (min-width: 1200px) { .intro-row { flex-direction: row; align-items: center; gap: 36px; } }
+    .avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--surface-blue); border: 3px solid var(--accent-mid); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 34px; }
+    @media (min-width: 1200px) { .avatar { width: 96px; height: 96px; font-size: 40px; } }
+    .intro-name { font-size: 20px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 6px; }
+    .intro-bio { font-size: 15px; color: var(--text-2); max-width: 520px; margin-bottom: 16px; }
+    .socials { display: flex; gap: 10px; flex-wrap: wrap; }
+    .soc-link { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; color: var(--text-2); font-weight: 500; transition: border-color .15s, color .15s; }
+    .soc-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* HERO */
+    .hero { padding: 72px 0 56px; text-align: center; }
+    .hero-inner { max-width: 680px; margin: 0 auto; }
+    .hero h1 { font-size: clamp(26px, 5vw, 40px); font-weight: 800; line-height: 1.18; letter-spacing: -.5px; margin-bottom: 18px; }
+    .hero-sub { font-size: 17px; color: var(--text-2); line-height: 1.65; margin-bottom: 32px; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-p { display: inline-flex; align-items: center; gap: 6px; padding: 14px 22px; background: var(--accent); color: #fff; border-radius: var(--r-btn); font-size: 15px; font-weight: 700; transition: background .15s, transform .1s; }
+    .btn-p:hover { background: var(--accent-h); transform: translateY(-1px); }
+    .btn-s { display: inline-flex; align-items: center; gap: 6px; padding: 14px 22px; background: var(--bg); color: var(--text); border: 1.5px solid var(--border-s); border-radius: var(--r-btn); font-size: 15px; font-weight: 600; transition: border-color .15s, color .15s; }
+    .btn-s:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* STATS */
+    .stats { display: flex; justify-content: center; gap: 40px; padding: 28px 0 0; border-top: 1px solid var(--border); margin-top: 36px; flex-wrap: wrap; }
+    .stat-num { font-size: 26px; font-weight: 800; color: var(--accent); letter-spacing: -.5px; line-height: 1; margin-bottom: 4px; }
+    .stat-lbl { font-size: 12px; color: var(--text-m); font-weight: 500; text-transform: uppercase; letter-spacing: .07em; }
+
+    /* SECTIONS */
+    section { padding: 64px 0; }
+    .sec-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 8px; }
+    .sec-title { font-size: clamp(20px, 3vw, 26px); font-weight: 800; letter-spacing: -.3px; margin-bottom: 8px; }
+    .sec-sub { font-size: 15px; color: var(--text-2); margin-bottom: 32px; max-width: 520px; }
+    .sec-more { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 600; color: var(--accent); margin-top: 24px; }
+    .sec-more:hover { text-decoration: underline; }
+
+    /* SEGMENTS */
+    .seg-wrap { padding: 52px 0; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .seg-prompt { font-size: 13px; color: var(--text-m); text-align: center; margin-bottom: 20px; font-weight: 500; }
+    .seg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (min-width: 768px)  { .seg-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1200px) { .seg-grid { grid-template-columns: repeat(5, 1fr); } }
+    .seg-card { padding: 16px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--r-card); cursor: pointer; transition: border-color .15s, box-shadow .15s; user-select: none; }
+    .seg-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+    .seg-card.on { border-color: var(--accent); background: var(--accent-light); }
+    .seg-card:nth-child(5) { grid-column: span 2; }
+    @media (min-width: 768px)  { .seg-card:nth-child(5) { grid-column: span 1; } }
+    .seg-icon { font-size: 20px; margin-bottom: 8px; }
+    .seg-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .seg-pain { font-size: 12px; color: var(--text-m); line-height: 1.4; }
+    .seg-card.on .seg-name { color: var(--accent); }
+
+    /* TOOLS */
+    .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (min-width: 768px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
+    .tool-card { display: flex; flex-direction: column; padding: 20px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--r-card); box-shadow: var(--shadow); transition: border-color .15s, transform .15s; }
+    .tool-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .tool-meta { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+    .tool-name { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .tool-desc { font-size: 14px; color: var(--text-2); line-height: 1.55; flex: 1; margin-bottom: 16px; }
+    .btn-tool { display: inline-flex; align-items: center; gap: 5px; padding: 9px 14px; background: var(--accent-light); color: var(--accent); border-radius: var(--r-btn); font-size: 14px; font-weight: 600; transition: background .15s; margin-top: auto; }
+    .btn-tool:hover { background: var(--accent-mid); }
+
+    /* CASES */
+    .cases-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 768px)  { .cases-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1200px) { .cases-grid { grid-template-columns: repeat(3, 1fr); } }
+    .case-card { display: flex; flex-direction: column; padding: 22px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--r-card); box-shadow: var(--shadow); transition: border-color .15s, transform .15s; }
+    .case-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .case-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); background: var(--accent-light); padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; align-self: flex-start; }
+    .case-title { font-size: 15px; font-weight: 700; line-height: 1.35; margin-bottom: 14px; }
+    .case-nums { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+    .c-num { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -.3px; line-height: 1.1; }
+    .c-lbl { font-size: 11px; color: var(--text-m); font-weight: 500; }
+    .case-q { font-size: 14px; color: var(--text-2); line-height: 1.55; font-style: italic; border-left: 3px solid var(--accent-mid); padding-left: 12px; margin-bottom: 14px; flex: 1; }
+    .case-read { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 600; color: var(--accent); margin-top: auto; }
+    .case-read:hover { text-decoration: underline; }
+
+    /* TELEGRAM */
+    .tg-wrap { background: var(--surface-blue); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .tg-inner { max-width: 520px; margin: 0 auto; text-align: center; }
+    .tg-icon { font-size: 38px; margin-bottom: 14px; }
+    .tg-inner h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 800; letter-spacing: -.3px; margin-bottom: 12px; }
+    .tg-inner p { font-size: 15px; color: var(--text-2); margin-bottom: 26px; line-height: 1.65; }
+
+    /* SERVICE */
+    .svc-card { background: var(--text); border-radius: 16px; padding: 36px 32px; display: flex; flex-direction: column; gap: 20px; }
+    @media (min-width: 768px) { .svc-card { flex-direction: row; align-items: center; justify-content: space-between; gap: 40px; } }
+    .svc-card h2 { font-size: clamp(18px, 3vw, 24px); font-weight: 800; color: #fff; letter-spacing: -.3px; margin-bottom: 10px; }
+    .svc-card p { font-size: 15px; color: #94a3b8; line-height: 1.6; max-width: 420px; }
+    .svc-card .btn-p { background: var(--accent); white-space: nowrap; flex-shrink: 0; }
+    .svc-card .btn-p:hover { background: var(--accent-h); }
+
+    /* FOOTER */
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 28px 0; }
+    .foot-row { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+    @media (min-width: 768px) { .foot-row { flex-direction: row; justify-content: space-between; text-align: left; } }
+    .foot-copy { font-size: 13px; color: var(--text-m); }
+    .foot-links { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+    .foot-links a { font-size: 13px; color: var(--text-m); transition: color .15s; }
+    .foot-links a:hover { color: var(--accent); }
+
+    /* FADE-IN */
+    .fi { opacity: 0; transform: translateY(14px); transition: opacity .5s, transform .5s; }
+    .fi.vis { opacity: 1; transform: none; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-row">
+    <a href="/" class="nav-logo">artem<em>.org.ua</em></a>
+    <ul class="nav-links">
+      <li><a href="/tools">Інструменти</a></li>
+      <li><a href="/products">Продукти</a></li>
+      <li><a href="/cases">Кейси</a></li>
+      <li><a href="/about">Про мене</a></li>
+    </ul>
+    <a href="/automation" class="btn-nav">Автоматизація →</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="wrap">
+    <div class="intro-row fi">
+      <div class="avatar">🧑</div>
+      <div>
+        <h2 class="intro-name">Артем Степаненко</h2>
+        <p class="intro-bio">Будую AI-автоматизацію для тих хто не технар. 5+ кейсів з українськими спеціалістами та бізнесом.</p>
+        <div class="socials">
+          <a href="https://www.threads.net/@artem.org.ua" class="soc-link" target="_blank" rel="noopener">Threads</a>
+          <a href="https://t.me/thelifebuilder_os" class="soc-link" target="_blank" rel="noopener">Telegram</a>
+          <a href="https://www.linkedin.com/in/artemscm/" class="soc-link" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner fi">
+      <h1>Скільки годин на тиждень ти витрачаєш на роботу яку міг би не робити?</h1>
+      <p class="hero-sub">Автоматизація та AI закривають це повністю. Без коду. Без технічного бекграунду.</p>
+      <div class="hero-btns">
+        <a href="https://artem-org-ua.github.io/products/ai-audit-ua.html" class="btn-p">Пройти аудит — безкоштовно →</a>
+        <a href="/cases" class="btn-s">Переглянути кейси</a>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num">5+</div>
+          <div class="stat-lbl">Кейсів</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">3</div>
+          <div class="stat-lbl">Безкоштовних інструменти</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">200+</div>
+          <div class="stat-lbl">Годин зекономлено</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">0</div>
+          <div class="stat-lbl">Рядків коду потрібно знати</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEGMENTS -->
+<section class="seg-wrap" id="segments">
+  <div class="wrap">
+    <p class="seg-prompt">Обери свою ситуацію — покажу що підходить саме тобі</p>
+    <div class="seg-grid">
+      <div class="seg-card fi" data-seg="sales" id="s-sales">
+        <div class="seg-icon">📈</div>
+        <div class="seg-name">Продажі / Маркетинг</div>
+        <div class="seg-pain">Ліди, звіти, контент — вручну</div>
+      </div>
+      <div class="seg-card fi" data-seg="ops" id="s-ops">
+        <div class="seg-icon">⚙️</div>
+        <div class="seg-name">Операції / Фінанси</div>
+        <div class="seg-pain">Інвойси, склад, виписки — вручну</div>
+      </div>
+      <div class="seg-card fi" data-seg="hr" id="s-hr">
+        <div class="seg-icon">👥</div>
+        <div class="seg-name">HR / Підтримка</div>
+        <div class="seg-pain">Рекрутинг, тікети, договори — вручну</div>
+      </div>
+      <div class="seg-card fi" data-seg="owners" id="s-owners">
+        <div class="seg-icon">🏢</div>
+        <div class="seg-name">Власники МСБ</div>
+        <div class="seg-pain">Усе одразу — вручну</div>
+      </div>
+      <div class="seg-card fi" data-seg="jobs" id="s-jobs">
+        <div class="seg-icon">🎯</div>
+        <div class="seg-name">Шукаю роботу</div>
+        <div class="seg-pain">CV, пошук, підготовка — вручну</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools-sec">
+  <div class="wrap">
+    <div class="sec-label">Інструменти</div>
+    <h2 class="sec-title" id="tools-title">Безкоштовні інструменти</h2>
+    <p class="sec-sub" id="tools-sub">Обери сегмент вище — покажу що підходить твоїй ситуації</p>
+    <div class="tools-grid">
+      <div class="tool-card fi" data-segs="sales">
+        <div class="tool-meta">Quiz · 5 хв · Безкоштовно</div>
+        <h3 class="tool-name">Why Start AI</h3>
+        <p class="tool-desc">Дізнайся де AI дасть тобі найбільший результат прямо зараз. 6 питань — конкретні рекомендації під твою роль.</p>
+        <a href="https://artem-org-ua.github.io/products/why-start-ai.html" class="btn-tool" target="_blank">Пройти →</a>
+      </div>
+      <div class="tool-card fi" data-segs="owners">
+        <div class="tool-meta">Quiz · 7 хв · Безкоштовно</div>
+        <h3 class="tool-name">AI or Automation</h3>
+        <p class="tool-desc">Зрозумій що підходить твоїм задачам: класична автоматизація чи AI-агент. Результат з конкретними наступними кроками.</p>
+        <a href="https://artem-org-ua.github.io/products/ai-or-automation.html" class="btn-tool" target="_blank">Пройти →</a>
+      </div>
+      <div class="tool-card fi" data-segs="ops,hr,jobs">
+        <div class="tool-meta">Аудит · 7 хв · Безкоштовно</div>
+        <h3 class="tool-name">AI Audit UA</h3>
+        <p class="tool-desc">Скільки годин на тиждень ти втрачаєш на рутину? Аудит покаже конкретні задачі і скільки часу можна повернути.</p>
+        <a href="https://artem-org-ua.github.io/products/ai-audit-ua.html" class="btn-tool" target="_blank">Пройти →</a>
+      </div>
+    </div>
+    <a href="/tools" class="sec-more">Всі інструменти →</a>
+  </div>
+</section>
+
+<!-- CASES -->
+<section id="cases-sec" style="background:var(--surface); border-top:1px solid var(--border);">
+  <div class="wrap">
+    <div class="sec-label">Кейси</div>
+    <h2 class="sec-title" id="cases-title">Реальні результати</h2>
+    <p class="sec-sub" id="cases-sub">Обери сегмент вище — покажу кейс для твоєї ситуації</p>
+    <div class="cases-grid">
+
+      <div class="case-card fi" data-seg="sales">
+        <div class="case-tag">📈 Продажі</div>
+        <h3 class="case-title">SDR витрачала 10 год/тиж на ручний збір лідів. Тепер — 45 хвилин.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">−9 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">3 тижні</div><div class="c-lbl">впровадження</div></div>
+          <div><div class="c-num">3×</div><div class="c-lbl">більше аутрічу</div></div>
+        </div>
+        <blockquote class="case-q">"Я витрачала першу половину понеділка тільки на те, щоб зібрати список — і це до того, як починала продавати."</blockquote>
+        <a href="/cases/sdr-lead-research" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="ops">
+        <div class="case-tag">⚙️ Операції</div>
+        <h3 class="case-title">Менеджер операцій витрачав 6 год/тиж на перевірку інвойсів 3PL. Знайшли $2,914 помилок.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">$2,914</div><div class="c-lbl">повернуто за місяць</div></div>
+          <div><div class="c-num">−5.5 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">2 тижні</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <blockquote class="case-q">"Я знав що є помилки — просто не мав часу їх шукати. Claude знайшов за 3 хвилини те, що я пропускав місяцями."</blockquote>
+        <a href="/cases/ops-3pl-invoice" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="hr" hidden>
+        <div class="case-tag">👥 HR</div>
+        <h3 class="case-title">HR-менеджер переглядала 80 CV на тиждень вручну. Тепер — 30 хвилин.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">−7.5 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">80 CV</div><div class="c-lbl">скринінг авто</div></div>
+          <div><div class="c-num">3 тижні</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <blockquote class="case-q">"Я читала одні й ті самі резюме знову і знову. В кінці тижня вже не могла зосередитись на реальному інтерв'ю."</blockquote>
+        <a href="/cases/hr-cv-screening" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="owners" hidden>
+        <div class="case-tag">🏢 МСБ</div>
+        <h3 class="case-title">Власник МСБ збирав щотижневий звіт 4 години. Тепер — 0.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">−4 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">7:30</div><div class="c-lbl">звіт у пошті</div></div>
+          <div><div class="c-num">1 тиждень</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <blockquote class="case-q">"В понеділок вранці я вже виснажений — і день ще не починався. Зараз звіт чекає мене, а не я його."</blockquote>
+        <a href="/cases/owner-weekly-reports" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="jobs" hidden>
+        <div class="case-tag">🎯 Пошук роботи</div>
+        <h3 class="case-title">Адаптація CV під вакансію займала 2 год. Тепер — 7 хвилин.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">2 год → 7 хв</div><div class="c-lbl">на вакансію</div></div>
+          <div><div class="c-num">5×</div><div class="c-lbl">більше заявок</div></div>
+          <div><div class="c-num">1 тиждень</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <blockquote class="case-q">"Я розумів що мушу подаватись на більше — але фізично не міг. Зараз подаю 15–20 на тиждень і кожна адаптована."</blockquote>
+        <a href="/cases/jobseeker-cv-tailoring" class="case-read">Читати кейс →</a>
+      </div>
+
+    </div>
+    <a href="/cases" class="sec-more">Всі кейси →</a>
+  </div>
+</section>
+
+<!-- TELEGRAM -->
+<section class="tg-wrap">
+  <div class="wrap">
+    <div class="tg-inner fi">
+      <div class="tg-icon">✈️</div>
+      <h2>Кейс автоматизації — щотижня в Telegram</h2>
+      <p>Конкретно, з числами, без жаргону.<br>Підпишись і отримуй першим.</p>
+      <a href="https://t.me/thelifebuilder_os" class="btn-p" target="_blank" rel="noopener">Підписатись на канал →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE -->
+<section>
+  <div class="wrap">
+    <div class="svc-card fi">
+      <div>
+        <h2>Хочеш розібрати свій конкретний кейс?</h2>
+        <p>45 хв — розбираємо твої задачі. Йдеш з готовим планом автоматизації. Без продажів заради продажів.</p>
+      </div>
+      <a href="https://calendly.com/artem-org-ua/30min" class="btn-p" target="_blank" rel="noopener">Записатись на дзвінок →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span class="foot-copy">© 2026 Артем Степаненко</span>
+      <div class="foot-links">
+        <a href="https://www.threads.net/@artem.org.ua" target="_blank" rel="noopener">Threads</a>
+        <a href="https://t.me/thelifebuilder_os" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://www.linkedin.com/in/artemscm/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:eco.stepanenko@gmail.com">eco.stepanenko@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const LABELS = { sales:'Продажі / Маркетинг', ops:'Операції / Фінанси', hr:'HR / Підтримка', owners:'Власники МСБ', jobs:'Шукаю роботу' };
+  const DEFAULT_CASES = ['sales','ops'];
+  let active = null;
+
+  function resetDefault() {
+    active = null;
+    document.querySelectorAll('.seg-card').forEach(c => c.classList.remove('on'));
+    document.querySelectorAll('.tool-card').forEach(t => t.removeAttribute('hidden'));
+    document.querySelectorAll('.case-card').forEach(c => {
+      c.toggleAttribute('hidden', !DEFAULT_CASES.includes(c.dataset.seg));
+    });
+    document.getElementById('tools-title').textContent = 'Безкоштовні інструменти';
+    document.getElementById('cases-title').textContent = 'Реальні результати';
+    document.getElementById('tools-sub').textContent = 'Обери сегмент вище — покажу що підходить твоїй ситуації';
+    document.getElementById('cases-sub').textContent = 'Обери сегмент вище — покажу кейс для твоєї ситуації';
+  }
+
+  document.querySelectorAll('.seg-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const seg = card.dataset.seg;
+      if (active === seg) { resetDefault(); return; }
+      active = seg;
+
+      document.querySelectorAll('.seg-card').forEach(c => c.classList.remove('on'));
+      card.classList.add('on');
+
+      document.getElementById('tools-title').textContent = 'Інструменти · ' + LABELS[seg];
+      document.getElementById('cases-title').textContent = 'Кейси · ' + LABELS[seg];
+      document.getElementById('tools-sub').textContent = '';
+      document.getElementById('cases-sub').textContent = '';
+
+      document.querySelectorAll('.tool-card').forEach(t => {
+        t.toggleAttribute('hidden', !t.dataset.segs.split(',').includes(seg));
+      });
+      document.querySelectorAll('.case-card').forEach(c => {
+        c.toggleAttribute('hidden', c.dataset.seg !== seg);
+      });
+
+      document.getElementById('tools-sec').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

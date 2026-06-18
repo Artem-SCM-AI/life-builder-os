@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is Your Business Ready for AI? — SCAIT</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2A;
+    --orange: #FF6B35;
+    --orange-light: #FFF0EA;
+    --bg: #F5F7FA;
+    --card: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #1A2B3C;
+    --text-secondary: #64748B;
+    --text-hint: #94A3B8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+    --shadow-hover: 0 2px 8px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding-bottom: 90px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    padding: 36px 20px 32px;
+    text-align: center;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-tagline {
+    font-size: 13px;
+    color: #8FA3BC;
+    font-weight: 400;
+  }
+
+  .brand-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 4px;
+  }
+
+  .brand-link {
+    font-size: 12px;
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 500;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+
+  .brand-link:hover { opacity: 1; }
+
+  .brand-divider {
+    width: 1px; height: 12px;
+    background: #2A4060;
+  }
+
+  .header h1 {
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: #8FA3BC;
+    font-weight: 400;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--navy);
+    padding: 0 20px 20px;
+  }
+
+  .progress-track {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #1E3550;
+    border-radius: 4px;
+    height: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* INTRO CARD */
+  .intro-wrap {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+  }
+
+  .intro-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+  }
+
+  .intro-card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .intro-card p:last-of-type { margin-bottom: 20px; }
+
+  .intro-signature {
+    font-size: 14px;
+    color: var(--text-hint);
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .intro-signature strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .intro-divider {
+    width: 1px; height: 14px;
+    background: var(--border);
+  }
+
+  .scale-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-hint);
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  .scale-row {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .scale-row::-webkit-scrollbar { display: none; }
+
+  .scale-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .scale-chip strong {
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* BLOCKS */
+  .block-wrap {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+  }
+
+  .block-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .block-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .block-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--orange-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .block-title-text h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .block-title-text span {
+    font-size: 12px;
+    color: var(--text-hint);
+  }
+
+  /* QUESTION */
+  .question {
+    padding: 20px 24px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .question:last-child { border-bottom: none; }
+
+  .q-number {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+
+  .q-text {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  .q-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-hint);
+    padding: 0 2px;
+  }
+
+  .score-buttons {
+    display: flex;
+    gap: 6px;
+  }
+
+  .score-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text-secondary);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .score-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: var(--orange-light);
+  }
+
+  .score-btn.selected {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #FFFFFF;
+  }
+
+  /* STICKY FOOTER */
+  .sticky-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--navy);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+  }
+
+  .footer-score {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .footer-score-label {
+    font-size: 12px;
+    color: #8FA3BC;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .footer-score-value {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--orange);
+    line-height: 1;
+    min-width: 50px;
+  }
+
+  .footer-score-max {
+    font-size: 14px;
+    color: #4A6080;
+    margin-left: 2px;
+  }
+
+  .footer-progress {
+    text-align: right;
+  }
+
+  .footer-progress-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  .footer-progress-label {
+    font-size: 11px;
+    color: #8FA3BC;
+    display: block;
+    margin-top: 1px;
+  }
+
+  /* RESULT */
+  .result-wrap {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .result-wrap.visible { display: block; }
+
+  .result-card {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow-hover);
+    overflow: hidden;
+  }
+
+  .result-header {
+    background: var(--navy);
+    padding: 32px 28px;
+    text-align: center;
+  }
+
+  .result-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    background: rgba(255,107,53,0.15);
+    color: var(--orange);
+    border: 1px solid rgba(255,107,53,0.3);
+  }
+
+  .result-score-display {
+    font-size: 72px;
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+  }
+
+  .result-score-sub {
+    font-size: 14px;
+    color: #8FA3BC;
+    margin-bottom: 16px;
+  }
+
+  .result-level-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .result-body {
+    padding: 28px;
+  }
+
+  .result-description {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .next-steps-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--orange);
+    margin-bottom: 14px;
+  }
+
+  .next-steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .next-step-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    background: var(--bg);
+    border-radius: 10px;
+  }
+
+  .step-num {
+    width: 26px; height: 26px;
+    background: var(--orange);
+    color: #FFFFFF;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  /* BLOCK SCORES */
+  .block-scores-wrap {
+    max-width: 680px;
+    margin: 16px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .block-scores-wrap.visible { display: block; }
+
+  .block-scores-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 20px 24px;
+  }
+
+  .block-scores-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-hint);
+    margin-bottom: 16px;
+  }
+
+  .block-score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .block-score-row:last-child { margin-bottom: 0; }
+
+  .bsr-name {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+
+  .bsr-track {
+    flex: 1;
+    height: 6px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bsr-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .bsr-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 48px;
+    text-align: right;
+  }
+
+  /* STATS */
+  .stats-wrap {
+    max-width: 680px;
+    margin: 16px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .stats-wrap.visible { display: block; }
+
+  .stats-card {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  .stats-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4A6080;
+    margin-bottom: 14px;
+  }
+
+  .stat-row {
+    font-size: 14px;
+    color: #8FA3BC;
+    padding: 8px 0;
+    border-bottom: 1px solid #1E3550;
+    line-height: 1.5;
+  }
+
+  .stat-row:last-child { border-bottom: none; }
+
+  .stat-row strong { color: #FFFFFF; }
+
+  /* SOURCES */
+  .sources-wrap {
+    max-width: 680px;
+    margin: 16px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .sources-wrap.visible { display: block; }
+
+  .sources-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 20px 24px;
+  }
+
+  .sources-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-hint);
+    margin-bottom: 14px;
+  }
+
+  .sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .source-item {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .source-item a {
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .source-item a:hover { text-decoration: underline; }
+
+  /* RESET */
+  .reset-wrap {
+    max-width: 680px;
+    margin: 16px auto 24px;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .reset-wrap.visible { display: block; }
+
+  .reset-btn {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-hint);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .reset-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 480px) {
+    .bsr-name { min-width: 90px; font-size: 12px; }
+    .score-btn { height: 44px; font-size: 15px; }
+    .result-score-display { font-size: 56px; }
+    .block-title-row { padding: 14px 18px 12px; }
+    .question { padding: 16px 18px 14px; }
+    .result-body { padding: 20px 18px; }
+  }
+
+  @media print {
+    .sticky-footer, .reset-wrap { display: none !important; }
+    body { padding-bottom: 0; }
+  }
+
+  /* CTAs */
+  .ctas-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .ctas-wrap.visible { display: block; }
+  .ctas-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .ctas-header { padding: 16px 24px 12px; border-bottom: 1px solid var(--border); }
+  .ctas-header h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); }
+  .cta-item { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .cta-item:last-child { border-bottom: none; }
+  .cta-btn {
+    display: block; width: 100%; text-align: center;
+    padding: 13px 20px; border-radius: 10px;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    margin-bottom: 10px; transition: all 0.15s ease; box-sizing: border-box;
+  }
+  .cta-btn.primary { background: var(--orange); color: #FFFFFF; }
+  .cta-btn.primary:hover { background: #e85a24; }
+  .cta-btn.outline { background: transparent; color: var(--navy); border: 2px solid var(--border); }
+  .cta-btn.outline:hover { border-color: var(--navy); }
+  .cta-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* Subscribe */
+  .subscribe-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .subscribe-wrap.visible { display: block; }
+  .subscribe-card { background: var(--navy); border-radius: 12px; padding: 24px; }
+  .subscribe-card h3 { font-size: 16px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; }
+  .subscribe-card p { font-size: 13px; color: #8FA3BC; line-height: 1.5; margin-bottom: 16px; }
+  .subscribe-form { display: flex; gap: 8px; }
+  .subscribe-input {
+    flex: 1; padding: 12px 14px; border-radius: 8px;
+    border: 1px solid #1E3550; background: #132436;
+    color: #FFFFFF; font-size: 14px; outline: none;
+  }
+  .subscribe-input:focus { border-color: var(--orange); }
+  .subscribe-input::placeholder { color: #3A5470; }
+  .subscribe-submit {
+    padding: 12px 18px; background: var(--orange); color: #FFFFFF;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; transition: background 0.15s;
+  }
+  .subscribe-submit:hover { background: #e85a24; }
+  .subscribe-note { font-size: 12px; color: #4A6080; margin-top: 10px; display: none; }
+  .subscribe-note.visible { display: block; }
+
+  /* Share */
+  .share-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .share-wrap.visible { display: block; }
+  .share-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 20px 24px; }
+  .share-card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); margin-bottom: 14px; }
+  .share-text-box {
+    background: var(--bg); border-radius: 8px; padding: 14px 16px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.65;
+    white-space: pre-line; margin-bottom: 12px; border: 1px solid var(--border);
+  }
+  .share-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  .share-btn {
+    padding: 10px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 2px solid transparent; transition: all 0.15s ease;
+  }
+  .share-btn.copy { background: var(--bg); color: var(--text); border-color: var(--border); }
+  .share-btn.copy:hover { border-color: var(--navy); }
+  .share-btn.copy.copied { background: #EDF7F0; color: #2E7D32; border-color: #2E7D32; }
+  .share-btn.threads { background: #000000; color: #FFFFFF; }
+  .share-btn.threads:hover { background: #333; }
+
+  /* Shared result banner */
+  .shared-banner {
+    background: #FFF8F5; border-bottom: 2px solid var(--orange);
+    padding: 12px 20px; text-align: center;
+    font-size: 14px; color: var(--text-secondary);
+  }
+  .shared-banner strong { color: var(--text); }
+  .shared-banner a { color: var(--orange); text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-name">Artem Stepanenko</div>
+    <div class="brand-tagline">AI practitioner · consultant with clearly defined ROI</div>
+    <div class="brand-links">
+      <a class="brand-link" href="https://www.linkedin.com/in/artemscm/" target="_blank">LinkedIn</a>
+      <div class="brand-divider"></div>
+      <a class="brand-link" href="https://threads.net/@monetizer_biz" target="_blank">Threads</a>
+      <div class="brand-divider"></div>
+      <a class="brand-link" href="https://instagram.com/monetizer_biz" target="_blank">Instagram</a>
+    </div>
+  </div>
+  <h1>Is Your Business Ready for AI?</h1>
+  <div class="header-sub">25-question assessment · ~8 minutes</div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="intro-wrap">
+  <div class="intro-card">
+    <p>Most companies that failed their AI project believed they were ready. They weren't wrong to try — they were wrong about where they actually stood.</p>
+    <p>The gap between how we see our operations and how they actually function is real, and it's almost always bigger than we expect. This is not a character flaw. It's a structural problem: we're inside the system, so we see the intent, not the gaps.</p>
+    <p>This assessment is a diagnostic tool — not a verdict, not a ranking, not a judgment. Its only job is to give you an accurate picture of where you are today, so whatever decision you make next is based on reality, not optimism.</p>
+    <p>Answer as things are right now. Not how they were six months ago, not how they'll be after the next hire, not how you'd like them to be. The result is only as useful as your honesty.</p>
+    <div class="intro-signature">
+      <strong>Artem Stepanenko</strong>
+      <div class="intro-divider"></div>
+      <span>AI consultant</span>
+    </div>
+    <div class="scale-section-label">Scoring scale</div>
+    <div class="scale-row">
+      <div class="scale-chip"><strong>0</strong> Doesn't exist</div>
+      <div class="scale-chip"><strong>1</strong> Discussed only</div>
+      <div class="scale-chip"><strong>2</strong> Partially exists</div>
+      <div class="scale-chip"><strong>3</strong> Works, has gaps</div>
+      <div class="scale-chip"><strong>4</strong> Systematic</div>
+    </div>
+  </div>
+</div>
+
+<div id="questions-container"></div>
+
+<div class="result-wrap" id="result-wrap">
+  <div class="result-card">
+    <div class="result-header">
+      <div class="result-badge" id="result-badge"></div>
+      <div class="result-score-display" id="result-score"></div>
+      <div class="result-score-sub">out of 100</div>
+      <div class="result-level-title" id="result-title"></div>
+    </div>
+    <div class="result-body">
+      <div class="result-description" id="result-description"></div>
+      <div class="next-steps-label">Your next 3 moves</div>
+      <div class="next-steps-list" id="result-steps"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ctas-wrap" id="ctas-wrap">
+  <div class="ctas-card">
+    <div class="ctas-header"><h3>What to do next</h3></div>
+    <div id="ctas-list"></div>
+  </div>
+</div>
+
+<div class="subscribe-wrap" id="subscribe-wrap">
+  <div class="subscribe-card">
+    <h3>Get weekly SC automation insights</h3>
+    <p>Real workflows, real numbers, no theory. One email per week.</p>
+    <div class="subscribe-form">
+      <input class="subscribe-input" type="email" id="subscribe-email" placeholder="your@email.com">
+      <button class="subscribe-submit" onclick="handleSubscribe()">Subscribe →</button>
+    </div>
+    <div class="subscribe-note" id="subscribe-note">Your email client opened — send the message to confirm your subscription.</div>
+  </div>
+</div>
+
+<div class="share-wrap" id="share-wrap">
+  <div class="share-card">
+    <h3>Share your result</h3>
+    <div class="share-text-box" id="share-text-box"></div>
+    <div class="share-buttons">
+      <button class="share-btn copy" id="copy-btn" onclick="copyShareText()">Copy text</button>
+      <button class="share-btn threads" onclick="shareOnThreads()">Share on Threads</button>
+    </div>
+  </div>
+</div>
+
+<div class="block-scores-wrap" id="block-scores-wrap">
+  <div class="block-scores-card">
+    <h3>Score by block</h3>
+    <div id="block-scores-list"></div>
+  </div>
+</div>
+
+<div class="stats-wrap" id="stats-wrap">
+  <div class="stats-card">
+    <h3>Why this matters</h3>
+    <div class="stat-row"><strong>80%</strong> of AI projects fail to deliver intended business value <em>(Pertama Partners, 2026)</em></div>
+    <div class="stat-row"><strong>95%</strong> of GenAI pilots never reach production <em>(MIT, 2025)</em></div>
+    <div class="stat-row">Companies with clear pre-approval metrics succeed at <strong>54% vs. 12%</strong> without them</div>
+    <div class="stat-row">Successful projects invest <strong>47% of budget in foundations</strong> — data, governance, change management. Failed projects: 18%</div>
+    <div class="stat-row"><strong>84%</strong> of AI project failures trace back to leadership problems — not technology</div>
+  </div>
+</div>
+
+<div class="sources-wrap" id="sources-wrap">
+  <div class="sources-card">
+    <h3>Sources</h3>
+    <div class="sources-list">
+      <div class="source-item">1. <a href="https://www.pertamapartners.com/insights/ai-project-failure-statistics-2026" target="_blank">AI Project Failure Rate 2026: 80% Fail</a> — Pertama Partners</div>
+      <div class="source-item">2. <a href="https://fortune.com/2025/08/18/mit-report-95-percent-generative-ai-pilots-at-companies-failing-cfo/" target="_blank">MIT Report: 95% of Generative AI Pilots at Companies Are Failing</a> — Fortune</div>
+      <div class="source-item">3. <a href="https://hbr.org/2025/11/most-ai-initiatives-fail-this-5-part-framework-can-help" target="_blank">Most AI Initiatives Fail. This 5-Part Framework Can Help</a> — Harvard Business Review</div>
+      <div class="source-item">4. <a href="https://www.gartner.com/en/newsroom/press-releases/2025-06-30-gartner-survey-finds-forty-five-percent-of-organizations-with-high-artificial-intelligence-maturity-keep-artificial-intelligence-projects-operational-for-at-least-three-years" target="_blank">Gartner Survey: 45% of High AI Maturity Organizations Keep Projects 3+ Years</a> — Gartner</div>
+      <div class="source-item">5. <a href="https://thinking.inc/en/pillar-pages/ai-readiness-assessment/" target="_blank">AI Readiness Assessment: 8-Dimension Framework</a> — The Thinking Company</div>
+      <div class="source-item">6. <a href="https://larridin.com/solutions/ai-maturity-the-complete-enterprise-guide-2026" target="_blank">AI Maturity: The Complete Enterprise Guide 2026</a> — Larridin (McKinsey framework)</div>
+      <div class="source-item">7. <a href="https://blog.perceptyx.com/ais-cultural-impact-new-data-reveals-leadership-makes-the-difference" target="_blank">AI Adoption Strategy: How Leadership Drives Culture</a> — Perceptyx</div>
+      <div class="source-item">8. <a href="https://www.verticomm.com/post/building-enterprise-ai-infrastructure-essential-requirements-most-ctos-overlook" target="_blank">Enterprise AI Infrastructure Requirements CTOs Overlook</a> — Verticomm</div>
+      <div class="source-item">9. <a href="https://www.ovaledge.com/blog/what-is-ai-readiness" target="_blank">What Is AI Readiness? Framework & Assessment</a> — OvalEdge</div>
+      <div class="source-item">10. <a href="https://aws.amazon.com/smart-business/resources-for-smb/ai-readiness-checklist/" target="_blank">AI Readiness Checklist for SMBs</a> — AWS</div>
+    </div>
+  </div>
+</div>
+
+<div class="reset-wrap" id="reset-wrap">
+  <button class="reset-btn" onclick="resetAll()">Start over</button>
+</div>
+
+<div class="sticky-footer">
+  <div class="footer-score">
+    <span class="footer-score-label">Score&nbsp;</span>
+    <span class="footer-score-value" id="footer-score">0</span>
+    <span class="footer-score-max">/100</span>
+  </div>
+  <div class="footer-progress">
+    <span class="footer-progress-count" id="footer-answered">0 / 25</span>
+    <span class="footer-progress-label">answered</span>
+  </div>
+</div>
+
+<script>
+const PAGE_URL = 'https://monetizerbiz.gumroad.com'; // UPDATE: replace with hosted URL of this page
+const PRODUCT_URL = 'https://monetizerbiz.gumroad.com'; // UPDATE: replace with AI Decision Framework product link
+const CONSULT_EMAIL = 'eco.stepanenko@gmail.com';
+
+const blocks = [
+  {
+    icon: "🎯",
+    name: "Strategy & Vision",
+    range: "Questions 1–4",
+    max: 16,
+    questions: [
+      "Do you have a clear answer to <em>why</em> your company needs AI — tied to specific business outcomes (not \"to stay modern\")?",
+      "Have you identified 2–3 specific use cases where AI solves a real problem — with defined target metrics for each?",
+      "Have you estimated the potential ROI of at least one AI project before starting it?",
+      "Does your company treat AI as a business transformation — rather than an IT project or technology experiment?"
+    ]
+  },
+  {
+    icon: "👤",
+    name: "Leadership & Budget",
+    range: "Questions 5–7",
+    max: 12,
+    questions: [
+      "Is there a specific person (owner, director, VP) personally accountable for AI implementation results?",
+      "Is there a dedicated AI budget — separate from the general IT budget?",
+      "Is leadership prepared to invest ≥40% of the AI budget in foundations (data, governance, training) — before seeing the first visible result?"
+    ]
+  },
+  {
+    icon: "🗄️",
+    name: "Data Quality & Readiness",
+    range: "Questions 8–12",
+    max: 20,
+    questions: [
+      "Do you know where your key business data lives (sales, inventory, customers) — and who owns it?",
+      "Are you confident in your data quality: completeness, freshness, no duplicates?",
+      "Can the right teams access the data they need — without weeks of waiting or manual exports?",
+      "Do you track data lineage — where it came from and how it was transformed?",
+      "Are decisions in your company made primarily on data — rather than intuition or individual experience?"
+    ]
+  },
+  {
+    icon: "⚙️",
+    name: "Technology Infrastructure",
+    range: "Questions 13–15",
+    max: 12,
+    questions: [
+      "Do you use cloud services, and is your infrastructure designed to scale?",
+      "Can your systems (CRM, ERP, warehouse, finance) exchange data with each other — without manual Excel in the middle?",
+      "Do you have tools and processes to monitor the performance of automated workflows after launch?"
+    ]
+  },
+  {
+    icon: "🧠",
+    name: "People & AI Literacy",
+    range: "Questions 16–18",
+    max: 12,
+    questions: [
+      "Is there at least one person inside the company who can evaluate AI solutions technically — not just use them, but understand how they work?",
+      "Do your line managers and key employees understand the basics — what AI can and can't do, where it helps, where it creates risk?",
+      "Has any training or onboarding been conducted for the team on AI tools you plan to use or are already using?"
+    ]
+  },
+  {
+    icon: "📋",
+    name: "Process Maturity",
+    range: "Questions 19–21",
+    max: 12,
+    questions: [
+      "Are your key business processes documented — with step-by-step SOPs that people actually follow?",
+      "Do you regularly measure KPIs for core processes — cycle time, error rate, escalation volume?",
+      "Do you have processes where the outcome is predictable and repeatable — not dependent on a specific person?"
+    ]
+  },
+  {
+    icon: "🔄",
+    name: "Culture & Change Readiness",
+    range: "Questions 22–23",
+    max: 8,
+    questions: [
+      "Has your company successfully implemented new tools or process changes — where the team genuinely adopted them, not just went through the motions?",
+      "Do employees feel safe raising problems with new tools — is there a feedback culture without punishment for \"this isn't working\"?"
+    ]
+  },
+  {
+    icon: "🛡️",
+    name: "Governance & Risk",
+    range: "Questions 24–25",
+    max: 8,
+    questions: [
+      "Do you have clear rules about what data cannot be passed into AI systems — customer PII, trade secrets, supplier confidential information?",
+      "Is there someone in the company who checks AI outputs — is there a validation process rather than blind trust in what the AI produces?"
+    ]
+  }
+];
+
+const results = [
+  {
+    range: [0, 25],
+    badge: "Level 1 of 5",
+    title: "Critical Gaps",
+    description: "AI implementation right now means burning money. The foundation isn't there yet — data, processes, and leadership alignment need to come first. This is also the most common starting point for companies who are honest about where they actually are.",
+    steps: [
+      "Audit your data: where it lives, who owns it, how reliable it is. This alone takes 2–3 weeks and saves months of rework later.",
+      "Name one person accountable for AI. Not a committee — one person whose job it is to make this work.",
+      "Pick one process that's already documented and measurable. That's your first AI candidate — not your biggest problem, your cleanest one."
+    ],
+    ctas: [
+      {
+        label: "Book a Free 30-min Diagnostic Call",
+        sub: "Before building anything, get an honest map of where you actually are. I'll show you exactly what to fix first and in what order. No pitch.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+Readiness+%E2%80%94+Free+Diagnostic+Call`,
+        style: "primary"
+      },
+      {
+        label: "Get the AI Decision Framework — $9",
+        sub: "A practical tool for evaluating any workflow: is it ready for AI, and if not — what specific gap to close first.",
+        href: () => PRODUCT_URL,
+        style: "outline"
+      }
+    ]
+  },
+  {
+    range: [26, 44],
+    badge: "Level 2 of 5",
+    title: "Early Stage",
+    description: "Some readiness signals exist. There's intent but not yet the infrastructure to make AI reliable. The risk here is overbuilding on a weak foundation. Start with micro-pilots — small, contained, with clear success metrics defined before you start.",
+    steps: [
+      "Run one 30-day pilot on a low-risk process. Define what \"success\" looks like before you start — a number, not a feeling.",
+      "Fix your weakest block first (see your score breakdown below). One focused month on data or process clarity changes the trajectory.",
+      "Avoid vendors pitching enterprise AI until you've completed at least one internal pilot with real, verified results."
+    ],
+    ctas: [
+      {
+        label: "Book a Strategy Session",
+        sub: "You have intent — now you need a plan. Let's scope a first pilot that's right-sized for where you are, and set a clear 30-day success metric before you build anything.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+Readiness+%E2%80%94+Strategy+Session`,
+        style: "primary"
+      },
+      {
+        label: "Get the AI Decision Framework — $9",
+        sub: "Evaluate any workflow in 5 minutes. Know exactly which readiness gap to close first before committing resources.",
+        href: () => PRODUCT_URL,
+        style: "outline"
+      }
+    ]
+  },
+  {
+    range: [45, 64],
+    badge: "Level 3 of 5",
+    title: "Developing",
+    description: "Ready for a first structured AI project. The foundations exist in most areas. Focus on 1–2 high-value use cases with a 60–90 day pilot and defined success metrics. Don't scale before the pilot is proven.",
+    steps: [
+      "Choose your pilot based on data readiness — the use case where your data is cleanest, not where the pain is loudest.",
+      "Set a 90-day checkpoint with a binary outcome: scale this, or stop this. No \"let's continue and see.\"",
+      "Close the gaps in your two lowest-scoring blocks before attempting a second use case."
+    ],
+    ctas: [
+      {
+        label: "Book a Consultation",
+        sub: "You're ready for a first structured project. Let's identify the right one, define success metrics before you build, and map the 60-day plan.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+Readiness+%E2%80%94+Consultation`,
+        style: "primary"
+      },
+      {
+        label: "Get the AI Decision Framework — $9",
+        sub: "Run the evaluation across all your workflows and rank them by readiness and ROI potential. Know exactly where to start.",
+        href: () => PRODUCT_URL,
+        style: "outline"
+      }
+    ]
+  },
+  {
+    range: [65, 79],
+    badge: "Level 4 of 5",
+    title: "Ready",
+    description: "Strong foundation. You have the data, leadership, and process maturity to run structured AI projects. The priority now is building systematic capability — repeatable deployment across the organization, not just one-off wins.",
+    steps: [
+      "Build a repeatable deployment process: how you evaluate, pilot, and scale AI projects — so each new use case takes less time and less risk.",
+      "Invest in internal AI literacy for the broader team — the bottleneck at this stage is usually adoption, not technology.",
+      "Review the Governance & Risk block carefully — this is where companies at your stage create problems they discover 12 months later."
+    ],
+    ctas: [
+      {
+        label: "Book a Session — Build Your AI Roadmap",
+        sub: "Strong foundation, right time to move. Let's prioritize your use cases, define 90-day milestones, and build the execution plan that turns readiness into measurable results.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+Readiness+%E2%80%94+Roadmap+Session`,
+        style: "primary"
+      }
+    ]
+  },
+  {
+    range: [80, 100],
+    badge: "Level 5 of 5",
+    title: "Leader",
+    description: "AI is already a competitive advantage in your organization. The primary risk now is scaling without governance — moving fast and creating compliance, data, or quality problems you don't catch until they're expensive.",
+    steps: [
+      "Conduct a governance audit: review what data goes into AI systems and who validates outputs. At this maturity level, the failure mode shifts from \"can't deploy\" to \"deployed without guardrails.\"",
+      "Document your AI decision frameworks so institutional knowledge doesn't sit with a few individuals.",
+      "Invest in continuous evaluation — AI models drift, business context changes, and what worked 12 months ago may underperform today."
+    ],
+    ctas: [
+      {
+        label: "Book an AI Governance Audit",
+        sub: "At your maturity level, the risk isn't deployment — it's what you're running without proper validation and guardrails. Let's review your AI governance, data flows, and output validation processes.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+Readiness+%E2%80%94+Governance+Audit`,
+        style: "primary"
+      }
+    ]
+  }
+];
+
+const scores = {};
+const ALL_SECTION_IDS = ['result-wrap','ctas-wrap','subscribe-wrap','share-wrap','block-scores-wrap','stats-wrap','sources-wrap'];
+
+function buildQuestions() {
+  const container = document.getElementById('questions-container');
+  let qNum = 1;
+
+  blocks.forEach((block, bIdx) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'block-wrap';
+
+    const card = document.createElement('div');
+    card.className = 'block-card';
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'block-title-row';
+    titleRow.innerHTML = `
+      <div class="block-icon">${block.icon}</div>
+      <div class="block-title-text">
+        <h2>${block.name}</h2>
+        <span>${block.range}</span>
+      </div>
+    `;
+    card.appendChild(titleRow);
+
+    block.questions.forEach((qText, qIdx) => {
+      const key = `q${qNum}`;
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+
+      const btns = [0,1,2,3,4].map(v =>
+        `<button class="score-btn" data-key="${key}" data-val="${v}" onclick="setScore('${key}',${v},this)">${v}</button>`
+      ).join('');
+
+      qDiv.innerHTML = `
+        <div class="q-number">Question ${qNum}</div>
+        <div class="q-text">${qText}</div>
+        <div class="q-scale">
+          <div class="scale-labels"><span>Doesn't exist</span><span>Fully in place</span></div>
+          <div class="score-buttons">${btns}</div>
+        </div>
+      `;
+
+      card.appendChild(qDiv);
+      qNum++;
+    });
+
+    wrap.appendChild(card);
+    container.appendChild(wrap);
+  });
+}
+
+function setScore(key, val, btn) {
+  scores[key] = val;
+  document.querySelectorAll(`[data-key="${key}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateFooter();
+  if (Object.keys(scores).length === 25) showResult();
+}
+
+function updateFooter() {
+  const total = Object.values(scores).reduce((s, v) => s + v, 0);
+  const count = Object.keys(scores).length;
+  document.getElementById('footer-score').textContent = total;
+  document.getElementById('footer-answered').textContent = `${count} / 25`;
+  document.getElementById('progress-fill').style.width = `${(count / 25) * 100}%`;
+}
+
+function showResult() {
+  const total = Object.values(scores).reduce((s, v) => s + v, 0);
+  const r = results.find(x => total >= x.range[0] && total <= x.range[1]);
+
+  document.getElementById('result-badge').textContent = r.badge;
+  document.getElementById('result-score').textContent = total;
+  document.getElementById('result-title').textContent = r.title;
+  document.getElementById('result-description').textContent = r.description;
+  document.getElementById('result-steps').innerHTML = r.steps.map((s, i) =>
+    `<div class="next-step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`
+  ).join('');
+
+  ALL_SECTION_IDS.forEach(id => document.getElementById(id).classList.add('visible'));
+  document.getElementById('reset-wrap').classList.add('visible');
+
+  buildBlockScores();
+  showCTAs(r);
+  showShare(total, r.title);
+  window.location.hash = `score=${total}&level=${encodeURIComponent(r.title)}`;
+
+  document.getElementById('result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showCTAs(result) {
+  document.getElementById('ctas-list').innerHTML = result.ctas.map(cta => `
+    <div class="cta-item">
+      <a class="cta-btn ${cta.style}" href="${cta.href()}" target="_blank">${cta.label}</a>
+      <div class="cta-sub">${cta.sub}</div>
+    </div>
+  `).join('');
+}
+
+function getWeakestBlock() {
+  let qNum = 1, weakest = { name: '', pct: 1 };
+  blocks.forEach(block => {
+    let total = 0;
+    block.questions.forEach(() => { total += scores[`q${qNum}`] || 0; qNum++; });
+    const pct = total / block.max;
+    if (pct < weakest.pct) weakest = { name: block.name, pct };
+  });
+  return weakest.name;
+}
+
+function showShare(total, title) {
+  const weakest = getWeakestBlock();
+  const url = PAGE_URL;
+  const text = `I just scored ${total}/100 on the AI Readiness Assessment.\n\nResult: ${title}\nWeakest area: ${weakest}\n\nWhere does your business stand?\n👉 ${url}\n\nAssessment by @monetizer_biz`;
+  document.getElementById('share-text-box').textContent = text;
+}
+
+function copyShareText() {
+  const text = document.getElementById('share-text-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy text'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function shareOnThreads() {
+  const text = document.getElementById('share-text-box').textContent;
+  window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function handleSubscribe() {
+  const email = document.getElementById('subscribe-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('subscribe-email').focus();
+    return;
+  }
+  window.open(`mailto:${CONSULT_EMAIL}?subject=Subscribe+%E2%80%94+SC+Automation+Insights&body=Please+add+me+to+your+list.+My+email:+${encodeURIComponent(email)}`, '_blank');
+  document.getElementById('subscribe-note').classList.add('visible');
+}
+
+function buildBlockScores() {
+  const container = document.getElementById('block-scores-list');
+  container.innerHTML = '';
+  let qNum = 1;
+
+  blocks.forEach(block => {
+    let blockTotal = 0;
+    block.questions.forEach(() => {
+      blockTotal += scores[`q${qNum}`] || 0;
+      qNum++;
+    });
+    const pct = Math.round((blockTotal / block.max) * 100);
+    const row = document.createElement('div');
+    row.className = 'block-score-row';
+    row.innerHTML = `
+      <div class="bsr-name">${block.name}</div>
+      <div class="bsr-track"><div class="bsr-fill" style="width:${pct}%"></div></div>
+      <div class="bsr-num">${blockTotal}/${block.max}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function resetAll() {
+  Object.keys(scores).forEach(k => delete scores[k]);
+  document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('footer-score').textContent = '0';
+  document.getElementById('footer-answered').textContent = '0 / 25';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('subscribe-email').value = '';
+  document.getElementById('subscribe-note').classList.remove('visible');
+  ALL_SECTION_IDS.forEach(id => document.getElementById(id).classList.remove('visible'));
+  document.getElementById('reset-wrap').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuestions();
+</script>
+</body>
+</html>

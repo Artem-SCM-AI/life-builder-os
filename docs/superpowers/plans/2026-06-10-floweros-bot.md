@@ -23,10 +23,32 @@ This plan covers:
 
 **Out of scope (Plan 2):** LMachine cashback, Flora24 stock check, Monobank payment link, manager photo forward, cash payment confirmation.
 
-**Open questions (must resolve before Plan 2):**
-1. Flora24 API auth method and rate limits
-2. LMachine API exact endpoint names and auth
-3. Monobank merchant account status for the shop
+**Open questions — status update 2026-06-12:**
+1. ~~Flora24 API~~ — **CUT from the roadmap.** Pilot shop has no CRM (Excel/notebooks). Stock is handled by attribute-level ordering + florist daily checklist (Plan 2). Ignore all Flora24 references.
+2. ~~LMachine API~~ — **partner confirmed** (Artem's friends). Plan 2 will use real endpoints from their docs; ledger requirements: report §5.2.
+3. Monobank merchant account status for the shop — still open.
+
+---
+
+## Amendments (2026-06-12) — apply during execution
+
+> Source: `2026-06-12-report-floweros-prelaunch-analysis.md`. These amendments override the corresponding task specs below. Write tests first for each change, same TDD discipline.
+
+**A1 — Task 2 (Config): points list.** `ShopConfig` gains `points: list[PointConfig]` — each point: `point_id`, `address`, `manager_chat_id` (overrides shop-level default when set). Pilot config has one point. Shop-level `manager_chat_id` remains the fallback.
+
+**A2 — Task 3 (Models): Order fields.** `Order` gains: `point_id: str = ""`, `format: str = ""` (`mono`|`mix`), `mono_type: str = ""`, `colors: list = field(default_factory=list)`, `size_band: str = ""` (`compact`|`standard`|`statement`), `same_day: bool = False`, `description_text: str = ""`, `photo_file_id: str = ""`. These fields MUST exist from day one even where flows don't fill them yet — history is never recoverable retroactively. Task 4 (AirtableClient) persists them.
+
+**A3 — Task 8 (Scheduler): idempotent reminders.** Dispatch keyed by `(profile_id, date_label, year)` against a `reminders_sent` log (Airtable table). A re-run of the 09:00 job the same day must send nothing new. Test: run `scan_and_send_reminders()` twice → second run produces zero sends.
+
+**A4 — Task 9 (Order Flow): attribute-level ordering.** Extend beyond budget capture:
+- Format keyboard: `mono` / `mix`
+- Mono → mono-type keyboard from a static per-shop list in config (`mono_types: [троянди, півонії, хризантеми, тюльпани]`); seasonal/daily gating arrives in Plan 2
+- Mix → colors multi-pick keyboard + size-band keyboard (compact / standard / statement)
+- Budget: band keyboard (per-shop bands in config) + "✍️ Своя сума" → numeric input
+- Escape hatch at every step: "💬 Описати словами" → free text + profile summary forwarded to manager chat, order created with `description_text`, flow ends with confirmation to client
+- All attributes saved on the Order record
+
+**A5 — Commission: flat 7% on GROSS order value.** `commission_pct` stays in config; no progressive-rate logic anywhere; cashback redemption never reduces the commission base (matters for Plan 2 transaction recording).
 
 ---
 

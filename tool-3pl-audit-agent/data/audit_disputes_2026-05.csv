@@ -1,0 +1,7 @@
+Date,Description,Category,Units,Rate Billed,Rate Expected,Total Billed,Total Expected,Variance,Status,Flag Reason,Notes
+2026-05-01,Monthly Storage - Standard Pallet,Storage,48,15.00,13.50,720.00,648.00,72.00,DISPUTE,WRONG_RATE,Rate $15.00 vs contract $13.50
+2026-05-03,Pallet In - Container Unload,Receiving,22,10.00,10.00,220.00,0.00,220.00,DISPUTE,DUPLICATE,Identical to previous line — same date / description / units
+2026-05-12,Rush Handling Fee,Other,1,175.00,0.00,175.00,0.00,175.00,DISPUTE,UNAUTHORIZED,Not in rate card — was this service requested?
+2026-05-15,Parcel - 10 to 100lb,Parcel,11,2.75,2.35,30.25,25.85,4.40,REVIEW,WRONG_RATE,Rate $2.75 vs contract $2.35 — monitor next invoice
+2026-05-31,Account Management Fee,Other,1,95.00,0.00,95.00,0.00,95.00,DISPUTE,UNAUTHORIZED,Not in rate card — no such service in contract
+TOTAL DISPUTES,,,,,,,,$566.40,,5 items flagged ($562.00 DISPUTE + $4.40 REVIEW)

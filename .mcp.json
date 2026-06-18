@@ -1,0 +1,17 @@
+{
+  "chrome-devtools": {
+    "command": "/usr/local/bin/npx",
+    "args": ["chrome-devtools-mcp@latest"]
+  },
+  "context7": {
+    "command": "npx",
+    "args": ["-y", "@upstash/context7-mcp@latest"]
+  },
+  "notion": {
+    "command": "npx",
+    "args": ["-y", "@notionhq/notion-mcp-server"],
+    "env": {
+      "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer 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\", \"Notion-Version\": \"2022-06-28\"}"
+    }
+  }
+}

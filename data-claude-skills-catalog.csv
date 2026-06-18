@@ -1,0 +1,307 @@
+Category,Skill,Description,Source,Link
+GSD Workflow — Проект і Milestone,gsd-new-project,Ініціалізує новий проект з глибоким збором контексту та PROJECT.md,GSD v1.36,local
+GSD Workflow — Проект і Milestone,gsd-new-milestone,Запускає новий milestone цикл — оновлює PROJECT.md і маршрутизує до вимог,GSD v1.36,local
+GSD Workflow — Проект і Milestone,gsd-complete-milestone,Архівує завершений milestone і готує до наступної версії,GSD v1.36,local
+GSD Workflow — Проект і Milestone,gsd-milestone-summary,Генерує comprehensive summary з артефактів milestone для онбордингу,GSD v1.36,local
+GSD Workflow — Проект і Milestone,gsd-new-workspace,Створює ізольований workspace з копіями репо та незалежним .planning/,GSD v1.36,local
+GSD Workflow — Проект і Milestone,gsd-list-workspaces,Показує активні GSD workspaces та їх статус,GSD v1.36,local
+GSD Workflow — Проект і Milestone,gsd-remove-workspace,Видаляє GSD workspace та очищає worktrees,GSD v1.36,local
+GSD Workflow — Проект і Milestone,gsd-workstreams,Управляє паралельними workstreams — list/create/switch/status/complete,GSD v1.36,local
+GSD Workflow — Управління фазами,gsd-add-phase,Додає фазу в кінець поточного milestone у roadmap,GSD v1.36,local
+GSD Workflow — Управління фазами,gsd-insert-phase,Вставляє термінову роботу як decimal фазу між існуючими,GSD v1.36,local
+GSD Workflow — Управління фазами,gsd-remove-phase,Видаляє майбутню фазу з roadmap і перенумеровує наступні,GSD v1.36,local
+GSD Workflow — Управління фазами,gsd-analyze-dependencies,Аналізує залежності між фазами та пропонує Depends on для ROADMAP.md,GSD v1.36,local
+GSD Workflow — Управління фазами,gsd-plan-milestone-gaps,Створює фази для закриття прогалин виявлених milestone аудитом,GSD v1.36,local
+GSD Workflow — Планування,gsd-discuss-phase,Збирає контекст фази через адаптивні питання перед плануванням,GSD v1.36,local
+GSD Workflow — Планування,gsd-research-phase,Досліджує як реалізувати фазу (standalone),GSD v1.36,local
+GSD Workflow — Планування,gsd-plan-phase,Створює детальний план фази (PLAN.md) з verification loop,GSD v1.36,local
+GSD Workflow — Планування,gsd-list-phase-assumptions,Виводить допущення Claude про підхід до фази перед плануванням,GSD v1.36,local
+GSD Workflow — Планування,gsd-ai-integration-phase,Генерує AI design contract (AI-SPEC.md) для фаз з AI системами,GSD v1.36,local
+GSD Workflow — Планування,gsd-ui-phase,Генерує UI design contract (UI-SPEC.md) для frontend фаз,GSD v1.36,local
+GSD Workflow — Виконання,gsd-execute-phase,Виконує всі плани у фазі з wave-based паралелізацією,GSD v1.36,local
+GSD Workflow — Виконання,gsd-quick,Виконує швидке завдання з GSD гарантіями без optional агентів,GSD v1.36,local
+GSD Workflow — Виконання,gsd-fast,Виконує тривіальне завдання inline — без субагентів і планування,GSD v1.36,local
+GSD Workflow — Виконання,gsd-do,Маршрутизує вільний текст до правильної GSD команди автоматично,GSD v1.36,local
+GSD Workflow — Виконання,gsd-autonomous,Запускає всі фази автономно — discuss→plan→execute для кожної,GSD v1.36,local
+GSD Workflow — Виконання,gsd-reapply-patches,Повторно застосовує локальні модифікації після оновлення GSD,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-verify-work,Валідує побудовані функції через conversational UAT,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-validate-phase,Ретроактивно аудитує та заповнює Nyquist validation gaps,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-review,Запитує cross-AI peer review планів фаз від зовнішніх AI CLI,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-code-review,Перевіряє файли змінені під час фази на баги та security,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-code-review-fix,Auto-fix знайдених code review проблем з атомарними commits,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-ui-review,Ретроактивний 6-pillar візуальний аудит frontend коду,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-eval-review,Ретроактивний аудит evaluation coverage AI фази,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-secure-phase,Ретроактивно верифікує threat mitigations для завершеної фази,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-add-tests,Генерує тести для завершеної фази на основі UAT критеріїв,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-audit-fix,Autonomous audit-to-fix pipeline — знаходить/виправляє/тестує,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-audit-milestone,Аудитує завершеність milestone проти оригінального наміру,GSD v1.36,local
+GSD Workflow — Якість і Review,gsd-audit-uat,Cross-phase аудит всіх незавершених UAT і verification items,GSD v1.36,local
+GSD Workflow — Навігація і прогрес,gsd-next,Автоматично переходить до наступного логічного кроку GSD workflow,GSD v1.36,local
+GSD Workflow — Навігація і прогрес,gsd-progress,Перевіряє прогрес проекту і маршрутизує до execute або plan,GSD v1.36,local
+GSD Workflow — Навігація і прогрес,gsd-health,Діагностує здоров'я planning директорії і опціонально ремонтує,GSD v1.36,local
+GSD Workflow — Навігація і прогрес,gsd-stats,Показує статистику проекту — фази/плани/вимоги/git метрики,GSD v1.36,local
+GSD Workflow — Навігація і прогрес,gsd-manager,Інтерактивний command center для управління кількома фазами,GSD v1.36,local
+GSD Workflow — Навігація і прогрес,gsd-help,Показує доступні GSD команди та usage guide,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-note,Zero-friction захоплення ідей — append/list/promote нотаток до todos,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-thread,Управляє persistent context threads для cross-session роботи,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-add-todo,Захоплює ідею або задачу як todo з поточного контексту,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-check-todos,Перераховує pending todos і дозволяє вибрати над чим працювати,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-add-backlog,Додає ідею до backlog parking lot (999.x нумерація),GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-review-backlog,Переглядає і просуває backlog items до активного milestone,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-pause-work,Створює context handoff при паузі роботи в середині фази,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-resume-work,Відновлює роботу з попередньої сесії з повним відновленням контексту,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-session-report,Генерує звіт сесії з token usage та summary роботи,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-extract_learnings,Витягує рішення/уроки/паттерни з артефактів фази,GSD v1.36,local
+GSD Workflow — Контекст і нотатки,gsd-plant-seed,Захоплює forward-looking ідею з тригерними умовами для майбутніх milestones,GSD v1.36,local
+GSD Workflow — Аналіз і дослідження,gsd-explore,Socratic ideation та routing ідей — обдумати перед плануванням,GSD v1.36,local
+GSD Workflow — Аналіз і дослідження,gsd-intel,Запитує/інспектує/оновлює codebase intelligence файли,GSD v1.36,local
+GSD Workflow — Аналіз і дослідження,gsd-scan,Rapid codebase assessment — легша альтернатива gsd-map-codebase,GSD v1.36,local
+GSD Workflow — Аналіз і дослідження,gsd-map-codebase,Аналізує codebase паралельними mapper агентами,GSD v1.36,local
+GSD Workflow — Аналіз і дослідження,gsd-forensics,Post-mortem для збоїв GSD workflows — аналіз git history та стану,GSD v1.36,local
+GSD Workflow — Аналіз і дослідження,gsd-graphify,Будує/запитує/інспектує project knowledge graph,GSD v1.36,local
+GSD Workflow — Документація і Git,gsd-docs-update,Генерує або оновлює project документацію перевірену проти codebase,GSD v1.36,local
+GSD Workflow — Документація і Git,gsd-pr-branch,Створює чистий PR branch фільтруючи .planning/ commits,GSD v1.36,local
+GSD Workflow — Документація і Git,gsd-ship,Створює PR/запускає review та готує до merge після verification,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-settings,Конфігурує GSD workflow toggles та model profile,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-set-profile,Перемикає model profile для GSD агентів (quality/balanced/budget),GSD v1.36,local
+GSD Workflow — Налаштування,gsd-profile-user,Генерує developer behavioral profile та Claude-discoverable артефакти,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-update,Оновлює GSD до останньої версії з changelog,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-undo,Безпечний git revert — відкочує phase або plan commits,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-cleanup,Архівує накопичені phase директорії завершених milestones,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-import,Завантажує зовнішні плани з виявленням конфліктів перед записом,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-from-gsd2,Імпортує GSD-2 (.gsd/) проект назад до GSD v1 (.planning/) формату,GSD v1.36,local
+GSD Workflow — Налаштування,gsd-join-discord,Приєднатись до GSD Discord спільноти,GSD v1.36,local
+Workflow & Process,blueprint,Перетворює одну ціль на покроковий план для multi-session/multi-agent проектів,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/blueprint
+Workflow & Process,tdd-workflow,TDD workflow для нових features та bug fixes з 80%+ coverage,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/tdd-workflow
+Workflow & Process,verification-loop,Comprehensive verification system для Claude Code сесій,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/verification-loop
+Workflow & Process,strategic-compact,Пропонує manual context compaction у логічні моменти,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/strategic-compact
+Workflow & Process,gateguard,Gate що блокує Edit/Write/Bash і вимагає дослідження перед дією,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/gateguard
+Workflow & Process,santa-method,Multi-agent adversarial verification: два незалежних агенти мають пройти,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/santa-method
+Workflow & Process,search-first,Research-before-coding workflow — пошук інструментів перед кодом,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/search-first
+Workflow & Process,coding-standards,Базові cross-project конвенції: naming/readability/immutability,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/coding-standards
+Workflow & Process,iterative-retrieval,Паттерн прогресивного уточнення context retrieval,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/iterative-retrieval
+Workflow & Process,context-budget,Аудитує споживання context window — знаходить bloat,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/context-budget
+Workflow & Process,continuous-learning,Витягує reusable patterns із сесій та зберігає як skills,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/continuous-learning
+Workflow & Process,continuous-learning-v2,Instinct-based learning: спостерігає сесії через hooks/instincts,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/continuous-learning-v2
+Workflow & Process,continuous-agent-loop,Паттерни для continuous autonomous agent loops з quality gates,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/continuous-agent-loop
+Workflow & Process,caveman,Ultra-compressed mode спілкування — зменшує token usage ~75%,Global,local
+Workflow & Process,caveman-commit,Caveman-режим для git commits,Global,local
+Workflow & Process,caveman-compress,Стискає memory файли у caveman формат для економії токенів,Global,local
+Workflow & Process,caveman-help,Caveman-режим для довідки,Global,local
+Workflow & Process,caveman-review,Caveman-режим для code review,Global,local
+Workflow & Process,compress,Стискає natural language memory файли у caveman формат,Global,local
+Workflow & Process,skill-authoring-workflow,Перетворює raw PM контент на compliant publish-ready skill,Global,local
+Workflow & Process,eol-message,Пише EOL оголошення про закриття продукту/фічі з rationale,Global,local
+Workflow & Process,last30days,Досліджує що кажуть про будь-яку тему за останні 30 днів,Global,local
+AI & Agents,claude-api,Claude API паттерни: Messages API/streaming/tool use/caching/batches,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/claude-api
+AI & Agents,agentic-engineering,Eval-first підхід: декомпозиція задач/cost-aware model routing,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/agentic-engineering
+AI & Agents,ai-first-engineering,Engineering-модель для команд де AI-агенти генерують більшу частину коду,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/ai-first-engineering
+AI & Agents,agent-eval,Порівняння coding-агентів за метриками: pass rate/cost/time/consistency,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/agent-eval
+AI & Agents,agent-harness-construction,Проектування action space та tool definitions для AI-агентів,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/agent-harness-construction
+AI & Agents,agent-introspection-debugging,Structured self-debugging workflow для збоїв AI-агентів,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/agent-introspection-debugging
+AI & Agents,agent-payment-x402,Додає x402 payment до AI-агентів — бюджети/non-custodial wallets,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/agent-payment-x402
+AI & Agents,agent-sort,Будує ECC install plan — сортує skills/rules у DAILY vs LIBRARY,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/agent-sort
+AI & Agents,autonomous-agent-harness,Перетворює Claude Code на автономну систему з пам'яттю та crons,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/autonomous-agent-harness
+AI & Agents,autonomous-loops,Паттерни для автономних loops — від simple pipelines до multi-agent DAG,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/autonomous-loops
+AI & Agents,cost-aware-llm-pipeline,Cost optimization: model routing/budget tracking/retry/prompt caching,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/cost-aware-llm-pipeline
+AI & Agents,dmux-workflows,Multi-agent orchestration через dmux (tmux pane manager),ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/dmux-workflows
+AI & Agents,enterprise-agent-ops,Довготривалі agent workloads з observability та lifecycle management,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/enterprise-agent-ops
+AI & Agents,eval-harness,Формальна evaluation framework для Claude Code сесій (EDD),ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/eval-harness
+AI & Agents,gan-style-harness,GAN-inspired Generator-Evaluator agent harness для autonomous applications,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/gan-style-harness
+AI & Agents,team-builder,Інтерактивний picker для формування та dispatch паралельних команд,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/team-builder
+AI & Agents,prompt-optimizer,Аналізує prompts/знаходить gaps/матчить ECC компоненти,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/prompt-optimizer
+AI & Agents,regex-vs-llm-structured-text,Decision framework: коли regex/коли LLM для парсингу structured text,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/regex-vs-llm-structured-text
+AI & Agents,token-budget-advisor,Пропонує вибір глибини відповіді та контроль token budget,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/token-budget-advisor
+AI & Agents,context-engineering-advisor,Діагностує context stuffing vs. engineering в AI workflows,Global,local
+AI & Agents,ai-regression-testing,Regression testing для AI-assisted development/sandbox-mode API testing,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/ai-regression-testing
+AI & Agents,claude-devfleet,Оркеструє multi-agent tasks через Claude DevFleet у isolated worktrees,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/claude-devfleet
+Frontend,frontend-design,Створює production-grade frontend інтерфейси з високим дизайном,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/frontend-design
+Frontend,frontend-patterns,React/Next.js/state management/performance/UI best practices,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/frontend-patterns
+Frontend,frontend-slides,HTML презентації з анімаціями або конвертація PowerPoint у web,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/frontend-slides
+Frontend,nextjs-turbopack,Next.js 16+ та Turbopack — incremental bundling/FS caching/dev speed,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/nextjs-turbopack
+Frontend,nuxt4-patterns,Nuxt 4: hydration safety/performance/route rules/SSR-safe data fetching,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/nuxt4-patterns
+Frontend,design-system,Генерує або аудитує design systems/перевіряє visual consistency,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/design-system
+Frontend,accessibility,WCAG 2.2 Level AA / ARIA для Web та iOS/Android,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/accessibility
+Frontend,bun-runtime,Bun як runtime/package manager/bundler — коли Bun vs Node,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/bun-runtime
+Frontend,liquid-glass-design,iOS 26 Liquid Glass design — dynamic glass material для SwiftUI та UIKit,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/liquid-glass-design
+Frontend,click-path-audit,Трасує кожну кнопку через state change sequence для пошуку багів,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/click-path-audit
+Frontend,browser-qa,Автоматизує візуальне тестування UI через browser automation,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/browser-qa
+Frontend,ui-demo,Записує polished UI demo відео через Playwright,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/ui-demo
+Backend & APIs,backend-patterns,Backend архітектура/API design/DB optimization для Node.js/Express/Next.js,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/backend-patterns
+Backend & APIs,api-design,REST API: naming/status codes/pagination/filtering/versioning/rate limiting,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/api-design
+Backend & APIs,api-connector-builder,Будує API connector точно відповідаючи існуючому паттерну інтеграцій,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/api-connector-builder
+Backend & APIs,nestjs-patterns,NestJS: modules/controllers/DTO validation/guards/interceptors,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/nestjs-patterns
+Backend & APIs,django-patterns,Django архітектура/REST API з DRF/ORM/caching/signals,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/django-patterns
+Backend & APIs,springboot-patterns,Spring Boot архітектура/REST API/layered services/caching/async,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/springboot-patterns
+Backend & APIs,laravel-patterns,Laravel архітектура/Eloquent ORM/queues/events/caching,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/laravel-patterns
+Backend & APIs,golang-patterns,Idiomatic Go паттерни та best practices,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/golang-patterns
+Backend & APIs,python-patterns,Pythonic idioms/PEP 8/type hints/best practices,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/python-patterns
+Backend & APIs,rust-patterns,Idiomatic Rust: ownership/error handling/traits/concurrency,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/rust-patterns
+Backend & APIs,perl-patterns,Modern Perl 5.36+ idioms та best practices,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/perl-patterns
+Backend & APIs,dotnet-patterns,Idiomatic C# та .NET: DI/async-await/best practices,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/dotnet-patterns
+Backend & APIs,hexagonal-architecture,Ports & Adapters: domain boundaries/dependency inversion,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/hexagonal-architecture
+Backend & APIs,mcp-server-patterns,Будує MCP servers з Node/TypeScript SDK — tools/resources/Zod,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/mcp-server-patterns
+Backend & APIs,java-coding-standards,Java coding standards для Spring Boot: naming/immutability/Optional,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/java-coding-standards
+Backend & APIs,kotlin-ktor-patterns,Ktor server: routing DSL/plugins/Koin DI/WebSockets/testing,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/kotlin-ktor-patterns
+Backend & APIs,cpp-coding-standards,C++ Core Guidelines — modern/safe/idiomatic C++ practices,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/cpp-coding-standards
+Backend & APIs,nodejs-keccak256,Запобігає Ethereum hashing bugs у JS/TS (sha3-256 ≠ Keccak-256),ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/nodejs-keccak256
+Mobile,android-clean-architecture,Clean Architecture для Android та KMP — модулі/UseCases/Repositories,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/android-clean-architecture
+Mobile,kotlin-patterns,Idiomatic Kotlin: coroutines/null safety/DSL builders,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/kotlin-patterns
+Mobile,kotlin-coroutines-flows,Kotlin Coroutines та Flow: structured concurrency/StateFlow/testing,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/kotlin-coroutines-flows
+Mobile,kotlin-exposed-patterns,JetBrains Exposed ORM: DSL queries/DAO/HikariCP/Flyway,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/kotlin-exposed-patterns
+Mobile,kotlin-testing,Kotlin testing: Kotest/MockK/coroutine testing/Kover,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/kotlin-testing
+Mobile,swift-concurrency-6-2,Swift 6.2 Approachable Concurrency — single-threaded by default,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/swift-concurrency-6-2
+Mobile,swift-actor-persistence,Thread-safe data persistence у Swift через actors,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/swift-actor-persistence
+Mobile,swift-protocol-di-testing,Protocol-based DI для testable Swift: mock file system та network,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/swift-protocol-di-testing
+Mobile,swiftui-patterns,SwiftUI: @Observable/view composition/navigation/performance,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/swiftui-patterns
+Mobile,compose-multiplatform-patterns,Compose Multiplatform та Jetpack Compose для KMP,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/compose-multiplatform-patterns
+Mobile,dart-flutter-patterns,Dart/Flutter: null safety/BLoC/Riverpod/GoRouter/Dio/Freezed,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/dart-flutter-patterns
+Mobile,flutter-dart-code-review,Flutter/Dart code review: BLoC/Riverpod/Provider/GetX/accessibility,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/flutter-dart-code-review
+Mobile,foundation-models-on-device,Apple FoundationModels: on-device LLM/guided generation/iOS 26+,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/foundation-models-on-device
+Database,postgres-patterns,PostgreSQL: query optimization/schema design/indexing/security,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/postgres-patterns
+Database,clickhouse-io,ClickHouse: query optimization/analytics/data engineering,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/clickhouse-io
+Database,database-migrations,DB migrations: schema changes/rollbacks/zero-downtime deploys,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/database-migrations
+Database,jpa-patterns,JPA/Hibernate: entity design/relationships/query optimization/transactions,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/jpa-patterns
+Database,content-hash-cache-pattern,Кешує результати обробки файлів через SHA-256 content hashes,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/content-hash-cache-pattern
+Security,security-review,Security checklist для auth/user input/secrets/API endpoints/payments,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/security-review
+Security,security-scan,Сканує .claude/ конфіг на security vulnerabilities через AgentShield,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/security-scan
+Security,security-bounty-hunter,Пошук exploitable bounty-worthy security issues в репозиторіях,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/security-bounty-hunter
+Security,django-security,Django security: authentication/CSRF/SQL injection/XSS,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/django-security
+Security,laravel-security,Laravel security: authn/authz/CSRF/mass assignment/rate limiting,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/laravel-security
+Security,springboot-security,Spring Security: authn/authz/CSRF/secrets/rate limiting,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/springboot-security
+Security,hipaa-compliance,HIPAA: PHI handling/covered entities/BAAs/breach posture,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/hipaa-compliance
+Security,healthcare-phi-compliance,PHI/PII compliance: data classification/access control/audit trails,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/healthcare-phi-compliance
+Security,defi-amm-security,Security checklist для Solidity AMM: reentrancy/oracle manipulation,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/defi-amm-security
+Security,llm-trading-agent-security,Security для autonomous trading agents: prompt injection/spend limits,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/llm-trading-agent-security
+Security,safety-guard,Запобігає destructive операціям при роботі з production або autonomous agents,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/safety-guard
+Security,perl-security,Perl security: taint mode/input validation/DBI parameterized queries,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/perl-security
+Security,evm-token-decimals,Запобігає decimal mismatch bugs на EVM chains для DeFi tools,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/evm-token-decimals
+Testing,e2e-testing,Playwright E2E: Page Object Model/конфігурація/CI-CD/artifact management,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/e2e-testing
+Testing,python-testing,Python testing: pytest/TDD/fixtures/mocking/parametrization/coverage,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/python-testing
+Testing,golang-testing,Go тестування: table-driven tests/subtests/benchmarks/fuzzing,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/golang-testing
+Testing,rust-testing,Rust testing: unit/integration/async/property-based/mocking,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/rust-testing
+Testing,cpp-testing,C++ тести: GoogleTest/CTest/coverage/sanitizers,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/cpp-testing
+Testing,csharp-testing,C#/.NET тестування: xUnit/FluentAssertions/mocking/integration,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/csharp-testing
+Testing,perl-testing,Perl testing: Test2::V0/Test::More/prove/Devel::Cover,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/perl-testing
+Testing,django-tdd,Django testing: pytest-django/factory_boy/mocking/DRF API,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/django-tdd
+Testing,laravel-tdd,TDD для Laravel: PHPUnit/Pest/factories/database testing/fakes,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/laravel-tdd
+Testing,springboot-tdd,TDD для Spring Boot: JUnit 5/Mockito/MockMvc/Testcontainers,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/springboot-tdd
+Testing,django-verification,Verification loop для Django: migrations/linting/tests/security scans,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/django-verification
+Testing,laravel-verification,Verification loop для Laravel: env/static analysis/tests/security,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/laravel-verification
+Testing,springboot-verification,Verification loop для Spring Boot: build/analysis/tests/security,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/springboot-verification
+Testing,healthcare-eval-harness,Patient safety evaluation: CDSS accuracy/PHI exposure/clinical workflow,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/healthcare-eval-harness
+Testing,benchmark,Вимірює performance baseline/виявляє регресії/порівнює stack-альтернативи,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/benchmark
+Content Media & Marketing,content-engine,Контент для X/LinkedIn/TikTok/YouTube/newsletters та multi-platform,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/content-engine
+Content Media & Marketing,article-writing,Написання статей/блогів/туторіалів у характерному голосі,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/article-writing
+Content Media & Marketing,brand-voice,Будує профіль стилю з реальних постів/застосовує у всьому контенті,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/brand-voice
+Content Media & Marketing,crosspost,Розподіл контенту по X/LinkedIn/Threads/Bluesky з адаптацією,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/crosspost
+Content Media & Marketing,x-api,X/Twitter API: posts/threads/timelines/search/analytics/OAuth,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/x-api
+Content Media & Marketing,seo,SEO аудит: technical SEO/on-page/structured data/Core Web Vitals,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/seo
+Content Media & Marketing,video-editing,AI-assisted video editing: FFmpeg/Remotion/ElevenLabs/fal.ai,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/video-editing
+Content Media & Marketing,manim-video,Manim explainer animations для технічних концепцій та product walkthroughs,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/manim-video
+Content Media & Marketing,remotion-video-creation,Remotion best practices — video creation in React: animations/audio,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/remotion-video-creation
+Content Media & Marketing,fal-ai-media,Генерація медіа через fal.ai: зображення/відео/аудіо,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/fal-ai-media
+Content Media & Marketing,videodb,Ingest/understand/act on video-audio: indexes/search/transcode,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/videodb
+Content Media & Marketing,press-release,Amazon-style press release що визначає customer value перед розробкою,Global,local
+Content Media & Marketing,storyboard,Шестикадровий storyboard для user journey від проблеми до рішення,Global,local
+Content Media & Marketing,email-ops,Triage поштової скриньки/написання та відправка листів,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/email-ops
+Content Media & Marketing,connections-optimizer,Реорганізує X та LinkedIn network: pruning/warm outreach,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/connections-optimizer
+Business & Finance,market-research,Market research/competitive analysis/investor due diligence,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/market-research
+Business & Finance,company-research,Company research brief з executive quotes та product strategy,Global,local
+Business & Finance,deep-research,Multi-source дослідження через firecrawl та exa MCPs з цитатами,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/deep-research
+Business & Finance,exa-search,Neural search через Exa MCP: web/code/company research,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/exa-search
+Business & Finance,research-ops,Evidence-first research workflow для fresh facts та recommendations,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/research-ops
+Business & Finance,investor-materials,Pitch decks/one-pagers/investor memos/financial models,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/investor-materials
+Business & Finance,investor-outreach,Cold emails/warm intro blurbs/follow-ups для angels та VCs,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/investor-outreach
+Business & Finance,lead-intelligence,AI-native lead intelligence: signal scoring/warm path discovery,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/lead-intelligence
+Business & Finance,SCAIT-LEAD-GEN-CLIENT-ASCENSION,Dream 100 workflow: ICP → prospect research → cold outreach,Global,local
+Business & Finance,acquisition-channel-advisor,Оцінює acquisition channels за CAC/LTV/payback/retention,Global,local
+Business & Finance,business-health-diagnostic,Діагностує SaaS бізнес: growth/retention/unit economics/capital,Global,local
+Business & Finance,tam-sam-som-calculator,Розраховує TAM/SAM/SOM з явними assumptions та методологією,Global,local
+Business & Finance,saas-revenue-growth-metrics,SaaS revenue/retention та growth метрики — churn/expansion/PMF,Global,local
+Business & Finance,saas-economics-efficiency-metrics,SaaS unit economics та capital efficiency — чи може бізнес масштабуватись,Global,local
+Business & Finance,finance-metrics-quickref,Швидкий довідник SaaS фінансових метрик/формул та benchmarks,Global,local
+Business & Finance,finance-based-pricing-advisor,Оцінює цінові зміни за ARPU/conversion/churn risk/NRR,Global,local
+Business & Finance,pestel-analysis,Аналіз Political/Economic/Social/Tech/Environmental/Legal сил,Global,local
+Business & Finance,pol-probe,Визначає Proof of Life probe для тестування гіпотез до розробки,Global,local
+Business & Finance,pol-probe-advisor,Підбирає правильний PoL probe під hypothesis та наявні ресурси,Global,local
+Business & Finance,council,Скликає четири-голосну раду для go/no-go рішень та tradeoffs,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/council
+Product & UX,product-lens,Валідує why перед розробкою/product diagnostics,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/product-lens
+Product & UX,product-capability,PRD intent → implementation-ready capability plan,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/product-capability
+Product & UX,prd-development,Будує структурований PRD: problem/users/solution/success criteria,Global,local
+Product & UX,roadmap-planning,Стратегічний roadmap: prioritization/epic definition/sequencing,Global,local
+Product & UX,product-strategy-session,End-to-end product strategy session: positioning/discovery/roadmap,Global,local
+Product & UX,product-sense-interview-answer,Структурує PM product-sense відповіді для інтерв'ю,Global,local
+Product & UX,prioritization-advisor,Підбирає framework пріоритизації (RICE/ICE/value-effort),Global,local
+Product & UX,epic-hypothesis,Оформлює epic як testable hypothesis з outcome та validation,Global,local
+Product & UX,epic-breakdown-advisor,Розбиває epics на user stories з Humanizing Work split patterns,Global,local
+Product & UX,user-story,User stories у форматі Mike Cohn з Gherkin acceptance criteria,Global,local
+Product & UX,user-story-mapping,User story map: activities/steps/tasks/release slices,Global,local
+Product & UX,user-story-mapping-workshop,Workshop з user story mapping: backbone/tasks/release slices,Global,local
+Product & UX,user-story-splitting,Розбиває великі stories/epics на менші deliverable stories,Global,local
+Product & UX,jobs-to-be-done,Виявляє customer jobs/pains та gains у JTBD форматі,Global,local
+Product & UX,proto-persona,Створює proto-persona з поточних досліджень та market signals,Global,local
+Product & UX,positioning-statement,Geoffrey Moore-style positioning statement,Global,local
+Product & UX,positioning-workshop,Positioning workshop: target customer/unmet need/differentiation,Global,local
+Product & UX,customer-journey-map,Customer journey map: stages/touchpoints/emotions/metrics,Global,local
+Product & UX,customer-journey-mapping-workshop,Workshop для mapping stages/actions/emotions/pain points,Global,local
+Product & UX,lean-ux-canvas,Lean UX Canvas v2: business problem/assumptions/what to learn,Global,local
+Product & UX,opportunity-solution-tree,OST від outcomes до opportunities/solutions та tests,Global,local
+Product & UX,problem-framing-canvas,MITRE Problem Framing Canvas для чіткого формулювання проблеми,Global,local
+Product & UX,problem-statement,User-centered problem statement: хто заблокований/що намагається/чому важливо,Global,local
+Product & UX,recommendation-canvas,Оцінює AI product ідею: outcomes/hypotheses/risks/positioning,Global,local
+Product & UX,discovery-interview-prep,Планує customer discovery інтерв'ю: goal/segment/метод,Global,local
+Product & UX,discovery-process,Повний discovery cycle: problem hypothesis → validated solution,Global,local
+Product & UX,workshop-facilitation,Facilitation workshop sessions з consistent pacing та progress,Global,local
+Product & UX,altitude-horizon-framework,Розуміння PM-to-Director переходу через altitude і horizon thinking,Global,local
+Product & UX,director-readiness-advisor,Coaching по PM-to-Director переходу: preparing/interviewing/landing,Global,local
+Product & UX,vp-cpo-readiness-advisor,Coaching по переходу до VP або CPO,Global,local
+Product & UX,ai-shaped-readiness-advisor,Оцінює чи продукт AI-first або AI-shaped; AI maturity assessment,Global,local
+Product & UX,executive-onboarding-playbook,30-60-90 day onboarding план для VP або CPO,Global,local
+Supply Chain & Operations,inventory-demand-planning,Demand forecasting/safety stock/replenishment/ABC-XYZ analysis,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/inventory-demand-planning
+Supply Chain & Operations,customs-trade-compliance,Митна документація/HS classification/duty optimization/FTA,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/customs-trade-compliance
+Supply Chain & Operations,logistics-exception-management,Freight exceptions: затримки/пошкодження/втрати/carrier disputes,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/logistics-exception-management
+Supply Chain & Operations,carrier-relationship-management,Управління портфелем carriers/переговори/scorecard/RFP,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/carrier-relationship-management
+Supply Chain & Operations,returns-reverse-logistics,Returns authorization/inspection/disposition/fraud detection,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/returns-reverse-logistics
+Supply Chain & Operations,energy-procurement,Закупівля електроенергії та газу/тарифна оптимізація/PPA,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/energy-procurement
+Supply Chain & Operations,quality-nonconformance,QC/non-conformance investigation/root cause/CAPA systems,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/quality-nonconformance
+Supply Chain & Operations,production-scheduling,Production scheduling/job sequencing/TOC/SMED/OEE analysis,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/production-scheduling
+Supply Chain & Operations,healthcare-cdss-patterns,Clinical Decision Support: drug interaction/dose validation/scoring,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/healthcare-cdss-patterns
+Supply Chain & Operations,healthcare-emr-patterns,EMR/EHR паттерни: clinical safety/encounter workflows/prescription,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/healthcare-emr-patterns
+DevOps & Productivity,deployment-patterns,Deployment workflows/CI-CD/Docker/health checks/rollback,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/deployment-patterns
+DevOps & Productivity,docker-patterns,Docker та Docker Compose для local dev/security/networking,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/docker-patterns
+DevOps & Productivity,git-workflow,Git workflow: branching/commit conventions/merge vs rebase,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/git-workflow
+DevOps & Productivity,github-ops,GitHub: issue triage/PR management/CI-CD/release management,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/github-ops
+DevOps & Productivity,project-flow-ops,GitHub та Linear: triage issues/PRs/linking active work,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/project-flow-ops
+DevOps & Productivity,dashboard-builder,Monitoring dashboards для Grafana/SigNoz,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/dashboard-builder
+DevOps & Productivity,canary-watch,Моніторить deployed URL на регресії після deploys та updates,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/canary-watch
+DevOps & Productivity,terminal-ops,Evidence-first repo execution: запуск команд/debug CI/narrow fixes,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/terminal-ops
+DevOps & Productivity,automation-audit-ops,Інвентаризація автоматизацій: jobs/hooks/connectors/MCP servers,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/automation-audit-ops
+DevOps & Productivity,workspace-surface-audit,Аудитує repo/MCP servers/plugins та рекомендує ECC-native skills,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/workspace-surface-audit
+DevOps & Productivity,configure-ecc,Інтерактивний інсталятор Everything Claude Code,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/configure-ecc
+DevOps & Productivity,ecc-tools-cost-audit,Аудит burn & billing для ECC Tools: PR creation/quota bypass,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/ecc-tools-cost-audit
+DevOps & Productivity,knowledge-ops,Knowledge base management: ingestion/sync/retrieval,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/knowledge-ops
+DevOps & Productivity,unified-notifications-ops,Notifications як єдиний workflow: GitHub/Linear/desktop alerts,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/unified-notifications-ops
+DevOps & Productivity,google-workspace-ops,Google Drive/Docs/Sheets/Slides як одна workflow поверхня,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/google-workspace-ops
+DevOps & Productivity,jira-integration,Jira: tickets/status update/коментарі/transitions,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/jira-integration
+DevOps & Productivity,messages-ops,Live messaging: читання SMS/DMs/one-time codes/threads,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/messages-ops
+DevOps & Productivity,nutrient-document-processing,Обробка/OCR/редакція документів через Nutrient DWS API,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/nutrient-document-processing
+DevOps & Productivity,visa-doc-translate,Переклад візових документів та bilingual PDF,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/visa-doc-translate
+DevOps & Productivity,data-scraper-agent,Автоматизований AI data collection агент + Notion/Sheets storage,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/data-scraper-agent
+DevOps & Productivity,repo-scan,Cross-stack source code asset audit з HTML reports,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/repo-scan
+DevOps & Productivity,social-graph-ranker,Weighted social-graph ranking для warm intro discovery,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/social-graph-ranker
+DevOps & Productivity,customer-billing-ops,Customer billing: subscriptions/refunds/churn triage через Stripe,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/customer-billing-ops
+DevOps & Productivity,finance-billing-ops,Revenue/pricing/refunds/team-billing audit для ECC,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/finance-billing-ops
+DevOps & Productivity,code-tour,CodeTour .tour файли — покрокові walkthrough з file та line anchors,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/code-tour
+DevOps & Productivity,codebase-onboarding,Аналізує незнайомий codebase/генерує onboarding guide та CLAUDE.md,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/codebase-onboarding
+DevOps & Productivity,nanoclaw-repl,NanoClaw v2 — session-aware REPL на базі claude -p,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/nanoclaw-repl
+DevOps & Productivity,ck,Persistent per-project memory; auto-loads project context при старті,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/ck
+DevOps & Productivity,plankton-code-quality,Write-time code quality через Plankton — auto-formatting/linting,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/plankton-code-quality
+DevOps & Productivity,hookify-rules,Створення та конфігурація hookify rules,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/hookify-rules
+DevOps & Productivity,everything-claude-code-conventions,Конвенції розробки для everything-claude-code,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/everything-claude-code-conventions
+DevOps & Productivity,architecture-decision-records,ADR файли — фіксує архітектурні рішення під час сесій,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/architecture-decision-records
+DevOps & Productivity,skill-comply,Перевіряє чи дотримуються skills/rules/agents насправді,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/skill-comply
+DevOps & Productivity,ralphinho-rfc-pipeline,RFC-driven multi-agent DAG execution з quality gates,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/ralphinho-rfc-pipeline
+DevOps & Productivity,openclaw-persona-forge,Створення lobster soul для OpenClaw AI Agent,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/openclaw-persona-forge
+DevOps & Productivity,opensource-pipeline,Fork/sanitize/package private projects для public release,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/opensource-pipeline
+DevOps & Productivity,documentation-lookup,Актуальна документація бібліотек через Context7 MCP,ECC,https://github.com/affaan-m/everything-claude-code/tree/main/skills/documentation-lookup

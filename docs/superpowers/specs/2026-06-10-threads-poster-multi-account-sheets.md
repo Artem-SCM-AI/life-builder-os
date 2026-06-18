@@ -53,7 +53,7 @@ Replace `*/5 * * * *` (all accounts) with per-account entries at fixed Kyiv-time
 | Account | Time (Kyiv) | UTC |
 |---------|------------|-----|
 | `monetizer-biz` | 17:00 | 14:00 |
-| `artem-org-ua` | 09:00 and 19:00 | 06:00 / 16:00 |
+| `artem-org-ua` | 08:40 and 19:40 | 05:40 / 16:40 |
 | `hmelinka` | TBD |
 
 Exact times confirmed with Artem before updating crontab.

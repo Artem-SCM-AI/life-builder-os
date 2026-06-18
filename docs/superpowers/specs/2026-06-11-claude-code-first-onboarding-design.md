@@ -20,12 +20,10 @@ The experience is conversational, not form-like. Each answer shapes the next que
 
 Before running `/onboarding` the user must have:
 
-1. **Claude Code installed** — download at claude.ai/code
-2. **VS Code installed** — code.visualstudio.com (or any editor with terminal)
-3. **Claude Code extension active** in VS Code
-4. **The repo cloned or ZIP extracted** to a local folder
+1. **Claude Code desktop app installed** — download at claude.ai/code
+2. **The repo cloned or ZIP extracted** to a local folder
 
-The README covers this in 5 lines. No other setup required before onboarding.
+The README covers this in 3 steps. No other setup required before onboarding.
 
 ---
 
@@ -34,7 +32,7 @@ The README covers this in 5 lines. No other setup required before onboarding.
 ### Two components
 
 **Component 1 — One-time product ($9)**
-A ZIP/repo with a workspace skeleton. The centerpiece is the `onboarding` skill. Clone repo → open VS Code → type `/onboarding` → Claude handles the rest.
+A ZIP/repo with a workspace skeleton. The centerpiece is the `onboarding` skill. Clone repo → open Claude Code → type `/onboarding` → Claude handles the rest.
 
 **Component 2 — Subscription ($5/month via Tribute)**
 A private Telegram channel. Biweekly: 1 Claude Code feature + 1 practical use case on that feature. Content generated via Claude pipeline (Artem selects topic, Claude drafts, Artem approves, posts). Tribute handles payment, invite links, and automatic removal on expiry.
@@ -45,7 +43,7 @@ A private Telegram channel. Biweekly: 1 Claude Code feature + 1 practical use ca
 Telegram post (@artem.org.ua)
   → payment $9 (WayForPay or Gumroad — see Open Decisions)
   → ZIP delivered by email
-  → prerequisites check → clone repo → VS Code → /onboarding (~15 min)
+  → prerequisites check → clone repo → Claude Code → /onboarding (~15 min)
   → personalized workspace ready
   → digest subscription offer at end of onboarding
   → Tribute → $5/month → private Telegram channel

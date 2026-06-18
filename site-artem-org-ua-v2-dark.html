@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Артем Степаненко — AI-автоматизація для тих хто не технар. Реальні кейси. Конкретні числа. Без коду.">
+  <title>Артем Степаненко</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    :root {
+      --bg:     #080808;
+      --s1:     #0f0f0f;
+      --s2:     #141414;
+      --s3:     #1a1a1a;
+      --acc:    #ff6d3b;
+      --acc-h:  #e85d2a;
+      --acc-dk: rgba(255,109,59,.12);
+      --txt:    #f0f0f0;
+      --txt2:   #888888;
+      --txt3:   #555555;
+      --bdr:    #1f1f1f;
+      --bdr2:   #2a2a2a;
+      --r:      10px;
+      --max:    1000px;
+      --font:   'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); font-size: 15px; line-height: 1.65; color: var(--txt); background: var(--bg); -webkit-font-smoothing: antialiased; }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    @media (min-width: 768px)  { .wrap { padding: 0 32px; } }
+    @media (min-width: 1200px) { .wrap { padding: 0 40px; } }
+
+    /* NAV */
+    .nav { position: sticky; top: 0; z-index: 100; background: rgba(8,8,8,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--bdr); }
+    .nav-row { max-width: var(--max); margin: 0 auto; padding: 0 20px; height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .nav-logo { font-weight: 800; font-size: 15px; letter-spacing: -.2px; color: var(--txt); }
+    .nav-logo em { color: var(--acc); font-style: normal; }
+    .nav-links { display: none; gap: 24px; align-items: center; }
+    @media (min-width: 768px) { .nav-links { display: flex; } }
+    .nav-links a { font-size: 14px; color: var(--txt2); font-weight: 500; transition: color .15s; }
+    .nav-links a:hover { color: var(--txt); }
+    .btn-nav { padding: 8px 16px; background: var(--acc); color: #fff; border-radius: 8px; font-size: 14px; font-weight: 700; transition: background .15s; white-space: nowrap; }
+    .btn-nav:hover { background: var(--acc-h); }
+
+    /* HERO */
+    .hero { min-height: 88vh; display: flex; align-items: center; border-bottom: 1px solid var(--bdr); }
+    .hero-grid { width: 100%; display: grid; grid-template-columns: 1fr; gap: 48px; padding: 72px 0 64px; }
+    @media (min-width: 1200px) { .hero-grid { grid-template-columns: 1fr 1fr; align-items: center; gap: 80px; } }
+
+    .hero-story { display: flex; flex-direction: column; justify-content: center; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--acc); margin-bottom: 28px; }
+    .hero-quote { font-size: clamp(18px, 2.5vw, 22px); font-style: italic; font-weight: 400; color: var(--txt2); line-height: 1.55; border-left: 3px solid var(--acc); padding-left: 20px; margin-bottom: 24px; }
+    .hero-origin { font-size: 13px; color: var(--txt3); line-height: 1.6; padding-left: 23px; }
+
+    .hero-action { display: flex; flex-direction: column; justify-content: center; }
+    .hero-action h1 { font-size: clamp(30px, 5.5vw, 50px); font-weight: 800; line-height: 1.12; letter-spacing: -.8px; margin-bottom: 20px; }
+    .hero-sub { font-size: 16px; color: var(--txt2); line-height: 1.65; margin-bottom: 32px; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-p { display: inline-flex; align-items: center; gap: 6px; padding: 14px 22px; background: var(--acc); color: #fff; border-radius: 8px; font-size: 15px; font-weight: 700; transition: background .15s, transform .1s; }
+    .btn-p:hover { background: var(--acc-h); transform: translateY(-1px); }
+    .btn-s { display: inline-flex; align-items: center; gap: 6px; padding: 14px 22px; background: transparent; color: var(--txt); border: 1.5px solid var(--bdr2); border-radius: 8px; font-size: 15px; font-weight: 600; transition: border-color .15s; }
+    .btn-s:hover { border-color: var(--acc); color: var(--acc); }
+
+    /* DATA STRIP */
+    .data-strip { background: var(--s1); border-bottom: 1px solid var(--bdr); padding: 28px 0; }
+    .strip-grid { display: flex; gap: 0; overflow-x: auto; }
+    .strip-item { flex: 1; min-width: 120px; text-align: center; padding: 0 20px; border-right: 1px solid var(--bdr); }
+    .strip-item:last-child { border-right: none; }
+    .strip-num { font-size: 28px; font-weight: 800; color: var(--acc); letter-spacing: -.5px; line-height: 1; margin-bottom: 6px; }
+    .strip-lbl { font-size: 11px; color: var(--txt3); font-weight: 500; text-transform: uppercase; letter-spacing: .07em; }
+
+    /* PERSONAL STRIP */
+    .person-strip { background: var(--s2); border-bottom: 1px solid var(--bdr); padding: 36px 0; }
+    .person-row { display: flex; flex-direction: column; gap: 20px; }
+    @media (min-width: 768px) { .person-row { flex-direction: row; align-items: center; gap: 32px; } }
+    .person-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--s3); border: 2px solid var(--bdr2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .person-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .person-bio { font-size: 14px; color: var(--txt2); line-height: 1.6; max-width: 560px; margin-bottom: 14px; }
+    .socials { display: flex; gap: 10px; flex-wrap: wrap; }
+    .soc-link { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--s3); border: 1px solid var(--bdr2); border-radius: 20px; font-size: 13px; color: var(--txt2); font-weight: 500; transition: border-color .15s, color .15s; }
+    .soc-link:hover { border-color: var(--acc); color: var(--acc); }
+
+    /* SEGMENTS */
+    .seg-wrap { background: var(--s1); border-bottom: 1px solid var(--bdr); padding: 52px 0; }
+    .seg-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 28px; }
+    .seg-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--acc); }
+    .seg-prompt { font-size: 14px; color: var(--txt2); }
+    .seg-list { display: flex; flex-direction: column; gap: 8px; }
+    @media (min-width: 768px) { .seg-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } }
+    @media (min-width: 1200px) { .seg-list { grid-template-columns: repeat(5, 1fr); } }
+    .seg-card { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--s2); border: 1px solid var(--bdr2); border-radius: var(--r); cursor: pointer; transition: border-color .15s, background .15s; user-select: none; }
+    .seg-card:hover { border-color: var(--acc); }
+    .seg-card.on { border-color: var(--acc); background: var(--acc-dk); }
+    .seg-num { font-size: 20px; font-weight: 800; color: var(--bdr2); transition: color .15s; min-width: 28px; }
+    .seg-card.on .seg-num { color: var(--acc); }
+    .seg-card:hover .seg-num { color: var(--acc); }
+    .seg-info { flex: 1; }
+    .seg-name { font-size: 13px; font-weight: 700; color: var(--txt); margin-bottom: 2px; }
+    .seg-pain { font-size: 12px; color: var(--txt3); }
+    .seg-card.on .seg-name { color: var(--acc); }
+
+    /* TOOLS */
+    .tools-sec { background: var(--bg); border-bottom: 1px solid var(--bdr); padding: 64px 0; }
+    .sec-header { margin-bottom: 36px; }
+    .sec-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--acc); margin-bottom: 8px; }
+    .sec-title { font-size: clamp(20px, 3vw, 28px); font-weight: 800; letter-spacing: -.4px; margin-bottom: 8px; }
+    .sec-sub { font-size: 15px; color: var(--txt2); max-width: 480px; }
+    .tools-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 768px)  { .tools-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1200px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
+    .tool-card { display: flex; flex-direction: column; padding: 22px; background: var(--s1); border: 1px solid var(--bdr2); border-radius: var(--r); transition: border-color .15s; }
+    .tool-card:hover { border-color: var(--acc); }
+    .tool-meta { font-size: 11px; color: var(--acc); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
+    .tool-name { font-size: 18px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.2px; }
+    .tool-desc { font-size: 14px; color: var(--txt2); line-height: 1.6; flex: 1; margin-bottom: 20px; }
+    .btn-tool { display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; background: var(--acc-dk); color: var(--acc); border: 1px solid rgba(255,109,59,.25); border-radius: 8px; font-size: 14px; font-weight: 700; transition: background .15s; margin-top: auto; }
+    .btn-tool:hover { background: var(--acc); color: #fff; border-color: var(--acc); }
+    .sec-more { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 600; color: var(--acc); margin-top: 28px; }
+    .sec-more:hover { text-decoration: underline; }
+
+    /* CASES */
+    .cases-sec { background: var(--s1); border-bottom: 1px solid var(--bdr); padding: 64px 0; }
+    .cases-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 768px)  { .cases-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1200px) { .cases-grid { grid-template-columns: repeat(3, 1fr); } }
+    .case-card { display: flex; flex-direction: column; padding: 24px; background: var(--s2); border: 1px solid var(--bdr2); border-radius: var(--r); border-top: 3px solid var(--bdr2); transition: border-top-color .15s; }
+    .case-card:hover { border-top-color: var(--acc); }
+    .case-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--acc); margin-bottom: 12px; }
+    .case-title { font-size: 15px; font-weight: 700; line-height: 1.35; margin-bottom: 20px; color: var(--txt); }
+    .case-nums { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--bdr); }
+    .c-num { font-size: 22px; font-weight: 800; color: var(--acc); letter-spacing: -.4px; line-height: 1; }
+    .c-lbl { font-size: 11px; color: var(--txt3); font-weight: 500; margin-top: 3px; }
+    .case-q { font-size: 14px; color: var(--txt2); line-height: 1.6; font-style: italic; flex: 1; margin-bottom: 20px; }
+    .case-read { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--acc); text-transform: uppercase; letter-spacing: .06em; margin-top: auto; }
+    .case-read:hover { text-decoration: underline; }
+
+    /* TELEGRAM */
+    .tg-sec { background: var(--acc); padding: 64px 0; }
+    .tg-inner { max-width: 560px; margin: 0 auto; text-align: center; }
+    .tg-inner h2 { font-size: clamp(22px, 4vw, 32px); font-weight: 800; color: #fff; letter-spacing: -.4px; margin-bottom: 14px; line-height: 1.2; }
+    .tg-inner p { font-size: 16px; color: rgba(255,255,255,.8); margin-bottom: 28px; line-height: 1.65; }
+    .btn-tg { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; background: #fff; color: var(--acc); border-radius: 8px; font-size: 15px; font-weight: 800; transition: opacity .15s; }
+    .btn-tg:hover { opacity: .9; }
+
+    /* SERVICE */
+    .svc-sec { background: var(--bg); padding: 64px 0; border-bottom: 1px solid var(--bdr); }
+    .svc-inner { border: 1px solid var(--bdr2); border-left: 4px solid var(--acc); border-radius: var(--r); padding: 36px 32px; display: flex; flex-direction: column; gap: 24px; }
+    @media (min-width: 768px) { .svc-inner { flex-direction: row; align-items: center; justify-content: space-between; gap: 48px; } }
+    .svc-text h2 { font-size: clamp(18px, 2.5vw, 24px); font-weight: 800; letter-spacing: -.3px; margin-bottom: 10px; }
+    .svc-text p { font-size: 15px; color: var(--txt2); line-height: 1.6; max-width: 400px; }
+    .svc-inner .btn-p { white-space: nowrap; flex-shrink: 0; }
+
+    /* FOOTER */
+    footer { background: var(--s1); border-top: 1px solid var(--bdr); padding: 28px 0; }
+    .foot-row { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+    @media (min-width: 768px) { .foot-row { flex-direction: row; justify-content: space-between; text-align: left; } }
+    .foot-copy { font-size: 13px; color: var(--txt3); }
+    .foot-links { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+    .foot-links a { font-size: 13px; color: var(--txt3); transition: color .15s; }
+    .foot-links a:hover { color: var(--acc); }
+
+    /* FADE-IN */
+    .fi { opacity: 0; transform: translateY(14px); transition: opacity .5s, transform .5s; }
+    .fi.vis { opacity: 1; transform: none; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-row">
+    <a href="/" class="nav-logo">artem<em>.org.ua</em></a>
+    <ul class="nav-links">
+      <li><a href="/tools">Інструменти</a></li>
+      <li><a href="/products">Продукти</a></li>
+      <li><a href="/cases">Кейси</a></li>
+      <li><a href="/about">Про мене</a></li>
+    </ul>
+    <a href="/automation" class="btn-nav">Автоматизація →</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <div class="hero-story fi">
+        <div class="hero-tag">AI-автоматизація без коду</div>
+        <blockquote class="hero-quote">
+          "Я завжди вірив — скільки б разів я не потрапляв у кризу, я виходжу переможцем."
+        </blockquote>
+        <p class="hero-origin">
+          Артем Степаненко · Київ · колишній Head of SC $25M e-commerce ·
+          зараз будую AI-інструменти для українського ринку
+        </p>
+      </div>
+
+      <div class="hero-action fi" style="transition-delay:.12s">
+        <h1>Скільки годин на тиждень ти витрачаєш на роботу яку міг би не робити?</h1>
+        <p class="hero-sub">
+          Я знайшов відповідь. Вона займає 15 хвилин і не вимагає вміти програмувати.
+          Ось мої інструменти і кейси.
+        </p>
+        <div class="hero-btns">
+          <a href="https://artem-org-ua.github.io/products/ai-audit-ua.html" class="btn-p" target="_blank">Пройти аудит — безкоштовно →</a>
+          <a href="/cases" class="btn-s">Дивитись кейси</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DATA STRIP -->
+<div class="data-strip">
+  <div class="wrap">
+    <div class="strip-grid">
+      <div class="strip-item"><div class="strip-num">5+</div><div class="strip-lbl">Кейсів</div></div>
+      <div class="strip-item"><div class="strip-num">3</div><div class="strip-lbl">Інструменти</div></div>
+      <div class="strip-item"><div class="strip-num">200+</div><div class="strip-lbl">Год зекономлено</div></div>
+      <div class="strip-item"><div class="strip-num">$0</div><div class="strip-lbl">За аудит</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONAL STRIP -->
+<div class="person-strip">
+  <div class="wrap">
+    <div class="person-row fi">
+      <div class="person-avatar">🧑</div>
+      <div>
+        <div class="person-name">Артем Степаненко</div>
+        <p class="person-bio">
+          За 39 років пережив дві війни, банкрутство, зламав залежність і побудував кар'єру з нуля двічі.
+          Зараз будую AI-інструменти — ті що хотів мати сам на кожному з цих етапів.
+        </p>
+        <div class="socials">
+          <a href="https://www.threads.net/@artem.org.ua" class="soc-link" target="_blank" rel="noopener">Threads</a>
+          <a href="https://t.me/thelifebuilder_os" class="soc-link" target="_blank" rel="noopener">Telegram</a>
+          <a href="https://www.linkedin.com/in/artemscm/" class="soc-link" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEGMENTS -->
+<section class="seg-wrap" id="segments">
+  <div class="wrap">
+    <div class="seg-head">
+      <span class="seg-label">Твоя ситуація</span>
+      <span class="seg-prompt">Обери — покажу інструменти і кейс саме для тебе</span>
+    </div>
+    <div class="seg-list">
+      <div class="seg-card fi" data-seg="sales">
+        <div class="seg-num">01</div>
+        <div class="seg-info">
+          <div class="seg-name">Продажі / Маркетинг</div>
+          <div class="seg-pain">Ліди, звіти, контент — вручну</div>
+        </div>
+      </div>
+      <div class="seg-card fi" data-seg="ops" style="transition-delay:.05s">
+        <div class="seg-num">02</div>
+        <div class="seg-info">
+          <div class="seg-name">Операції / Фінанси</div>
+          <div class="seg-pain">Інвойси, склад, виписки — вручну</div>
+        </div>
+      </div>
+      <div class="seg-card fi" data-seg="hr" style="transition-delay:.1s">
+        <div class="seg-num">03</div>
+        <div class="seg-info">
+          <div class="seg-name">HR / Підтримка</div>
+          <div class="seg-pain">Рекрутинг, тікети, договори — вручну</div>
+        </div>
+      </div>
+      <div class="seg-card fi" data-seg="owners" style="transition-delay:.15s">
+        <div class="seg-num">04</div>
+        <div class="seg-info">
+          <div class="seg-name">Власники МСБ</div>
+          <div class="seg-pain">Усе одразу — вручну</div>
+        </div>
+      </div>
+      <div class="seg-card fi" data-seg="jobs" style="transition-delay:.2s">
+        <div class="seg-num">05</div>
+        <div class="seg-info">
+          <div class="seg-name">Шукаю роботу</div>
+          <div class="seg-pain">CV, пошук, підготовка — вручну</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools-sec" id="tools-sec">
+  <div class="wrap">
+    <div class="sec-header">
+      <div class="sec-tag">Інструменти</div>
+      <h2 class="sec-title" id="tools-title">Безкоштовно. Без реєстрації.</h2>
+      <p class="sec-sub" id="tools-sub">Обери сегмент вище — покажу що підходить твоїй ситуації</p>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card fi" data-segs="sales">
+        <div class="tool-meta">Quiz · 5 хв · Безкоштовно</div>
+        <h3 class="tool-name">Why Start AI</h3>
+        <p class="tool-desc">Дізнайся де AI дасть тобі найбільший результат прямо зараз. 6 питань — конкретні рекомендації під твою роль.</p>
+        <a href="https://artem-org-ua.github.io/products/why-start-ai.html" class="btn-tool" target="_blank">Пройти →</a>
+      </div>
+      <div class="tool-card fi" data-segs="owners">
+        <div class="tool-meta">Quiz · 7 хв · Безкоштовно</div>
+        <h3 class="tool-name">AI or Automation</h3>
+        <p class="tool-desc">Зрозумій що підходить твоїм задачам: класична автоматизація чи AI-агент. Результат з конкретними наступними кроками.</p>
+        <a href="https://artem-org-ua.github.io/products/ai-or-automation.html" class="btn-tool" target="_blank">Пройти →</a>
+      </div>
+      <div class="tool-card fi" data-segs="ops,hr,jobs">
+        <div class="tool-meta">Аудит · 7 хв · Безкоштовно</div>
+        <h3 class="tool-name">AI Audit UA</h3>
+        <p class="tool-desc">Скільки годин на тиждень ти втрачаєш на рутину? Аудит покаже конкретні задачі і скільки часу можна повернути.</p>
+        <a href="https://artem-org-ua.github.io/products/ai-audit-ua.html" class="btn-tool" target="_blank">Пройти →</a>
+      </div>
+    </div>
+    <a href="/tools" class="sec-more">Всі інструменти →</a>
+  </div>
+</section>
+
+<!-- CASES -->
+<section class="cases-sec" id="cases-sec">
+  <div class="wrap">
+    <div class="sec-header">
+      <div class="sec-tag">Кейси</div>
+      <h2 class="sec-title" id="cases-title">Реальні люди. Конкретні числа.</h2>
+      <p class="sec-sub" id="cases-sub">Обери сегмент вище — покажу кейс для твоєї ситуації</p>
+    </div>
+    <div class="cases-grid">
+
+      <div class="case-card fi" data-seg="sales">
+        <div class="case-tag">📈 Продажі / Маркетинг</div>
+        <h3 class="case-title">SDR витрачала 10 год/тиж на ручний збір лідів. Тепер — 45 хвилин.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">−9 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">3×</div><div class="c-lbl">більше аутрічу</div></div>
+          <div><div class="c-num">3 тижні</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <p class="case-q">"Я витрачала першу половину понеділка тільки на те, щоб зібрати список — і це до того, як починала продавати."</p>
+        <a href="/cases/sdr-lead-research" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="ops">
+        <div class="case-tag">⚙️ Операції / Фінанси</div>
+        <h3 class="case-title">Менеджер операцій витрачав 6 год/тиж на перевірку інвойсів 3PL. Знайшли $2,914 помилок.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">$2,914</div><div class="c-lbl">повернуто за місяць</div></div>
+          <div><div class="c-num">−5.5 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">2 тижні</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <p class="case-q">"Я знав що є помилки — просто не мав часу їх шукати. Claude знайшов за 3 хвилини те, що я пропускав місяцями."</p>
+        <a href="/cases/ops-3pl-invoice" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="hr" hidden>
+        <div class="case-tag">👥 HR / Підтримка</div>
+        <h3 class="case-title">HR-менеджер переглядала 80 CV на тиждень вручну. Тепер — 30 хвилин.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">−7.5 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">80 CV</div><div class="c-lbl">скринінг авто</div></div>
+          <div><div class="c-num">3 тижні</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <p class="case-q">"Я читала одні й ті самі резюме знову і знову. В кінці тижня вже не могла зосередитись на реальному інтерв'ю."</p>
+        <a href="/cases/hr-cv-screening" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="owners" hidden>
+        <div class="case-tag">🏢 Власники МСБ</div>
+        <h3 class="case-title">Власник МСБ збирав щотижневий звіт 4 години. Тепер — 0.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">−4 год</div><div class="c-lbl">на тиждень</div></div>
+          <div><div class="c-num">7:30</div><div class="c-lbl">звіт у пошті</div></div>
+          <div><div class="c-num">1 тиждень</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <p class="case-q">"В понеділок вранці я вже виснажений — і день ще не починався. Зараз звіт чекає мене, а не я його."</p>
+        <a href="/cases/owner-weekly-reports" class="case-read">Читати кейс →</a>
+      </div>
+
+      <div class="case-card fi" data-seg="jobs" hidden>
+        <div class="case-tag">🎯 Пошук роботи</div>
+        <h3 class="case-title">Адаптація CV під вакансію займала 2 год. Тепер — 7 хвилин.</h3>
+        <div class="case-nums">
+          <div><div class="c-num">2 год → 7 хв</div><div class="c-lbl">на вакансію</div></div>
+          <div><div class="c-num">5×</div><div class="c-lbl">більше заявок</div></div>
+          <div><div class="c-num">1 тиждень</div><div class="c-lbl">впровадження</div></div>
+        </div>
+        <p class="case-q">"Я розумів що мушу подаватись на більше — але фізично не міг. Зараз подаю 15–20 на тиждень і кожна адаптована."</p>
+        <a href="/cases/jobseeker-cv-tailoring" class="case-read">Читати кейс →</a>
+      </div>
+
+    </div>
+    <a href="/cases" class="sec-more">Всі кейси →</a>
+  </div>
+</section>
+
+<!-- TELEGRAM -->
+<section class="tg-sec">
+  <div class="wrap">
+    <div class="tg-inner fi">
+      <h2>Кейс автоматизації — щотижня в Telegram</h2>
+      <p>Конкретно, з числами, без жаргону.<br>Підпишись і отримуй першим.</p>
+      <a href="https://t.me/thelifebuilder_os" class="btn-tg" target="_blank" rel="noopener">✈️ Підписатись на канал</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE -->
+<section class="svc-sec">
+  <div class="wrap">
+    <div class="svc-inner fi">
+      <div class="svc-text">
+        <h2>У тебе є конкретна задача. Я знаю як її автоматизувати.</h2>
+        <p>45 хв — розбираємо твої задачі. Йдеш з готовим планом. Без продажів заради продажів.</p>
+      </div>
+      <a href="https://calendly.com/artem-org-ua/30min" class="btn-p" target="_blank" rel="noopener">Записатись на дзвінок →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span class="foot-copy">© 2026 Артем Степаненко</span>
+      <div class="foot-links">
+        <a href="https://www.threads.net/@artem.org.ua" target="_blank" rel="noopener">Threads</a>
+        <a href="https://t.me/thelifebuilder_os" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://www.linkedin.com/in/artemscm/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:eco.stepanenko@gmail.com">eco.stepanenko@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const LABELS = { sales:'Продажі / Маркетинг', ops:'Операції / Фінанси', hr:'HR / Підтримка', owners:'Власники МСБ', jobs:'Шукаю роботу' };
+  const DEFAULT_CASES = ['sales','ops'];
+  let active = null;
+
+  function resetDefault() {
+    active = null;
+    document.querySelectorAll('.seg-card').forEach(c => c.classList.remove('on'));
+    document.querySelectorAll('.tool-card').forEach(t => t.removeAttribute('hidden'));
+    document.querySelectorAll('.case-card').forEach(c => {
+      c.toggleAttribute('hidden', !DEFAULT_CASES.includes(c.dataset.seg));
+    });
+    document.getElementById('tools-title').textContent = 'Безкоштовно. Без реєстрації.';
+    document.getElementById('cases-title').textContent = 'Реальні люди. Конкретні числа.';
+    document.getElementById('tools-sub').textContent = 'Обери сегмент вище — покажу що підходить твоїй ситуації';
+    document.getElementById('cases-sub').textContent = 'Обери сегмент вище — покажу кейс для твоєї ситуації';
+  }
+
+  document.querySelectorAll('.seg-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const seg = card.dataset.seg;
+      if (active === seg) { resetDefault(); return; }
+      active = seg;
+
+      document.querySelectorAll('.seg-card').forEach(c => c.classList.remove('on'));
+      card.classList.add('on');
+
+      document.getElementById('tools-title').textContent = 'Інструменти · ' + LABELS[seg];
+      document.getElementById('cases-title').textContent = 'Кейси · ' + LABELS[seg];
+      document.getElementById('tools-sub').textContent = '';
+      document.getElementById('cases-sub').textContent = '';
+
+      document.querySelectorAll('.tool-card').forEach(t => {
+        t.toggleAttribute('hidden', !t.dataset.segs.split(',').includes(seg));
+      });
+      document.querySelectorAll('.case-card').forEach(c => {
+        c.toggleAttribute('hidden', c.dataset.seg !== seg);
+      });
+
+      document.getElementById('tools-sec').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

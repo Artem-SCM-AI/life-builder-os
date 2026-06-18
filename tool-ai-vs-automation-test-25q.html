@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI or Automation? — SCAIT</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2A;
+    --orange: #FF6B35;
+    --orange-light: #FFF0EA;
+    --bg: #F5F7FA;
+    --card: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #1A2B3C;
+    --text-secondary: #64748B;
+    --text-hint: #94A3B8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+    --shadow-hover: 0 2px 8px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding-bottom: 90px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    padding: 36px 20px 32px;
+    text-align: center;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-tagline {
+    font-size: 13px;
+    color: #8FA3BC;
+    font-weight: 400;
+  }
+
+  .brand-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 4px;
+  }
+
+  .brand-link {
+    font-size: 12px;
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 500;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+
+  .brand-link:hover { opacity: 1; }
+
+  .brand-divider {
+    width: 1px; height: 12px;
+    background: #2A4060;
+  }
+
+  .header h1 {
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: #8FA3BC;
+    font-weight: 400;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--navy);
+    padding: 0 20px 20px;
+  }
+
+  .progress-track {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #1E3550;
+    border-radius: 4px;
+    height: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* INTRO CARD */
+  .intro-wrap {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+  }
+
+  .intro-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+  }
+
+  .intro-card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .intro-card p:last-of-type { margin-bottom: 20px; }
+
+  .intro-signature {
+    font-size: 14px;
+    color: var(--text-hint);
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .intro-signature strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .intro-divider {
+    width: 1px; height: 14px;
+    background: var(--border);
+  }
+
+  .scale-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-hint);
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  .scale-row {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .scale-row::-webkit-scrollbar { display: none; }
+
+  .scale-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .scale-chip strong {
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* BLOCKS */
+  .block-wrap {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+  }
+
+  .block-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .block-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .block-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--orange-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .block-title-text h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .block-title-text span {
+    font-size: 12px;
+    color: var(--text-hint);
+  }
+
+  /* QUESTION */
+  .question {
+    padding: 20px 24px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .question:last-child { border-bottom: none; }
+
+  .q-number {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+
+  .q-text {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  .q-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-hint);
+    padding: 0 2px;
+  }
+
+  .score-buttons {
+    display: flex;
+    gap: 6px;
+  }
+
+  .score-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text-secondary);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .score-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: var(--orange-light);
+  }
+
+  .score-btn.selected {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #FFFFFF;
+  }
+
+  /* STICKY FOOTER */
+  .sticky-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--navy);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+  }
+
+  .footer-score {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .footer-score-label {
+    font-size: 12px;
+    color: #8FA3BC;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .footer-score-value {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--orange);
+    line-height: 1;
+    min-width: 50px;
+  }
+
+  .footer-score-max {
+    font-size: 14px;
+    color: #4A6080;
+    margin-left: 2px;
+  }
+
+  .footer-progress {
+    text-align: right;
+  }
+
+  .footer-progress-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  .footer-progress-label {
+    font-size: 11px;
+    color: #8FA3BC;
+    display: block;
+    margin-top: 1px;
+  }
+
+  /* RESULT */
+  .result-wrap {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .result-wrap.visible { display: block; }
+
+  .result-card {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow-hover);
+    overflow: hidden;
+  }
+
+  .result-header {
+    background: var(--navy);
+    padding: 32px 28px;
+    text-align: center;
+  }
+
+  .result-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    background: rgba(255,107,53,0.15);
+    color: var(--orange);
+    border: 1px solid rgba(255,107,53,0.3);
+  }
+
+  .result-score-display {
+    font-size: 72px;
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+  }
+
+  .result-score-sub {
+    font-size: 14px;
+    color: #8FA3BC;
+    margin-bottom: 16px;
+  }
+
+  .result-level-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .result-body {
+    padding: 28px;
+  }
+
+  .result-description {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .next-steps-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--orange);
+    margin-bottom: 14px;
+  }
+
+  .next-steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .next-step-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    background: var(--bg);
+    border-radius: 10px;
+  }
+
+  .step-num {
+    width: 26px; height: 26px;
+    background: var(--orange);
+    color: #FFFFFF;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  /* BLOCK SCORES */
+  .block-scores-wrap {
+    max-width: 680px;
+    margin: 16px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .block-scores-wrap.visible { display: block; }
+
+  .block-scores-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 20px 24px;
+  }
+
+  .block-scores-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-hint);
+    margin-bottom: 16px;
+  }
+
+  .block-score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .block-score-row:last-child { margin-bottom: 0; }
+
+  .bsr-name {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+
+  .bsr-track {
+    flex: 1;
+    height: 6px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bsr-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .bsr-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 48px;
+    text-align: right;
+  }
+
+  /* STATS */
+  .stats-wrap {
+    max-width: 680px;
+    margin: 16px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .stats-wrap.visible { display: block; }
+
+  .stats-card {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  .stats-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4A6080;
+    margin-bottom: 14px;
+  }
+
+  .stat-row {
+    font-size: 14px;
+    color: #8FA3BC;
+    padding: 8px 0;
+    border-bottom: 1px solid #1E3550;
+    line-height: 1.5;
+  }
+
+  .stat-row:last-child { border-bottom: none; }
+
+  .stat-row strong { color: #FFFFFF; }
+
+  /* SOURCES */
+  .sources-wrap {
+    max-width: 680px;
+    margin: 16px auto 0;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .sources-wrap.visible { display: block; }
+
+  .sources-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 20px 24px;
+  }
+
+  .sources-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-hint);
+    margin-bottom: 14px;
+  }
+
+  .sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .source-item {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .source-item a {
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .source-item a:hover { text-decoration: underline; }
+
+  /* RESET */
+  .reset-wrap {
+    max-width: 680px;
+    margin: 16px auto 24px;
+    padding: 0 16px;
+    display: none;
+  }
+
+  .reset-wrap.visible { display: block; }
+
+  .reset-btn {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-hint);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .reset-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 480px) {
+    .bsr-name { min-width: 90px; font-size: 12px; }
+    .score-btn { height: 44px; font-size: 15px; }
+    .result-score-display { font-size: 56px; }
+    .block-title-row { padding: 14px 18px 12px; }
+    .question { padding: 16px 18px 14px; }
+    .result-body { padding: 20px 18px; }
+  }
+
+  @media print {
+    .sticky-footer, .reset-wrap { display: none !important; }
+    body { padding-bottom: 0; }
+  }
+
+  /* CTAs */
+  .ctas-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .ctas-wrap.visible { display: block; }
+  .ctas-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .ctas-header { padding: 16px 24px 12px; border-bottom: 1px solid var(--border); }
+  .ctas-header h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); }
+  .cta-item { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .cta-item:last-child { border-bottom: none; }
+  .cta-btn {
+    display: block; width: 100%; text-align: center;
+    padding: 13px 20px; border-radius: 10px;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    margin-bottom: 10px; transition: all 0.15s ease; box-sizing: border-box;
+  }
+  .cta-btn.primary { background: var(--orange); color: #FFFFFF; }
+  .cta-btn.primary:hover { background: #e85a24; }
+  .cta-btn.outline { background: transparent; color: var(--navy); border: 2px solid var(--border); }
+  .cta-btn.outline:hover { border-color: var(--navy); }
+  .cta-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* Subscribe */
+  .subscribe-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .subscribe-wrap.visible { display: block; }
+  .subscribe-card { background: var(--navy); border-radius: 12px; padding: 24px; }
+  .subscribe-card h3 { font-size: 16px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; }
+  .subscribe-card p { font-size: 13px; color: #8FA3BC; line-height: 1.5; margin-bottom: 16px; }
+  .subscribe-form { display: flex; gap: 8px; }
+  .subscribe-input {
+    flex: 1; padding: 12px 14px; border-radius: 8px;
+    border: 1px solid #1E3550; background: #132436;
+    color: #FFFFFF; font-size: 14px; outline: none;
+  }
+  .subscribe-input:focus { border-color: var(--orange); }
+  .subscribe-input::placeholder { color: #3A5470; }
+  .subscribe-submit {
+    padding: 12px 18px; background: var(--orange); color: #FFFFFF;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; transition: background 0.15s;
+  }
+  .subscribe-submit:hover { background: #e85a24; }
+  .subscribe-note { font-size: 12px; color: #4A6080; margin-top: 10px; display: none; }
+  .subscribe-note.visible { display: block; }
+
+  /* Share */
+  .share-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .share-wrap.visible { display: block; }
+  .share-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 20px 24px; }
+  .share-card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); margin-bottom: 14px; }
+  .share-text-box {
+    background: var(--bg); border-radius: 8px; padding: 14px 16px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.65;
+    white-space: pre-line; margin-bottom: 12px; border: 1px solid var(--border);
+  }
+  .share-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  .share-btn {
+    padding: 10px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 2px solid transparent; transition: all 0.15s ease;
+  }
+  .share-btn.copy { background: var(--bg); color: var(--text); border-color: var(--border); }
+  .share-btn.copy:hover { border-color: var(--navy); }
+  .share-btn.copy.copied { background: #EDF7F0; color: #2E7D32; border-color: #2E7D32; }
+  .share-btn.threads { background: #000000; color: #FFFFFF; }
+  .share-btn.threads:hover { background: #333; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-name">Artem Stepanenko</div>
+    <div class="brand-tagline">AI & automation consultant · clearly defined ROI</div>
+    <div class="brand-links">
+      <a class="brand-link" href="https://www.linkedin.com/in/artemscm/" target="_blank">LinkedIn</a>
+      <div class="brand-divider"></div>
+      <a class="brand-link" href="https://threads.net/@monetizer_biz" target="_blank">Threads</a>
+      <div class="brand-divider"></div>
+      <a class="brand-link" href="https://instagram.com/monetizer_biz" target="_blank">Instagram</a>
+    </div>
+  </div>
+  <h1>AI or Automation?</h1>
+  <div class="header-sub">25-question decision test · ~8 minutes</div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="intro-wrap">
+  <div class="intro-card">
+    <p>When people ask "AI or automation?" they usually mean "which is better?" That's the wrong question. One costs 3–5× more per operation, handles uncertainty, and makes probabilistic decisions. The other is faster, cheaper, and 100% predictable — as long as the input is exactly what it expects. Neither is better. They solve different problems.</p>
+    <p>The decision depends entirely on the specific task you're evaluating — not your company size, not your industry, not your general attitude toward technology. Pick one task. Think about how it actually works right now. Answer 25 questions about that task.</p>
+    <p>A higher score means the task leans toward classic automation. A lower score means it requires AI. The breakdown by block will show you exactly which dimensions are driving that result.</p>
+    <p>Be precise. Tasks that seem "AI-ready" often turn out to be automatable with basic tooling. Tasks that seem simple often have edge cases that break pure automation in production. Both mistakes are expensive.</p>
+    <div class="intro-signature">
+      <strong>Artem Stepanenko</strong>
+      <div class="intro-divider"></div>
+      <span>AI & automation consultant</span>
+    </div>
+    <div class="scale-section-label">Scoring scale — rate how true this is for your task</div>
+    <div class="scale-row">
+      <div class="scale-chip"><strong>0</strong> Not true at all</div>
+      <div class="scale-chip"><strong>1</strong> Slightly true</div>
+      <div class="scale-chip"><strong>2</strong> Somewhat true</div>
+      <div class="scale-chip"><strong>3</strong> Mostly true</div>
+      <div class="scale-chip"><strong>4</strong> Always true</div>
+    </div>
+  </div>
+</div>
+
+<div id="questions-container"></div>
+
+<div class="result-wrap" id="result-wrap">
+  <div class="result-card">
+    <div class="result-header">
+      <div class="result-badge" id="result-badge"></div>
+      <div class="result-score-display" id="result-score"></div>
+      <div class="result-score-sub">out of 100 · higher = Automation</div>
+      <div class="result-level-title" id="result-title"></div>
+    </div>
+    <div class="result-body">
+      <div class="result-description" id="result-description"></div>
+      <div class="next-steps-label">Your next 3 moves</div>
+      <div class="next-steps-list" id="result-steps"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ctas-wrap" id="ctas-wrap">
+  <div class="ctas-card">
+    <div class="ctas-header"><h3>What to do next</h3></div>
+    <div id="ctas-list"></div>
+  </div>
+</div>
+
+<div class="subscribe-wrap" id="subscribe-wrap">
+  <div class="subscribe-card">
+    <h3>Get weekly AI & automation insights</h3>
+    <p>Real workflows, real numbers, no theory. One email per week.</p>
+    <div class="subscribe-form">
+      <input class="subscribe-input" type="email" id="subscribe-email" placeholder="your@email.com">
+      <button class="subscribe-submit" onclick="handleSubscribe()">Subscribe →</button>
+    </div>
+    <div class="subscribe-note" id="subscribe-note">Your email client opened — send the message to confirm your subscription.</div>
+  </div>
+</div>
+
+<div class="share-wrap" id="share-wrap">
+  <div class="share-card">
+    <h3>Share your result</h3>
+    <div class="share-text-box" id="share-text-box"></div>
+    <div class="share-buttons">
+      <button class="share-btn copy" id="copy-btn" onclick="copyShareText()">Copy text</button>
+      <button class="share-btn threads" onclick="shareOnThreads()">Share on Threads</button>
+    </div>
+  </div>
+</div>
+
+<div class="block-scores-wrap" id="block-scores-wrap">
+  <div class="block-scores-card">
+    <h3>Score by block · higher = more automatable</h3>
+    <div id="block-scores-list"></div>
+  </div>
+</div>
+
+<div class="stats-wrap" id="stats-wrap">
+  <div class="stats-card">
+    <h3>Why the decision matters</h3>
+    <div class="stat-row">Using AI where automation would work adds <strong>3–5× cost per transaction</strong> with no meaningful benefit — and introduces probabilistic errors into a task that has deterministic answers <em>(Appian, 2024)</em></div>
+    <div class="stat-row">Most RPA and automation projects that fail do so because they were <strong>applied to the wrong task type</strong> — judgment-heavy work that rule-based tools can't handle reliably <em>(UiPath, 2024)</em></div>
+    <div class="stat-row">Intelligent automation — combining AI and RPA in the right architecture — consistently delivers <strong>higher ROI than either tool alone</strong>, but only when the split between them is designed deliberately <em>(UiPath, 2024)</em></div>
+    <div class="stat-row">The majority of business processes contain <strong>both automatable and AI-dependent components</strong> — the question is never "AI vs automation" globally, always for the specific task at hand <em>(Latenode, 2025)</em></div>
+    <div class="stat-row">AI agents can now handle <strong>multi-step reasoning and adaptive decision-making</strong> that was previously impossible to automate — but they require different architecture, governance, and error-handling than classic RPA <em>(TechTarget, 2025)</em></div>
+  </div>
+</div>
+
+<div class="sources-wrap" id="sources-wrap">
+  <div class="sources-card">
+    <h3>Sources</h3>
+    <div class="sources-list">
+      <div class="source-item">1. <a href="https://appian.com/blog/acp/ai/difference-between-ai-automation" target="_blank">AI vs. Automation: Decoding the Differences for Business Success</a> — Appian</div>
+      <div class="source-item">2. <a href="https://latenode.com/blog/platform-comparisons-alternatives/automation-platform-comparisons/rpa-vs-ai-automation-complete-guide-to-robotic-process-automation-ai-integration-2025" target="_blank">RPA vs AI Automation: Complete Guide</a> — Latenode</div>
+      <div class="source-item">3. <a href="https://www.uipath.com/automation/ai-and-rpa" target="_blank">AI + RPA: More Powerful Together</a> — UiPath</div>
+      <div class="source-item">4. <a href="https://www.techtarget.com/searchenterpriseai/tip/Compare-AI-agents-vs-RPA-Key-differences-and-overlap" target="_blank">Compare AI Agents vs. RPA: Key Differences and Overlap</a> — TechTarget</div>
+      <div class="source-item">5. <a href="https://www.businessplusai.com/blog/rpa-vs-ai-automation-which-one-fits-your-workflow" target="_blank">RPA vs AI Automation: Which One Fits Your Workflow</a> — BusinessPlusAI</div>
+    </div>
+  </div>
+</div>
+
+<div class="reset-wrap" id="reset-wrap">
+  <button class="reset-btn" onclick="resetAll()">Start over — test a different task</button>
+</div>
+
+<div class="sticky-footer">
+  <div class="footer-score">
+    <span class="footer-score-label">Score&nbsp;</span>
+    <span class="footer-score-value" id="footer-score">0</span>
+    <span class="footer-score-max">/100</span>
+  </div>
+  <div class="footer-progress">
+    <span class="footer-progress-count" id="footer-answered">0 / 25</span>
+    <span class="footer-progress-label">answered</span>
+  </div>
+</div>
+
+<script>
+const PAGE_URL      = 'https://monetizerbiz.gumroad.com'; // UPDATE: replace with hosted URL of this page
+const PRODUCT_URL   = 'https://monetizerbiz.gumroad.com'; // UPDATE: replace with AI Readiness Assessment product link
+const CONSULT_EMAIL = 'eco.stepanenko@gmail.com';
+
+const blocks = [
+  {
+    icon: "⏱️",
+    name: "Task Predictability",
+    range: "Questions 1–5",
+    max: 20,
+    questions: [
+      "The task is triggered by a clear event or rule — \"when X happens, do Y.\"",
+      "The steps of this task are always the same — in the same order, every time.",
+      "A new employee could learn to do this task correctly by reading a one-page instruction.",
+      "The process has worked the same way for at least one year without significant changes.",
+      "You can write a checklist that covers 95%+ of all cases this task encounters."
+    ]
+  },
+  {
+    icon: "🗃️",
+    name: "Data & Inputs",
+    range: "Questions 6–10",
+    max: 20,
+    questions: [
+      "All inputs for this task come in structured formats — tables, forms, databases, fixed templates.",
+      "The data is already digital — it doesn't need to be extracted from PDFs, images, or handwritten sources.",
+      "The task processes high volume of data, but each unit of data is simple and similar.",
+      "The inputs rarely surprise you — they arrive in an expected format with expected values.",
+      "You can pre-define a rule for every exception that occurs in this task."
+    ]
+  },
+  {
+    icon: "🧠",
+    name: "Decision & Judgment",
+    range: "Questions 11–15",
+    max: 20,
+    questions: [
+      "This task requires no interpretation or judgment — the answer is always objectively right or wrong.",
+      "The output of this task is always the same type — a number, a status, a notification, a filled form.",
+      "The task works the same way regardless of context, customer, or situation.",
+      "There is no need to understand meaning, tone, or intent — only values and rules matter.",
+      "You would trust the output of this task even without a human reviewing each result."
+    ]
+  },
+  {
+    icon: "🔄",
+    name: "Learning & Adaptation",
+    range: "Questions 16–20",
+    max: 20,
+    questions: [
+      "This task does NOT need to improve or adapt over time based on past results.",
+      "This task does NOT involve predicting anything — no forecasting, no risk scoring, no pattern detection.",
+      "This task does NOT require understanding free text — emails, contracts, complaints, messages.",
+      "This task does NOT involve recommendations, personalization, or context-dependent decisions.",
+      "If the task gives a wrong output, you would catch it immediately — errors are obvious."
+    ]
+  },
+  {
+    icon: "💼",
+    name: "Business Context",
+    range: "Questions 21–25",
+    max: 20,
+    questions: [
+      "Low implementation cost and speed matter more to you than flexibility or intelligence.",
+      "This task runs at high volume — it happens 50+ times per month.",
+      "The task needs to connect with existing systems in a straightforward, predictable way.",
+      "Compliance or audit requirements make predictable, explainable outputs essential.",
+      "You want to eliminate human effort on this task entirely — not augment or assist humans."
+    ]
+  }
+];
+
+const results = [
+  {
+    range: [0, 35],
+    badge: "Level 1 of 4 · AI-First",
+    title: "AI-First",
+    description: "This task is too variable, judgment-heavy, or adaptive for classic automation. The work involves understanding context, detecting patterns, interpreting language, or making predictions — things rule-based tools cannot reliably do. Automation alone here means constant exceptions, manual workarounds, and a tool that breaks whenever the input is slightly different from what it expected.",
+    steps: [
+      "Map exactly where judgment enters the task — what does a human know that a rule cannot encode? That's the specific point where AI creates value. Don't build AI into the whole task, just that part.",
+      "Start with the simplest AI component that covers the hardest part: a classifier, an LLM prompt, or a prediction model. Build the minimum viable version before adding complexity.",
+      "Define your error tolerance before building. AI makes mistakes differently than automation — decide what review or fallback process catches them, and at what volume manual review becomes unsustainable."
+    ],
+    ctas: [
+      {
+        label: "Book a Free 30-min Diagnostic Call",
+        sub: "Tell me the task and the current process. I'll show you what type of AI fits it, what to avoid, and what a realistic first version looks like. No pitch.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+vs+Automation+%E2%80%94+AI-First+Task+Diagnostic`,
+        style: "primary"
+      },
+      {
+        label: "Take the AI Readiness Assessment",
+        sub: "Before building AI into a task, know if your organization is ready to support it. A 25-question diagnostic that maps your actual readiness gaps.",
+        href: () => PRODUCT_URL,
+        style: "outline"
+      }
+    ]
+  },
+  {
+    range: [36, 55],
+    badge: "Level 2 of 4 · Intelligent Automation",
+    title: "Intelligent Automation",
+    description: "This task needs both. AI handles the judgment, prediction, or language understanding — automation handles execution and routing. This is the most common real-world answer for modern business processes. The design question isn't which tool to use, it's where exactly the handoff happens between them.",
+    steps: [
+      "Split the task into its intelligent parts (where judgment matters) and its mechanical parts (where rules work). Draw the boundary explicitly before writing a line of code — this decision drives the entire architecture.",
+      "Build the automation skeleton first: routing, execution, output formatting. Then add AI at the specific decision points where rules break down. Don't try to build both in parallel.",
+      "Define what happens when the AI component is wrong — a fallback route, a human review step, or a correction mechanism. This is the step most teams skip and then rebuild six months later."
+    ],
+    ctas: [
+      {
+        label: "Book a Consultation — Design the Split",
+        sub: "Intelligent automation architecture is where most implementations go wrong. I'll help you design the AI-automation boundary and sequence the build correctly.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+vs+Automation+%E2%80%94+Intelligent+Automation+Design`,
+        style: "primary"
+      },
+      {
+        label: "Take the AI Readiness Assessment",
+        sub: "Your organization's readiness determines which part to build first. Know where your data and process gaps are before committing to an architecture.",
+        href: () => PRODUCT_URL,
+        style: "outline"
+      }
+    ]
+  },
+  {
+    range: [56, 75],
+    badge: "Level 3 of 4 · Automation-First",
+    title: "Automation-First + Light AI",
+    description: "The core process is automatable, but some steps have edge cases that fall outside what rules can handle cleanly. The right sequence is: start with automation — it's cheaper, faster to deploy, and easier to maintain. Add AI only at the specific points where pure automation keeps generating exceptions you can't rule-encode.",
+    steps: [
+      "Build the automation for the main flow first. Run it for 2–3 weeks and log every exception it fails to handle. Don't guess where AI is needed before you have production data — observe it.",
+      "Cluster those exceptions: are they a repeating pattern? If yes, that's where a simple classifier or an LLM call adds value. If they're genuinely random, manual review may be cheaper than AI at your volume.",
+      "Set a threshold before adding AI: if exceptions represent less than 5% of total volume, the engineering cost and operational complexity of AI may exceed the benefit. Do the math before building."
+    ],
+    ctas: [
+      {
+        label: "Book a Consultation",
+        sub: "Let's sequence the build correctly — automation first, then AI only where it earns its cost. I'll help you avoid rebuilding the automation layer after you add AI on top.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+vs+Automation+%E2%80%94+Automation-First+Strategy`,
+        style: "primary"
+      },
+      {
+        label: "Take the AI Readiness Assessment",
+        sub: "Before adding AI to an existing automation, know if your organization is ready to support it. Most gaps show up in data quality and governance.",
+        href: () => PRODUCT_URL,
+        style: "outline"
+      }
+    ]
+  },
+  {
+    range: [76, 100],
+    badge: "Level 4 of 4 · Classic Automation",
+    title: "Classic Automation",
+    description: "This is a pure rule-based task. Use workflow tools — Zapier, Make, Power Automate, Python scripts, or RPA. Adding AI would introduce cost, latency, and probabilistic errors into a task that has deterministic answers. The task doesn't need intelligence, it needs reliability and consistency at scale.",
+    steps: [
+      "Choose the right tool for your stack: Zapier or Make for no-code, Python scripts for developers, RPA (UiPath, Automation Anywhere) for desktop or legacy systems. Don't select based on brand — select based on what integrates cleanest with your existing systems.",
+      "Build error handling before deploying at scale. Automation at volume produces errors in bulk — define what happens when any step fails, who gets notified, and what the fallback is. This is the work most teams skip.",
+      "Once running, instrument it: throughput per day, error rate, time saved vs manual. A workflow without metrics can fail silently for months before anyone realizes the automation stopped working."
+    ],
+    ctas: [
+      {
+        label: "Book a Consultation — Scope the Build",
+        sub: "You know what to build. Let's scope it correctly — tool selection, integration points, error handling design, and a realistic timeline before you start.",
+        href: () => `mailto:${CONSULT_EMAIL}?subject=AI+vs+Automation+%E2%80%94+Automation+Build+Scoping`,
+        style: "primary"
+      }
+    ]
+  }
+];
+
+const scores = {};
+const ALL_SECTION_IDS = ['result-wrap','ctas-wrap','subscribe-wrap','share-wrap','block-scores-wrap','stats-wrap','sources-wrap'];
+
+function buildQuestions() {
+  const container = document.getElementById('questions-container');
+  let qNum = 1;
+
+  blocks.forEach((block) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'block-wrap';
+
+    const card = document.createElement('div');
+    card.className = 'block-card';
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'block-title-row';
+    titleRow.innerHTML = `
+      <div class="block-icon">${block.icon}</div>
+      <div class="block-title-text">
+        <h2>${block.name}</h2>
+        <span>${block.range}</span>
+      </div>
+    `;
+    card.appendChild(titleRow);
+
+    block.questions.forEach((qText) => {
+      const key = `q${qNum}`;
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+
+      const btns = [0,1,2,3,4].map(v =>
+        `<button class="score-btn" data-key="${key}" data-val="${v}" onclick="setScore('${key}',${v},this)">${v}</button>`
+      ).join('');
+
+      qDiv.innerHTML = `
+        <div class="q-number">Question ${qNum}</div>
+        <div class="q-text">${qText}</div>
+        <div class="q-scale">
+          <div class="scale-labels"><span>Not true at all</span><span>Always true</span></div>
+          <div class="score-buttons">${btns}</div>
+        </div>
+      `;
+
+      card.appendChild(qDiv);
+      qNum++;
+    });
+
+    wrap.appendChild(card);
+    container.appendChild(wrap);
+  });
+}
+
+function setScore(key, val, btn) {
+  scores[key] = val;
+  document.querySelectorAll(`[data-key="${key}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateFooter();
+  if (Object.keys(scores).length === 25) showResult();
+}
+
+function updateFooter() {
+  const total = Object.values(scores).reduce((s, v) => s + v, 0);
+  const count = Object.keys(scores).length;
+  document.getElementById('footer-score').textContent = total;
+  document.getElementById('footer-answered').textContent = `${count} / 25`;
+  document.getElementById('progress-fill').style.width = `${(count / 25) * 100}%`;
+}
+
+function showResult() {
+  const total = Object.values(scores).reduce((s, v) => s + v, 0);
+  const r = results.find(x => total >= x.range[0] && total <= x.range[1]);
+
+  document.getElementById('result-badge').textContent = r.badge;
+  document.getElementById('result-score').textContent = total;
+  document.getElementById('result-title').textContent = r.title;
+  document.getElementById('result-description').textContent = r.description;
+  document.getElementById('result-steps').innerHTML = r.steps.map((s, i) =>
+    `<div class="next-step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`
+  ).join('');
+
+  ALL_SECTION_IDS.forEach(id => document.getElementById(id).classList.add('visible'));
+  document.getElementById('reset-wrap').classList.add('visible');
+
+  buildBlockScores();
+  showCTAs(r);
+  showShare(total, r.title);
+  window.location.hash = `score=${total}&verdict=${encodeURIComponent(r.title)}`;
+
+  document.getElementById('result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showCTAs(result) {
+  document.getElementById('ctas-list').innerHTML = result.ctas.map(cta => `
+    <div class="cta-item">
+      <a class="cta-btn ${cta.style}" href="${cta.href()}" target="_blank">${cta.label}</a>
+      <div class="cta-sub">${cta.sub}</div>
+    </div>
+  `).join('');
+}
+
+function getWeakestBlock() {
+  let qNum = 1, weakest = { name: '', pct: 1 };
+  blocks.forEach(block => {
+    let total = 0;
+    block.questions.forEach(() => { total += scores[`q${qNum}`] || 0; qNum++; });
+    const pct = total / block.max;
+    if (pct < weakest.pct) weakest = { name: block.name, pct };
+  });
+  return weakest.name;
+}
+
+function showShare(total, title) {
+  const weakest = getWeakestBlock();
+  const url = PAGE_URL;
+  const text = `I just ran the AI vs Automation decision test on a process I'm evaluating.\n\nScore: ${total}/100\nVerdict: ${title}\nLowest block: ${weakest}\n\nIs your process a candidate for AI, automation, or both?\n👉 ${url}\n\nTest by @monetizer_biz`;
+  document.getElementById('share-text-box').textContent = text;
+}
+
+function copyShareText() {
+  const text = document.getElementById('share-text-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy text'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function shareOnThreads() {
+  const text = document.getElementById('share-text-box').textContent;
+  window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function handleSubscribe() {
+  const email = document.getElementById('subscribe-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('subscribe-email').focus();
+    return;
+  }
+  window.open(`mailto:${CONSULT_EMAIL}?subject=Subscribe+%E2%80%94+SC+Automation+Insights&body=Please+add+me+to+your+list.+My+email:+${encodeURIComponent(email)}`, '_blank');
+  document.getElementById('subscribe-note').classList.add('visible');
+}
+
+function buildBlockScores() {
+  const container = document.getElementById('block-scores-list');
+  container.innerHTML = '';
+  let qNum = 1;
+
+  blocks.forEach(block => {
+    let blockTotal = 0;
+    block.questions.forEach(() => {
+      blockTotal += scores[`q${qNum}`] || 0;
+      qNum++;
+    });
+    const pct = Math.round((blockTotal / block.max) * 100);
+    const row = document.createElement('div');
+    row.className = 'block-score-row';
+    row.innerHTML = `
+      <div class="bsr-name">${block.name}</div>
+      <div class="bsr-track"><div class="bsr-fill" style="width:${pct}%"></div></div>
+      <div class="bsr-num">${blockTotal}/${block.max}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function resetAll() {
+  Object.keys(scores).forEach(k => delete scores[k]);
+  document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('footer-score').textContent = '0';
+  document.getElementById('footer-answered').textContent = '0 / 25';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('subscribe-email').value = '';
+  document.getElementById('subscribe-note').classList.remove('visible');
+  ALL_SECTION_IDS.forEach(id => document.getElementById(id).classList.remove('visible'));
+  document.getElementById('reset-wrap').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuestions();
+</script>
+</body>
+</html>

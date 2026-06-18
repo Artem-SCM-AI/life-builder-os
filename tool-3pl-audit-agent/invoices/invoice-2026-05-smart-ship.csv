@@ -1,0 +1,25 @@
+Date,Description,Units,Unit Rate,Total
+2026-05-01,Monthly Storage - Standard Pallet,48,13.50,648.00
+2026-05-01,Monthly Storage - Standard Pallet,48,15.00,720.00
+2026-05-01,Monthly Storage - Oversized Pallet,6,27.00,162.00
+2026-05-03,Container Unload - 40ft HC,1,590.00,590.00
+2026-05-03,Pallet In - Container Unload,22,10.00,220.00
+2026-05-03,Pallet In - Container Unload,22,10.00,220.00
+2026-05-05,Order Processing Fee,14,8.00,112.00
+2026-05-05,Carton Pick,14,1.50,21.00
+2026-05-06,Parcel - Under 10lb,31,1.75,54.25
+2026-05-06,Parcel - 10 to 100lb,18,2.35,42.30
+2026-05-07,Parcel - 101 to 200lb,4,4.70,18.80
+2026-05-10,Order Processing Fee,9,8.00,72.00
+2026-05-10,Carton Pick,9,1.50,13.50
+2026-05-10,Parcel - Under 10lb,19,1.75,33.25
+2026-05-12,Labeling - FNSKU,340,0.45,153.00
+2026-05-12,Rush Handling Fee,1,175.00,175.00
+2026-05-15,Pallet Out - Customer Return,3,10.00,30.00
+2026-05-15,Parcel - 10 to 100lb,11,2.75,30.25
+2026-05-20,Order Processing Fee,7,8.00,56.00
+2026-05-20,Carton Pick,7,1.50,10.50
+2026-05-20,Parcel - Under 10lb,22,1.75,38.50
+2026-05-25,Labeling - FNSKU,120,0.45,54.00
+2026-05-28,Monthly Storage - Standard Pallet,2,13.50,27.00
+2026-05-31,Account Management Fee,1,95.00,95.00

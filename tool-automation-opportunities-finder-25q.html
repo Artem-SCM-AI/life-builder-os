@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Can I Automate? — SCAIT</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2A;
+    --orange: #FF6B35;
+    --orange-light: #FFF0EA;
+    --bg: #F5F7FA;
+    --card: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #1A2B3C;
+    --text-secondary: #64748B;
+    --text-hint: #94A3B8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+    --shadow-hover: 0 2px 8px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding-bottom: 90px;
+  }
+
+  .header {
+    background: var(--navy);
+    padding: 36px 20px 32px;
+    text-align: center;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .brand-name { font-size: 17px; font-weight: 700; color: #FFFFFF; letter-spacing: -0.01em; }
+  .brand-tagline { font-size: 13px; color: #8FA3BC; font-weight: 400; }
+
+  .brand-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 4px;
+  }
+
+  .brand-link {
+    font-size: 12px; color: var(--orange); text-decoration: none;
+    font-weight: 500; opacity: 0.85; transition: opacity 0.15s;
+  }
+  .brand-link:hover { opacity: 1; }
+  .brand-divider { width: 1px; height: 12px; background: #2A4060; }
+
+  .header h1 {
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 800; color: #FFFFFF; line-height: 1.2;
+    margin-bottom: 10px; letter-spacing: -0.02em;
+  }
+  .header-sub { font-size: 15px; color: #8FA3BC; font-weight: 400; }
+
+  .progress-bar-wrap { background: var(--navy); padding: 0 20px 20px; }
+  .progress-track {
+    max-width: 680px; margin: 0 auto;
+    background: #1E3550; border-radius: 4px; height: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--orange); border-radius: 4px;
+    width: 0%; transition: width 0.3s ease;
+  }
+
+  .intro-wrap { max-width: 680px; margin: 24px auto 0; padding: 0 16px; }
+  .intro-card {
+    background: var(--card); border-radius: 12px;
+    padding: 24px 28px; box-shadow: var(--shadow);
+  }
+  .intro-card p {
+    font-size: 15px; color: var(--text-secondary);
+    line-height: 1.7; margin-bottom: 14px;
+  }
+  .intro-card p:last-of-type { margin-bottom: 20px; }
+
+  .intro-signature {
+    font-size: 14px; color: var(--text-hint);
+    padding-top: 16px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .intro-signature strong { color: var(--text); font-weight: 600; }
+  .intro-divider { width: 1px; height: 14px; background: var(--border); }
+
+  .scale-section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-hint);
+    margin-bottom: 10px; margin-top: 20px;
+  }
+
+  .scale-row {
+    display: flex; gap: 6px; overflow-x: auto;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px;
+  }
+  .scale-row::-webkit-scrollbar { display: none; }
+
+  .scale-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; color: var(--text-secondary); background: var(--bg);
+    border-radius: 6px; padding: 4px 10px; white-space: nowrap; flex-shrink: 0;
+  }
+  .scale-chip strong { color: var(--orange); font-weight: 700; font-size: 13px; }
+
+  .block-wrap { max-width: 680px; margin: 24px auto 0; padding: 0 16px; }
+  .block-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+
+  .block-title-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 24px 14px; border-bottom: 1px solid var(--border);
+  }
+  .block-icon {
+    width: 36px; height: 36px; border-radius: 10px; background: var(--orange-light);
+    display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+  }
+  .block-title-text h2 { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .block-title-text span { font-size: 12px; color: var(--text-hint); }
+
+  .question { padding: 20px 24px 18px; border-bottom: 1px solid var(--border); }
+  .question:last-child { border-bottom: none; }
+
+  .q-number {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--orange); margin-bottom: 6px;
+  }
+  .q-text { font-size: 15px; color: var(--text); line-height: 1.55; margin-bottom: 12px; }
+
+  .q-example {
+    font-size: 12px; color: var(--text-hint); line-height: 1.55;
+    font-style: italic; margin-bottom: 14px;
+  }
+
+  .q-scale { display: flex; flex-direction: column; gap: 8px; }
+
+  .scale-labels {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-hint); padding: 0 2px;
+  }
+
+  .score-buttons { display: flex; gap: 6px; }
+
+  .score-btn {
+    flex: 1; height: 48px; border-radius: 10px;
+    border: 2px solid var(--border); background: var(--bg);
+    color: var(--text-secondary); font-size: 16px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  }
+  .score-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+  .score-btn.selected { background: var(--orange); border-color: var(--orange); color: #FFFFFF; }
+
+  .sticky-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--navy); padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between; z-index: 100;
+  }
+  .footer-score { display: flex; align-items: baseline; gap: 4px; }
+  .footer-score-label { font-size: 12px; color: #8FA3BC; text-transform: uppercase; letter-spacing: 0.08em; }
+  .footer-score-value { font-size: 30px; font-weight: 800; color: var(--orange); line-height: 1; min-width: 50px; }
+  .footer-score-max { font-size: 14px; color: #4A6080; margin-left: 2px; }
+  .footer-progress { text-align: right; }
+  .footer-progress-count { font-size: 14px; font-weight: 600; color: #FFFFFF; }
+  .footer-progress-label { font-size: 11px; color: #8FA3BC; display: block; margin-top: 1px; }
+
+  .result-wrap { max-width: 680px; margin: 24px auto 0; padding: 0 16px; display: none; }
+  .result-wrap.visible { display: block; }
+  .result-card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow-hover); overflow: hidden; }
+  .result-header { background: var(--navy); padding: 32px 28px; text-align: center; }
+
+  .result-badge {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 16px;
+    background: rgba(255,107,53,0.15); color: var(--orange);
+    border: 1px solid rgba(255,107,53,0.3);
+  }
+  .result-score-display {
+    font-size: 72px; font-weight: 800; color: #FFFFFF;
+    line-height: 1; letter-spacing: -0.03em; margin-bottom: 6px;
+  }
+  .result-score-sub { font-size: 14px; color: #8FA3BC; margin-bottom: 16px; }
+  .result-level-title { font-size: 24px; font-weight: 700; color: #FFFFFF; }
+
+  .result-body { padding: 28px; }
+  .result-description { font-size: 15px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 24px; }
+  .next-steps-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--orange); margin-bottom: 14px;
+  }
+  .next-steps-list { display: flex; flex-direction: column; gap: 12px; }
+  .next-step-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 16px; background: var(--bg); border-radius: 10px;
+  }
+  .step-num {
+    width: 26px; height: 26px; background: var(--orange); color: #FFFFFF;
+    border-radius: 50%; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .step-text { font-size: 14px; color: var(--text); line-height: 1.55; }
+
+  .block-scores-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .block-scores-wrap.visible { display: block; }
+  .block-scores-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 20px 24px; }
+  .block-scores-card h3 {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-hint); margin-bottom: 16px;
+  }
+
+  .block-score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .block-score-row:last-child { margin-bottom: 0; }
+  .bsr-name { font-size: 13px; color: var(--text-secondary); min-width: 130px; flex-shrink: 0; }
+  .bsr-track { flex: 1; height: 6px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .bsr-fill { height: 100%; background: var(--orange); border-radius: 4px; transition: width 0.5s ease; }
+  .bsr-num { font-size: 13px; font-weight: 600; color: var(--text); min-width: 36px; text-align: right; }
+  .bsr-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; min-width: 52px; text-align: right;
+  }
+
+  .stats-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .stats-wrap.visible { display: block; }
+  .stats-card { background: var(--navy); border-radius: 12px; padding: 20px 24px; }
+  .stats-card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4A6080; margin-bottom: 14px; }
+  .stat-row { font-size: 14px; color: #8FA3BC; padding: 8px 0; border-bottom: 1px solid #1E3550; line-height: 1.5; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row strong { color: #FFFFFF; }
+
+  .sources-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .sources-wrap.visible { display: block; }
+  .sources-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 20px 24px; }
+  .sources-card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); margin-bottom: 14px; }
+  .sources-list { display: flex; flex-direction: column; gap: 8px; }
+  .source-item { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+  .source-item a { color: var(--orange); text-decoration: none; font-weight: 500; }
+  .source-item a:hover { text-decoration: underline; }
+
+  .reset-wrap { max-width: 680px; margin: 16px auto 24px; padding: 0 16px; display: none; }
+  .reset-wrap.visible { display: block; }
+  .reset-btn {
+    width: 100%; padding: 14px; background: transparent;
+    border: 2px solid var(--border); border-radius: 10px;
+    color: var(--text-hint); font-size: 14px; cursor: pointer; transition: all 0.15s ease;
+  }
+  .reset-btn:hover { border-color: var(--text-secondary); color: var(--text-secondary); }
+
+  .ctas-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .ctas-wrap.visible { display: block; }
+  .ctas-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .ctas-header { padding: 16px 24px 12px; border-bottom: 1px solid var(--border); }
+  .ctas-header h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); }
+  .cta-item { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .cta-item:last-child { border-bottom: none; }
+  .cta-btn {
+    display: block; width: 100%; text-align: center;
+    padding: 13px 20px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    text-decoration: none; margin-bottom: 10px; transition: all 0.15s ease; box-sizing: border-box;
+  }
+  .cta-btn.primary { background: var(--orange); color: #FFFFFF; }
+  .cta-btn.primary:hover { background: #e85a24; }
+  .cta-btn.outline { background: transparent; color: var(--navy); border: 2px solid var(--border); }
+  .cta-btn.outline:hover { border-color: var(--navy); }
+  .cta-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+  .subscribe-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .subscribe-wrap.visible { display: block; }
+  .subscribe-card { background: var(--navy); border-radius: 12px; padding: 24px; }
+  .subscribe-card h3 { font-size: 16px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; }
+  .subscribe-card p { font-size: 13px; color: #8FA3BC; line-height: 1.5; margin-bottom: 16px; }
+  .subscribe-form { display: flex; gap: 8px; }
+  .subscribe-input {
+    flex: 1; padding: 12px 14px; border-radius: 8px;
+    border: 1px solid #1E3550; background: #132436;
+    color: #FFFFFF; font-size: 14px; outline: none;
+  }
+  .subscribe-input:focus { border-color: var(--orange); }
+  .subscribe-input::placeholder { color: #3A5470; }
+  .subscribe-submit {
+    padding: 12px 18px; background: var(--orange); color: #FFFFFF;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; transition: background 0.15s;
+  }
+  .subscribe-submit:hover { background: #e85a24; }
+  .subscribe-note { font-size: 12px; color: #4A6080; margin-top: 10px; display: none; }
+  .subscribe-note.visible { display: block; }
+
+  .share-wrap { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: none; }
+  .share-wrap.visible { display: block; }
+  .share-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 20px 24px; }
+  .share-card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); margin-bottom: 14px; }
+  .share-text-box {
+    background: var(--bg); border-radius: 8px; padding: 14px 16px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.65;
+    white-space: pre-line; margin-bottom: 12px; border: 1px solid var(--border);
+  }
+  .share-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  .share-btn {
+    padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: 2px solid transparent; transition: all 0.15s ease;
+  }
+  .share-btn.copy { background: var(--bg); color: var(--text); border-color: var(--border); }
+  .share-btn.copy:hover { border-color: var(--navy); }
+  .share-btn.copy.copied { background: #EDF7F0; color: #2E7D32; border-color: #2E7D32; }
+  .share-btn.threads { background: #000000; color: #FFFFFF; }
+  .share-btn.threads:hover { background: #333; }
+
+  @media (max-width: 480px) {
+    .bsr-name { min-width: 90px; font-size: 12px; }
+    .score-btn { height: 44px; font-size: 15px; }
+    .result-score-display { font-size: 56px; }
+    .block-title-row { padding: 14px 18px 12px; }
+    .question { padding: 16px 18px 14px; }
+    .result-body { padding: 20px 18px; }
+  }
+
+  @media print {
+    .sticky-footer, .reset-wrap { display: none !important; }
+    body { padding-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-name">Artem Stepanenko</div>
+    <div class="brand-tagline">AI & automation consultant · clearly defined ROI</div>
+    <div class="brand-links">
+      <a class="brand-link" href="https://www.linkedin.com/in/artemscm/" target="_blank">LinkedIn</a>
+      <div class="brand-divider"></div>
+      <a class="brand-link" href="https://threads.net/@monetizer_biz" target="_blank">Threads</a>
+      <div class="brand-divider"></div>
+      <a class="brand-link" href="https://instagram.com/monetizer_biz" target="_blank">Instagram</a>
+    </div>
+  </div>
+  <h1>What Can I Automate in My Work?</h1>
+  <div class="header-sub">25-question personal audit · ~8 minutes · works for any profession</div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="intro-wrap">
+  <div class="intro-card">
+    <p>Most people know they're doing too much manually. What they don't know is where exactly their time is going — and which of those tasks are actually automatable right now, without technical skills or big budgets.</p>
+    <p>This is a personal audit, not a company assessment. Think about your typical workweek — everything you do regularly. Rate each question honestly: how often does this happen in your work?</p>
+    <p>The result shows you which category of manual work is costing you the most time. That category is your starting point. You'll also see how each area scores — so you can prioritize what to tackle in what order.</p>
+    <p>Works for any profession: business owner, manager, freelancer, specialist, or anyone with a repeating workload. No technical background required to use the results.</p>
+    <div class="intro-signature">
+      <strong>Artem Stepanenko</strong>
+      <div class="intro-divider"></div>
+      <span>AI & automation consultant</span>
+    </div>
+    <div class="scale-section-label">How often does this happen in your work?</div>
+    <div class="scale-row">
+      <div class="scale-chip"><strong>0</strong> Never</div>
+      <div class="scale-chip"><strong>1</strong> Few times/mo</div>
+      <div class="scale-chip"><strong>2</strong> Every week</div>
+      <div class="scale-chip"><strong>3</strong> Daily routine</div>
+    </div>
+  </div>
+</div>
+
+<div id="questions-container"></div>
+
+<div class="result-wrap" id="result-wrap">
+  <div class="result-card">
+    <div class="result-header">
+      <div class="result-badge" id="result-badge"></div>
+      <div class="result-score-display" id="result-score"></div>
+      <div class="result-score-sub">out of 75 · see category breakdown below</div>
+      <div class="result-level-title" id="result-title"></div>
+    </div>
+    <div class="result-body">
+      <div class="result-description" id="result-description"></div>
+      <div class="next-steps-label">Your next 3 moves</div>
+      <div class="next-steps-list" id="result-steps"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ctas-wrap" id="ctas-wrap">
+  <div class="ctas-card">
+    <div class="ctas-header"><h3>What to do next</h3></div>
+    <div id="ctas-list"></div>
+  </div>
+</div>
+
+<div class="subscribe-wrap" id="subscribe-wrap">
+  <div class="subscribe-card">
+    <h3>Get weekly AI & automation insights</h3>
+    <p>Real workflows, real numbers, no theory. One email per week.</p>
+    <div class="subscribe-form">
+      <input class="subscribe-input" type="email" id="subscribe-email" placeholder="your@email.com">
+      <button class="subscribe-submit" onclick="handleSubscribe()">Subscribe →</button>
+    </div>
+    <div class="subscribe-note" id="subscribe-note">Your email client opened — send the message to confirm your subscription.</div>
+  </div>
+</div>
+
+<div class="share-wrap" id="share-wrap">
+  <div class="share-card">
+    <h3>Share your result</h3>
+    <div class="share-text-box" id="share-text-box"></div>
+    <div class="share-buttons">
+      <button class="share-btn copy" id="copy-btn" onclick="copyShareText()">Copy text</button>
+      <button class="share-btn threads" onclick="shareOnThreads()">Share on Threads</button>
+    </div>
+  </div>
+</div>
+
+<div class="block-scores-wrap" id="block-scores-wrap">
+  <div class="block-scores-card">
+    <h3>Score per category · 10–12 = critical opportunity</h3>
+    <div id="block-scores-list"></div>
+  </div>
+</div>
+
+<div class="stats-wrap" id="stats-wrap">
+  <div class="stats-card">
+    <h3>Why it matters</h3>
+    <div class="stat-row">Knowledge workers spend <strong>28% of their workweek managing email alone</strong> — the majority of which is routine responses and coordination that can be templated or automated <em>(McKinsey Global Institute)</em></div>
+    <div class="stat-row"><strong>58% of workers' time</strong> is spent on "work about work" — status updates, follow-ups, data entry between tools — not the actual skilled work they were hired for <em>(Asana Anatomy of Work Index)</em></div>
+    <div class="stat-row">The most common reason companies don't automate is not budget or skill — it's that <strong>they don't know where to start</strong>. A clear map of which tasks qualify changes this immediately <em>(Workato State of Business Automation)</em></div>
+    <div class="stat-row">Small business owners spend an average of <strong>10–20 hours per week</strong> on administrative tasks that have direct automation equivalents available with existing tools <em>(OnDeck Business Report)</em></div>
+    <div class="stat-row">"If I do it myself it's faster" is the most common rationalization for keeping manual work. <strong>At weekly repetition, it costs 10× more</strong> than setting up the automation once</div>
+  </div>
+</div>
+
+<div class="sources-wrap" id="sources-wrap">
+  <div class="sources-card">
+    <h3>Sources</h3>
+    <div class="sources-list">
+      <div class="source-item">1. <a href="https://asana.com/resources/automate-repetitive-tasks-5-steps" target="_blank">How to Automate Repetitive Tasks in 5 Steps</a> — Asana</div>
+      <div class="source-item">2. <a href="https://www.ondeck.com/resources/20-business-tasks-you-can-easily-automate" target="_blank">20 Business Tasks You Can Easily Automate</a> — OnDeck</div>
+      <div class="source-item">3. <a href="https://gleematic.com/8-repetitive-tasks-you-might-not-know-you-can-automate/" target="_blank">8 Repetitive Tasks You Might Not Know You Can Automate</a> — Gleematic</div>
+      <div class="source-item">4. <a href="https://www.moveworks.com/us/en/resources/blog/business-examples-and-uses-of-ai-automation" target="_blank">13 AI Automation Examples to Boost Productivity</a> — Moveworks</div>
+      <div class="source-item">5. <a href="https://www.workato.com/the-connector/task-automation/" target="_blank">Task Automation: Definition, Examples, and Tools</a> — Workato</div>
+      <div class="source-item">6. <a href="https://ttms.com/boosting-productivity-using-ai-to-automate-routine-business-tasks/" target="_blank">Boosting Productivity Using AI to Automate Routine Tasks</a> — TTMS</div>
+    </div>
+  </div>
+</div>
+
+<div class="reset-wrap" id="reset-wrap">
+  <button class="reset-btn" onclick="resetAll()">Start over</button>
+</div>
+
+<div class="sticky-footer">
+  <div class="footer-score">
+    <span class="footer-score-label">Score&nbsp;</span>
+    <span class="footer-score-value" id="footer-score">0</span>
+    <span class="footer-score-max">/75</span>
+  </div>
+  <div class="footer-progress">
+    <span class="footer-progress-count" id="footer-answered">0 / 25</span>
+    <span class="footer-progress-label">answered</span>
+  </div>
+</div>
+
+<script>
+const PAGE_URL      = 'https://monetizerbiz.gumroad.com'; // UPDATE: replace with hosted URL of this page
+const PRODUCT_URL   = 'https://monetizerbiz.gumroad.com'; // UPDATE: replace with AI vs Automation Decision Test link
+const CONSULT_EMAIL = 'eco.stepanenko@gmail.com';
+
+const blocks = [
+  {
+    icon: "🔁",
+    name: "Repetitive Tasks",
+    range: "Questions 1–4",
+    max: 12,
+    questions: [
+      {
+        text: "I do the same task multiple times a week using the same steps — only the specific names, dates, or amounts change.",
+        example: "Daily till count. Booking confirmations. Delivery receipts. Client invoices. Monthly reconciliation."
+      },
+      {
+        text: "I fill in the same form, document, or template manually — every single time, from scratch.",
+        example: "Client intake forms. Trip logs. Supplier order sheets. Job estimates. Onboarding paperwork."
+      },
+      {
+        text: "I copy information from one place to another because my tools don't connect automatically.",
+        example: "Cash register → spreadsheet. Phone booking → calendar. Paper log → company portal. Online orders → warehouse system."
+      },
+      {
+        text: "I publish or send the same type of content repeatedly — with small changes each time.",
+        example: "Social media posts. Daily specials. Promotions. Portfolio updates. Weekly newsletters."
+      }
+    ]
+  },
+  {
+    icon: "🔔",
+    name: "Reminders & Follow-Ups",
+    range: "Questions 5–8",
+    max: 12,
+    questions: [
+      {
+        text: "I manually remind people about appointments, payments, or deadlines — one by one.",
+        example: "Appointment reminders. Invoice follow-ups. Delivery confirmations. Load pickup notifications. Patient reminders."
+      },
+      {
+        text: "I answer the same questions repeatedly — from clients, customers, colleagues, or vendors.",
+        example: "\"What time do you open?\" \"How much is a session?\" \"Where's my delivery?\" \"Is this item in stock?\""
+      },
+      {
+        text: "I send confirmation messages that always say roughly the same thing — just with different details.",
+        example: "Booking confirmed. Order received. Payment sent. Pickup scheduled. Reservation accepted."
+      },
+      {
+        text: "I follow up when something is late, overdue, or unconfirmed — keeping track manually.",
+        example: "Unpaid invoices. Late deliveries. Unanswered messages. Unconfirmed bookings. Missing documents."
+      }
+    ]
+  },
+  {
+    icon: "💰",
+    name: "Numbers & Money",
+    range: "Questions 9–12",
+    max: 12,
+    questions: [
+      {
+        text: "I manually count, calculate, or reconcile money — sales, expenses, tips, cash, costs.",
+        example: "Daily cash reconciliation. End-of-day revenue. Fuel and toll expenses. Project cost tracking. Daily sales totals."
+      },
+      {
+        text: "I create or send invoices manually — entering client info, amounts, and dates by hand each time.",
+        example: null
+      },
+      {
+        text: "I track expenses by collecting receipts and entering them somewhere manually.",
+        example: "Fuel receipts. Supply purchases. Petty cash. Business meals. Equipment repairs."
+      },
+      {
+        text: "I compare numbers from two or more sources to check if they match — manually.",
+        example: "POS system vs. actual cash. Appointments booked vs. revenue received. Hours tracked vs. amount billed."
+      }
+    ]
+  },
+  {
+    icon: "📄",
+    name: "Paperwork & Documents",
+    range: "Questions 13–16",
+    max: 12,
+    questions: [
+      {
+        text: "I fill in reports, logs, or records that always follow the same structure — only the specific values change.",
+        example: "Shift reports. Trip logs. Inspection checklists. Daily sales summaries. Maintenance records."
+      },
+      {
+        text: "I receive documents with information that I then manually extract and enter somewhere else.",
+        example: "Supplier invoices → orders tracker. Insurance forms → client files. Delivery papers → company system. Contracts → CRM."
+      },
+      {
+        text: "I create documents — reports, proposals, summaries — by pulling together information already stored in different places.",
+        example: null
+      },
+      {
+        text: "I organize, rename, or file documents according to a pattern or rule.",
+        example: "Client folders. Photo archives. Invoice filing. Delivery records. Case files."
+      }
+    ]
+  },
+  {
+    icon: "📅",
+    name: "Coordination & Scheduling",
+    range: "Questions 17–20",
+    max: 12,
+    questions: [
+      {
+        text: "I coordinate between people, locations, or schedules — manually connecting things that should connect automatically.",
+        example: "Staff scheduling. Managing availability. Coordinating with dispatch and clients. Assigning tasks to team members."
+      },
+      {
+        text: "I schedule appointments, routes, shifts, or deliveries by going back and forth to find what works.",
+        example: null
+      },
+      {
+        text: "I track whether things are happening on time — and manually follow up when something is late or stuck.",
+        example: "Deliveries. Client appointments. Payments. Staff arrivals. Supplier orders."
+      },
+      {
+        text: "I confirm that someone received something, completed something, or is on the way — by asking them directly.",
+        example: null
+      }
+    ]
+  },
+  {
+    icon: "📊",
+    name: "Monitoring & Alerts",
+    range: "Questions 21–25",
+    max: 12,
+    questions: [
+      {
+        text: "I check the same things regularly to make sure nothing has gone wrong.",
+        example: "Stock levels before a busy period. Tomorrow's bookings. Vehicle condition. Bestseller inventory. Revenue vs. targets."
+      },
+      {
+        text: "I find problems after they've already caused damage — I didn't know until it was too late.",
+        example: "Ran out of stock during peak hours. Double-booked a client. Missed a document. Invoice overdue 30 days."
+      },
+      {
+        text: "I notice issues by looking manually — rather than being alerted automatically.",
+        example: null
+      },
+      {
+        text: "I track whether I'm hitting my targets — revenue, bookings, capacity, volume — manually and with a delay.",
+        example: null
+      },
+      {
+        text: "There's a recurring problem in my work that I haven't fixed because setting up a solution feels like too much effort.",
+        example: null
+      }
+    ]
+  }
+];
+
+const categoryResults = [
+  {
+    title: "Repetitive Tasks",
+    description: "You're doing the same work on repeat. The steps don't change — only the details do. This is the most straightforward automation win available: you describe the pattern once, the machine does it forever. Every hour you spend on these tasks is an hour that could be eliminated, not optimized.",
+    steps: [
+      "List every task where only the details change (names, dates, amounts). For each one, write: \"Every time [trigger], I do [steps] to produce [output].\" That sentence is your automation specification — it's all a tool needs to take over.",
+      "Start with the task you repeat most often — the one you do 3+ times per week. Map it in full: what triggers it, what inputs it needs, what the output looks like. That's your first build.",
+      "Check what tools you already use for this task before buying anything new. Most business software (email, spreadsheets, CRMs, booking tools) has built-in automation or connects to Zapier or Make at no extra cost."
+    ],
+    ctas: true
+  },
+  {
+    title: "Reminders & Follow-Ups",
+    description: "You're spending real mental energy keeping track of what needs to be sent, confirmed, or chased. This isn't high-value work — it's memory management. Automated sequences handle this without you having to remember, initiate, or write anything. The sequence runs; you focus on actual work.",
+    steps: [
+      "List every type of reminder or follow-up you send manually. Group them by type: who you're reminding, about what, and when. Each group is one automation sequence — you'll probably have 3–5 of them.",
+      "Pick the highest-volume type — the follow-up you send most often. Build the template for that message first. Once the template exists, setting up the automation in your booking system, CRM, or email tool typically takes 15–30 minutes.",
+      "Set up one automated sequence this week — just one. Start with the simplest trigger: \"appointment confirmed → send reminder 24 hours before.\" Complexity is the enemy of starting. You can expand the sequence later."
+    ],
+    ctas: true
+  },
+  {
+    title: "Numbers & Money",
+    description: "You're doing accounting by hand — manually moving numbers between systems, counting cash, reconciling differences. Every minute spent here is a minute not spent on actual business decisions. These tasks are 100% automatable: structured inputs, deterministic outputs, repeatable rules.",
+    steps: [
+      "Map where numbers move manually: which system holds the source data, where you're re-entering it, and what you're checking afterward. That map is your automation blueprint. Draw it on paper if you need to.",
+      "Identify your two most time-consuming tasks in this category. Fix the one that takes longest first — even saving 30 minutes a day compounds to 130 hours a year.",
+      "Check whether your existing tools already have an integration you haven't enabled. Most POS, accounting, and invoicing systems connect to spreadsheets or each other automatically. You may not need to build anything — just configure it."
+    ],
+    ctas: true
+  },
+  {
+    title: "Paperwork & Documents",
+    description: "You're filling in structured information manually when you already have that information stored somewhere. Document automation and AI extraction can handle most of this with higher accuracy and zero manual effort. The work exists; it just needs to be connected.",
+    steps: [
+      "List all recurring documents you fill or create manually. For each one, identify: where does the source data already exist? If it's in a system — a CRM, a spreadsheet, a form tool — it can be pulled automatically instead of retyped.",
+      "Pick one document you create regularly and build a template with placeholders. That's the foundation for document automation — whether with Zapier, a script, or a simple AI prompt. The template turns a 20-minute task into a 30-second one.",
+      "For documents you receive and extract data from (invoices, forms, delivery notes), test an AI extraction tool on a sample batch. Most structured documents can be processed automatically in under a minute each — no manual transcription needed."
+    ],
+    ctas: true
+  },
+  {
+    title: "Coordination & Scheduling",
+    description: "You are the connection between people and systems that don't talk to each other. This is exhausting because it requires constant attention with no creative value. Automated workflows and scheduling tools eliminate the back-and-forth entirely — without needing anyone's cooperation to set up.",
+    steps: [
+      "Write down every back-and-forth you manage in a typical week — finding availability, confirming time slots, notifying people of changes. Each one is a coordination workflow. Most can be eliminated with a simple scheduling link or a shared calendar with notification rules.",
+      "Pick the workflow that happens most often and requires the most messages. Set up a scheduling link (Calendly, Cal.com) or a shared availability system. The back-and-forth collapses to one step: they pick a slot, everything else happens automatically.",
+      "Identify who or what you're acting as the middleman for. Build a direct connection — a shared tool, an integration, or an automated notification — so information flows without you forwarding it. You shouldn't be a human API."
+    ],
+    ctas: true
+  },
+  {
+    title: "Monitoring & Alerts",
+    description: "You discover problems by looking — which means you discover them late. Automated monitoring watches your key metrics continuously and alerts you the moment something crosses a threshold, before the damage compounds. You stop reacting and start getting warned.",
+    steps: [
+      "List everything you check manually on a regular basis — stock levels, revenue vs. target, bookings, delivery status. For each one, define the threshold: at what number do you need to act? That threshold becomes your alert rule.",
+      "Start with the problem that has already cost you money — the one you found out about too late. Set up one proactive alert for it this week. Most tools (spreadsheets, POS systems, inventory software) support conditional alerts or email notifications natively, without extra cost.",
+      "Build a simple daily dashboard — one view that shows all your key numbers. Instead of checking five places, you check one. It doesn't need to be sophisticated: a Google Sheet with formulas and conditional formatting is enough to catch 80% of problems before they escalate."
+    ],
+    ctas: true
+  }
+];
+
+const scores = {};
+const ALL_SECTION_IDS = ['result-wrap','ctas-wrap','subscribe-wrap','share-wrap','block-scores-wrap','stats-wrap','sources-wrap'];
+
+function buildQuestions() {
+  const container = document.getElementById('questions-container');
+  let qNum = 1;
+
+  blocks.forEach((block) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'block-wrap';
+
+    const card = document.createElement('div');
+    card.className = 'block-card';
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'block-title-row';
+    titleRow.innerHTML = `
+      <div class="block-icon">${block.icon}</div>
+      <div class="block-title-text">
+        <h2>${block.name}</h2>
+        <span>${block.range}</span>
+      </div>
+    `;
+    card.appendChild(titleRow);
+
+    block.questions.forEach((q) => {
+      const key = `q${qNum}`;
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+
+      const btns = [0,1,2,3].map(v =>
+        `<button class="score-btn" data-key="${key}" data-val="${v}" onclick="setScore('${key}',${v},this)">${v}</button>`
+      ).join('');
+
+      const exampleHTML = q.example
+        ? `<div class="q-example">${q.example}</div>`
+        : '';
+
+      qDiv.innerHTML = `
+        <div class="q-number">Question ${qNum}</div>
+        <div class="q-text">${q.text}</div>
+        ${exampleHTML}
+        <div class="q-scale">
+          <div class="scale-labels"><span>Never</span><span>Daily routine</span></div>
+          <div class="score-buttons">${btns}</div>
+        </div>
+      `;
+
+      card.appendChild(qDiv);
+      qNum++;
+    });
+
+    wrap.appendChild(card);
+    container.appendChild(wrap);
+  });
+}
+
+function setScore(key, val, btn) {
+  scores[key] = val;
+  document.querySelectorAll(`[data-key="${key}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateFooter();
+  if (Object.keys(scores).length === 25) showResult();
+}
+
+function updateFooter() {
+  const total = Object.values(scores).reduce((s, v) => s + v, 0);
+  const count = Object.keys(scores).length;
+  document.getElementById('footer-score').textContent = total;
+  document.getElementById('footer-answered').textContent = `${count} / 25`;
+  document.getElementById('progress-fill').style.width = `${(count / 25) * 100}%`;
+}
+
+function getTopCategory() {
+  let qNum = 1;
+  let top = { name: '', score: -1, index: 0 };
+  blocks.forEach((block, idx) => {
+    let blockTotal = 0;
+    block.questions.forEach(() => { blockTotal += scores[`q${qNum}`] || 0; qNum++; });
+    if (blockTotal > top.score) top = { name: block.name, score: blockTotal, index: idx };
+  });
+  return top;
+}
+
+function getCategoryLabel(score) {
+  if (score <= 3) return { text: 'Low', color: '#94A3B8' };
+  if (score <= 6) return { text: 'Medium', color: '#F59E0B' };
+  if (score <= 9) return { text: 'High', color: '#F97316' };
+  return { text: 'Critical', color: '#EF4444' };
+}
+
+function showResult() {
+  const total = Object.values(scores).reduce((s, v) => s + v, 0);
+  const top = getTopCategory();
+  const r = categoryResults[top.index];
+
+  document.getElementById('result-badge').textContent = `Top Opportunity · ${top.name} — ${top.score}/12`;
+  document.getElementById('result-score').textContent = total;
+  document.getElementById('result-title').textContent = r.title;
+  document.getElementById('result-description').textContent = r.description;
+  document.getElementById('result-steps').innerHTML = r.steps.map((s, i) =>
+    `<div class="next-step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`
+  ).join('');
+
+  ALL_SECTION_IDS.forEach(id => document.getElementById(id).classList.add('visible'));
+  document.getElementById('reset-wrap').classList.add('visible');
+
+  buildBlockScores();
+  showCTAs();
+  showShare(total, top);
+  window.location.hash = `score=${total}&top=${encodeURIComponent(top.name)}`;
+
+  document.getElementById('result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showCTAs() {
+  const ctas = [
+    {
+      label: "Book a 30-min Automation Call",
+      sub: "I'll map your top category to a specific tool and first workflow. You'll leave with a concrete action, not a generic recommendation.",
+      href: () => `mailto:${CONSULT_EMAIL}?subject=Automation+Opportunities+%E2%80%94+Diagnostic+Call`,
+      style: "primary"
+    },
+    {
+      label: "Take the AI vs Automation Decision Test",
+      sub: "Once you know what to automate, this test tells you whether your specific task needs AI, classic automation, or a combination of both.",
+      href: () => PRODUCT_URL,
+      style: "outline"
+    }
+  ];
+
+  document.getElementById('ctas-list').innerHTML = ctas.map(cta => `
+    <div class="cta-item">
+      <a class="cta-btn ${cta.style}" href="${cta.href()}" target="_blank">${cta.label}</a>
+      <div class="cta-sub">${cta.sub}</div>
+    </div>
+  `).join('');
+}
+
+function showShare(total, top) {
+  const text = `I just ran the What Can I Automate? audit — 25 questions about my actual work.\n\nTop opportunity: ${top.name} (${top.score}/12)\nTotal score: ${total}/75\n\nFind out where your biggest automation wins are hiding:\n👉 ${PAGE_URL}\n\nAudit by @monetizer_biz`;
+  document.getElementById('share-text-box').textContent = text;
+}
+
+function copyShareText() {
+  const text = document.getElementById('share-text-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy text'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function shareOnThreads() {
+  const text = document.getElementById('share-text-box').textContent;
+  window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function handleSubscribe() {
+  const email = document.getElementById('subscribe-email').value.trim();
+  if (!email || !email.includes('@')) { document.getElementById('subscribe-email').focus(); return; }
+  window.open(`mailto:${CONSULT_EMAIL}?subject=Subscribe+%E2%80%94+AI+%26+Automation+Insights&body=Please+add+me+to+your+list.+My+email:+${encodeURIComponent(email)}`, '_blank');
+  document.getElementById('subscribe-note').classList.add('visible');
+}
+
+function buildBlockScores() {
+  const container = document.getElementById('block-scores-list');
+  container.innerHTML = '';
+  let qNum = 1;
+
+  blocks.forEach(block => {
+    let blockTotal = 0;
+    block.questions.forEach(() => { blockTotal += scores[`q${qNum}`] || 0; qNum++; });
+    const pct = Math.round((blockTotal / block.max) * 100);
+    const lbl = getCategoryLabel(blockTotal);
+    const row = document.createElement('div');
+    row.className = 'block-score-row';
+    row.innerHTML = `
+      <div class="bsr-name">${block.name}</div>
+      <div class="bsr-track"><div class="bsr-fill" style="width:${pct}%"></div></div>
+      <div class="bsr-num">${blockTotal}/12</div>
+      <div class="bsr-label" style="color:${lbl.color}">${lbl.text}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function resetAll() {
+  Object.keys(scores).forEach(k => delete scores[k]);
+  document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('footer-score').textContent = '0';
+  document.getElementById('footer-answered').textContent = '0 / 25';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('subscribe-email').value = '';
+  document.getElementById('subscribe-note').classList.remove('visible');
+  ALL_SECTION_IDS.forEach(id => document.getElementById(id).classList.remove('visible'));
+  document.getElementById('reset-wrap').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuestions();
+</script>
+</body>
+</html>

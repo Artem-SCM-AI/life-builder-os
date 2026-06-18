@@ -1,41 +1,62 @@
 ---
-last_updated: 2026-06-13 (session 17)
+last_updated: 2026-06-18 (session 37)
 ---
 
 ## Current Focus
-- **artem.org.ua сайт**: ✅ Design spec готовий і апрувнутий — `docs/superpowers/specs/2026-06-13-artem-org-ua-website-design.md`. Наступний крок: `/gsd-plan-phase` для implementation plan. Стек: Astro + Vercel. Дизайн: White + Blue (#1d4ed8), Inter. Pending: Telegram channel link, Calendly URL confirm, Артем пише 5 кейсів.
-- **Threads Client Finder tool**: ⛔ FROZEN — код готовий (Tasks 1-7 ✅, 25 tests), але `threads_keyword_search` глобальний пошук потребує Meta Tech Provider (верифікація бізнесу, тижні). Токен @artem.org.ua в .env, апка опублікована. Розморозити коли Meta спростить або з'явиться альтернатива.
-- **@artem.org.ua контент**: 20 постів в Sheets, cron running 4x/day ✅
-- **AI Automation Service**: funnel live, next — client search via Threads
-- FlowerOS: Plan 1 ready — execution від понеділка (2026-06-15). Pre-launch аналіз: LMachine ✅ (друзі), CRM пілота ✅ (Tier 0, Flora24 cut). Unit econ v2: мережа 150 точок ≈ $69К/міс @ flat 7%; 🔴 магазин у прямому мінусі при uplift 2.0→2.5 (break-even 2.73) — продавати пакет: ~80 нових клієнтів/рік/точку (KPI) + закупівельний дайджест; Рішення: flat 7% GROSS всюди (вкл. Feia), без setup fee відкрито, кешбек згорає 12 міс після останньої покупки, ексклюзив = радіус (1км Київ/1.5км інші). Plan 1 amendments A1-A5 внесені. Нові доки: `ref-floweros-frequency-methodology.md`, `ref-floweros-consent-contract-clauses.md` (юрист!). G-26 ✅ lifetime-тири (дрейф до 13.3% прийнятий). §3.9 FlowerOS vs маркетинг (1.8×/клієнта за 3 роки; рекламу → на deep link бота). §7.4 віральні петлі: self-profile шеринг + fill request (Plan 3) + центральний роутер-бот з waitlist по містах (G-28, до вірального пушу). Roadmap: пілот LIVE ~6–12 липня; V2-гейт (конверсія >30%) — кінець вересня; перший найм PSM на ~10–15 точках; 150 точок = 24–30 міс через мережі — `plan-floweros-roadmap-team-infra.md`. Відкрито: Monobank merchant, юрист по consent — `2026-06-12-report-floweros-prelaunch-analysis.md`
-- Claude Onboarding: відео запис — завтра (2026-06-13)
+- **Jello SC Build** 🔥: SC Manager в Accommerce. Phase 0 аудит запущений. NeonPanel requirements doc відправлено засновникам — чекаємо відповідь (критичні Q8-10 bundle COGS). SC Ops Dashboard (Apps Script) — на паузі до NeonPanel відповіді. **Наступна задача: SC roadmap в draw.io (n8n-style) — генеруємо XML файл в наступній сесії.**
+- **FlowerOS**: фінмодель v2 готова. `floweros/CLAUDE.md` ✅ створено. Plan 1 готовий до виконання.
+- **artem.org.ua сайт**: два HTML-прототипи. Артем обирає версію → `/gsd-plan-phase` для Astro build.
+- **@artem.org.ua контент**: 20 постів в Sheets, cron 4x/day ✅
+- **TG канал "The Life Builder OS"**: 54 підписники. Стратегія готова. 8 вівторкових постів написані. Перший пост — 2026-06-24. Позиціонування: "перейди на Claude Code" (83% аудиторії вже платять за AI, лише 16% на Claude Code).
 
 ## Open Decisions
-- LinkedIn bio: do NOT update to "The Life Builder" until job offer received
+- LinkedIn bio: не оновлювати до "The Life Builder" поки є job offer
+- FlowerOS B2B referral fee (TBD)
+- Jello: Straw + Mixer PO — навмисно не розміщені чи пропустили?
+- artem.org.ua: white+blue vs dark версія
+- TG канал: reactions decoder пост + Sheets tracker ще не створені (ручні дії)
 
 ## Blockers
-- **Threads Finder**: ⛔ заморожено — `threads_keyword_search` глобально потребує Meta Tech Provider статусу
-- FlowerOS: `floweros/` directory does not exist — Plan 1 ready, start Monday 2026-06-15
+- **Threads Finder**: заморожено — `threads_keyword_search` потребує Meta Tech Provider
+
+## Jello SC Ops Dashboard — Design Brief (next build)
+
+**Tool:** Google Sheets + Apps Script (особистий акаунт Артема, шариться лінком)
+**3 SKU:** Jello / Mixer / Straws
+**4 вкладки:**
+
+1. **Dashboard** — для кожного SKU: stock в DE (units + days, color: ≥21 green / 14-20 yellow / ≤13 red), in-transit batches (units + days + ETA, може бути кілька), in-production batches (units + days + ready date, може бути кілька)
+2. **Landed Cost** — inputs: qty + всі вартості → output: landed cost/unit (вартість коли товар став на сток у FF)
+3. **Shipping Plan** — per shipment: SKU, qty, order date, ETA, tracking number, status. Трекінг через email automation (майбутня інтеграція)
+4. **Forecast** — горизонтальний, 360 днів, тижневі бакети. Підходить для Gantt діаграм
+
+**Старий файл:** `jello-sc/tools/scenario-planner.gs` — скрапнутий (занадто складний, неюзабельний)
+**Новий файл:** `jello-sc/tools/sc-ops-dashboard.gs` (ще не створений)
 
 ## Recent Sessions
-- 2026-06-13 (17): artem.org.ua website design — segment-first hub, White+Blue, Astro+Vercel. Spec written + approved: `docs/superpowers/specs/2026-06-13-artem-org-ua-website-design.md`. Наступне: implementation plan.
-- 2026-06-13 (16): Claude Onboarding 404 fix — redirect `/claude-onboarding.html` → `/products/claude-onboarding.html` запушено на GitHub Pages. Лінка в біо оновлена.
-- 2026-06-12 (15): FlowerOS pre-launch deep analysis — сценарії 3K/5K/8K юзерів × 150 точок (crit $92K / norm $153K / fant $244K на міс), знайдено: "normal" = 83% capture обороту пілота (нереально рік 1), 7 P0-блокерів, in-house ledger spec, CRM adapter tiers, QR-система. Report: `2026-06-12-report-floweros-prelaunch-analysis.md`
-- 2026-06-12 (14): threads-finder повністю заморожено. Знайшли правильний endpoint (`/keyword_search`), опублікували апку, отримали токен @artem.org.ua. Але глобальний пошук вимагає Meta Tech Provider — вирішили заморозити (варіант C).
-- 2026-06-12 (13): threads-finder Task 8 — .env заповнено, credentials.json, Sheets ✅. Токен @artem.org.ua отримано через OAuth.
-- 2026-06-12 (12): threads-finder Tasks 5-7 — searcher.py fix (MIN_POST_LENGTH=40), setup_sheets.py, bot.py. 25/25 tests passing ✅.
-- 2026-06-12 (11): threads-finder Tasks 1-4 — project setup, config, threads_client, sheets_client, claude_client. All tests passing ✅.
-- 2026-06-12 (10): @artem.org.ua Claude project rebuild — ICP документ, нові хуки, resonant topics, системний промпт, em-dash fix в постері, artem-org-ua cron → 14 точних запусків до 18 червня.
-- 2026-06-12 (9): Статус-ревʼю — Apps Script ✅, Products 2/4/5 відкладено, FlowerOS → понеділок, відео → завтра. AI Audit share: міняємо screenshot → текст для Threads.
-- 2026-06-12 (8): Product links audit — зібрали всі живі посилання, створили Notion сторінку "🔗 Product Links & Files" під LBO HQ.
-- 2026-06-11: built Claude Code First onboarding product v1.0, ZIP packaged for distribution
-- 2026-06-10: FlowerOS architecture design spec + threads poster multi-account Sheets spec
+- 2026-06-18 (38): Ponytail plugin — встановлено через `claude plugin` CLI і одразу вимкнено. Вмикати: `claude plugin enable ponytail`. Вимикати: `claude plugin disable ponytail`.
+- 2026-06-18 (36): Jello SC Roadmap — шукали інструмент для n8n-style візуального SC roadmap. Milanote/Miro/Whimsical — немає MCP. HTML+JS — надто редагувати. ClickUp Whiteboard — платний. **Рішення: draw.io XML (diagrams.net, безкоштовний) — генеруємо в наступній сесії.**
+- 2026-06-18 (35): Jello — Onboarding PDF + ClickUp "First Week" задача. Forecast: 2,100/day → 8,748/day Oct 16. SC планує в Jello units/day.
+- 2026-06-18 (34): Jello — Working Capital bank document. Заповнили всі метрики (Inventory 30d, Production 25d, Shipping 35d, Supplier Terms 0, Shopify 3d, Purchase €123k, Reorder 14d). Supplier terms: 30%+40% до відправки = zero credit. 93-day cash cycle. Файл: `report-jello-working-capital-bank-plan.md`.
+- 2026-06-18 (33): Life Builder OS AI Audit UA — баг з дублікатами імейлів (2-3 листи на користувача). Причина: подвійний клік на submit + відсутній флаг. Фікс: `state.submitted`, `btn.disabled`, задеплоєно на GitHub Pages.
+- 2026-06-18 (31): Jello SC Ops Dashboard — scenario-planner.gs скрапнутий. Design brief визначений через інтерв'ю: 4 вкладки (Dashboard, Landed Cost, Shipping Plan, Forecast). Forecast горизонтальний 360d тижневі бакети. Dashboard кольорові пороги stock. Shipping Plan з трекінг номером + email automation в майбутньому.
+- 2026-06-18 (30): TG канал стратегія — spec + план + 7 тасків виконано (8 постів, reactions decoder, tracker ref, DM шаблон). Перша статистика: 54 підписники, 83% "щось вміють", 66% платна версія AI, 16% Claude Code.
+- 2026-06-18 (29): Claude optimization continued — `floweros/CLAUDE.md` створено, `jello-sc/.claude/settings.json` (ClickUp API auto-approve), rules trimmed (-21 рядок), hot.md Quick Refs скорочено.
+- 2026-06-18 (28): Mutual Trade Union Credit Agreement M202606374539 — фінальний review, підписуємо як є. SIAC/Singapore ✅, interest 1.5%/mo ✅, SLA clauses ❌. Party B details + KYC docs pending.
+- 2026-06-17 (27): Claude setup optimization — створено `jello-sc/CLAUDE.md` (instant context), CLAUDE.md прибраний (Code of Honor → memory), memory cleanup (видалено дублікат, оновлено jello memory, виправлено /tmp path), ClickUp токен → `$CLICKUP_TOKEN` env var, `~/.zshenv` створено.
+- 2026-06-17 (26): Jello Forecast — виявили gap, знайшли Google Sheets 360-day model (Clemens/Andrei). Оновили PROJECT.md (Jello 2,100/day, scale 4.5x Oct), ROADMAP.md Phase 1 (інтеграція існуючої, не побудова), SSoT ClickUp. Snapshot: `jello-sc/audit/forecast-model-snapshot.md`. Stockout Jun 16–28, B1 Air прилітає Jun 28. Перший крок: отримати edit access від Clemens.
+- 2026-06-17 (25): FF contract review — Basisvertrag підписаний 15.06, Anlage 4 SLA розібрана. DHL прайс (Paket €3.98, Kleinpaket €2.83). Anlage 1 FF (зберігання/фулфіллмент) відсутня. Slack до FF написаний. Expeditors: payment at customs + відстрочка по кешфлоу.
+- 2026-06-17 (24): Jello ClickUp Phase 0 restructure — handover (130 tasks), теги 5 вимірів (130/130), папки Vendors/Products/SC Ops/Compliance+Quality, SSoT 28 записів з status:/doc: тегами. Custom fields — free plan не підтримує, workaround через опис + теги.
+- 2026-06-17 (23): Jello — 3PL contract review (Mutual Trade Union Co., Yiwu). 10 критичних ризиків. Amendment letter (EN+ZH, 10 правок). ClickUp задача створена в Audit з повним логом. Summary для Malcolm готовий. Чекаємо його підтвердження → відправка листа.
+- 2026-06-16 (22): Jello SC onboarding — ClickUp підключено, 192 задачі проаналізовано. GSD проект `jello-sc/` з ROADMAP (5 фаз) і Phase 0 plan. 12 типів аудитів, 129 задач задеплоєно англійською в ClickUp з датами. Розібрали стан до Артема: B1 горить сьогодні, FF контракт прострочений, процесів немає.
+- 2026-06-16 (21): Threads Analytics — `analytics.py`, 22K views/день за тиждень.
+- 2026-06-16 (20): FlowerOS фінмодель v2 — комісія 1%/6%/7%/3%, B2B канал, GTM Дніпро.
+- 2026-06-15 (19): Jello SC Phase 2 Roadmap → Notion (13 сторінок).
+- 2026-06-13 (18): artem.org.ua — два HTML-прототипи.
 
 ## Quick Refs
-- **artem.org.ua website spec**: `docs/superpowers/specs/2026-06-13-artem-org-ua-website-design.md`
-- FlowerOS architecture spec: `docs/superpowers/specs/2026-06-10-floweros-architecture-design.md`
+- Jello SC: `jello-sc/CLAUDE.md` (live context, ClickUp IDs, blockers)
+- FlowerOS Plan 1: `docs/superpowers/plans/2026-06-10-floweros-bot.md`
+- artem.org.ua spec: `docs/superpowers/specs/2026-06-13-artem-org-ua-website-design.md`
 - Threads poster: `tool-threads-poster/poster.py`
-- Threads finder: `tool-threads-finder/` (Tasks 1-7 ✅, Task 8 pending Meta outage)
 - Memory dir: `~/.claude/projects/-Users-artem-Claude-v-1-0/memory/`
-- Claude Onboarding Notion page (draft): https://app.notion.com/p/37dd4d2e2457818baf42efe8c75d71ca
-- Product Links & Files (Notion): https://app.notion.com/p/37dd4d2e2457819ab1a4d4465da7ca41

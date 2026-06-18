@@ -12,37 +12,80 @@ from sheets_client import SheetsClient
 from threads_client import ThreadsAPIError, ThreadsAuthError, ThreadsClient
 
 COMMENT_DELAY_SECONDS = 120
+THREAD_PART_DELAY_SECONDS = 10
 MAX_RETRIES = 3
 MAX_CHARS = 500
 
 
+def parse_thread_parts(text: str) -> list[str] | None:
+    """Split post_text into thread parts using t1/t2/... markers.
+
+    Supports both inline and block format:
+        t1 Hook text here
+        t2 Second part
+
+        t1
+        Hook text here
+
+        t2
+        Second part
+
+    Returns list of clean parts (markers stripped) if 2+ found, else None.
+    """
+    text = text.strip()
+    if not re.search(r'^t\d+', text, flags=re.MULTILINE | re.IGNORECASE):
+        return None
+    parts = re.split(r'^t\d+[ \t]*\n?', text, flags=re.MULTILINE | re.IGNORECASE)
+    parts = [p.strip() for p in parts if p.strip()]
+    return parts or None
+
+
 def split_into_parts(text: str, max_chars: int = MAX_CHARS) -> list[str]:
-    sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+    text = text.strip()
+    if len(text) <= max_chars:
+        return [text]
+
+    split_positions = [m.end() for m in re.finditer(r'[.!?]\s+', text)]
+
     parts = []
-    current = ""
+    start = 0
 
-    for sentence in sentences:
-        if not sentence:
-            continue
-        candidate = (current + " " + sentence).strip() if current else sentence
-        if len(candidate) <= max_chars:
-            current = candidate
+    while start < len(text):
+        remaining = text[start:]
+        if len(remaining) <= max_chars:
+            parts.append(remaining.strip())
+            break
+
+        end = start + max_chars
+        best = None
+        for pos in split_positions:
+            if start < pos <= end:
+                best = pos
+
+        if best:
+            parts.append(text[start:best].rstrip())
+            start = best
         else:
-            if current:
-                parts.append(current)
-            # single sentence longer than max_chars — split at last space
-            if len(sentence) > max_chars:
-                while len(sentence) > max_chars:
-                    cut = sentence[:max_chars].rfind(" ")
-                    cut = cut if cut > 0 else max_chars
-                    parts.append(sentence[:cut].strip())
-                    sentence = sentence[cut:].strip()
-            current = sentence
-
-    if current:
-        parts.append(current)
+            cut = text[start:end].rfind(" ")
+            if cut > 0:
+                parts.append(text[start:start + cut])
+                start = start + cut + 1
+            else:
+                parts.append(text[start:end])
+                start = end
 
     return parts or [text]
+
+
+def build_notification(account: str, scheduled_time: str, status: str, detail: str = "") -> str:
+    lines = [
+        f"Threads Poster ({account})",
+        f"Post planned at {scheduled_time}",
+        f"Status: {status}" + (" ✅" if status == "posted" else ""),
+    ]
+    if detail:
+        lines.append(detail)
+    return "\n".join(lines)
 
 
 def run(config_path: str = "config.env", sheet_tab: str = "monetizer-biz") -> None:
@@ -62,22 +105,23 @@ def run(config_path: str = "config.env", sheet_tab: str = "monetizer-biz") -> No
     for row in due_rows:
         row_index = row["_row"]
         retry_count = int(row.get("retry_count") or 0)
-        post_text = row.get("post_text", "")
-        first_comment = row.get("first_comment", "")
+        post_text = row.get("post_text", "").replace("—", "-")
+        first_comment = row.get("first_comment", "").replace("—", "-")
+        scheduled_time = row.get("scheduled_time", "")
 
         if not post_text:
             sheets.update_row(row_index, status="failed", error="post_text is empty")
-            send_alert(tg_token, tg_chat, f"⚠️ Threads: row {row_index} skipped — post_text is empty")
+            send_alert(tg_token, tg_chat, build_notification(sheet_tab, scheduled_time, "failed", "post_text is empty"))
             continue
 
-        parts = split_into_parts(post_text)
+        parts = parse_thread_parts(post_text) or split_into_parts(post_text)
 
         # Post first part
         try:
             post_id = threads.create_post(parts[0])
         except ThreadsAuthError as e:
             sheets.update_row(row_index, status="auth_error", error=str(e))
-            send_alert(tg_token, tg_chat, f"⚠️ Threads: token expired\n{e}")
+            send_alert(tg_token, tg_chat, build_notification(sheet_tab, scheduled_time, "auth_error", str(e)))
             return
         except ThreadsAPIError as e:
             new_retry = retry_count + 1
@@ -85,20 +129,23 @@ def run(config_path: str = "config.env", sheet_tab: str = "monetizer-biz") -> No
                 sheets.update_row(row_index, status="failed", error=str(e), retry_count=new_retry)
             else:
                 sheets.update_row(row_index, error=str(e), retry_count=new_retry)
-            send_alert(tg_token, tg_chat, f"⚠️ Threads: post failed (attempt {new_retry})\n{e}")
+            send_alert(tg_token, tg_chat, build_notification(sheet_tab, scheduled_time, f"failed (attempt {new_retry})", str(e)))
             continue
 
-        # Post continuation parts immediately (no sleep between them)
         last_id = post_id
         for part in parts[1:]:
+            time.sleep(THREAD_PART_DELAY_SECONDS)
             try:
                 last_id = threads.create_reply(last_id, part)
             except (ThreadsAuthError, ThreadsAPIError) as e:
                 sheets.update_row(row_index, status="posted_partial", post_id=post_id, error=str(e))
-                send_alert(tg_token, tg_chat, f"⚠️ Threads: thread continuation failed\n{e}")
+                send_alert(tg_token, tg_chat, build_notification(sheet_tab, scheduled_time, "posted_partial", str(e)))
                 break
         else:
-            # All parts posted — now wait and post engagement comment
+            # All parts posted
+            send_alert(tg_token, tg_chat, build_notification(sheet_tab, scheduled_time, "post published ✅"))
+
+            # Wait and post engagement comment
             time.sleep(COMMENT_DELAY_SECONDS)
 
             posted_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
@@ -112,6 +159,7 @@ def run(config_path: str = "config.env", sheet_tab: str = "monetizer-biz") -> No
                         post_id=post_id,
                         error="",
                     )
+                    send_alert(tg_token, tg_chat, build_notification(sheet_tab, scheduled_time, "comment published ✅"))
                 except (ThreadsAuthError, ThreadsAPIError) as e:
                     sheets.update_row(
                         row_index,
@@ -120,7 +168,7 @@ def run(config_path: str = "config.env", sheet_tab: str = "monetizer-biz") -> No
                         post_id=post_id,
                         error=str(e),
                     )
-                    send_alert(tg_token, tg_chat, f"⚠️ Threads: post published, comment failed\n{e}")
+                    send_alert(tg_token, tg_chat, build_notification(sheet_tab, scheduled_time, "comment failed", str(e)))
             else:
                 sheets.update_row(
                     row_index,

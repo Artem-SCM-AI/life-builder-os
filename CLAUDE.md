@@ -67,9 +67,19 @@ Do not make direct repo edits outside a GSD workflow unless explicitly asked to 
 
 ---
 
+## Project Context Files
+
+Active projects have their own CLAUDE.md for instant context:
+- `jello-sc/CLAUDE.md` — Jello SC build (Phase 0 active)
+- `floweros/CLAUDE.md` — FlowerOS bot (pending, directory not yet created)
+
+---
+
 ## Session Protocol
 
-**FIRST ACTION in every session, before any response or tool use:**
+**Order: skills check → read hot.md → proceed**
+
+**FIRST ACTION after skills check:**
 
 1. Read `/Users/artem/Claude v 1.0/hot.md` using the Read tool.
    - If the file does not exist → create it from `MEMORY.md` + most recent `journal/YYYY-MM.md` entry.
@@ -85,17 +95,3 @@ Do not wait for explicit "goodbye" — update at any clear task or topic conclus
 
 If `hot.md` content contradicts a memory file in `~/.claude/projects/-Users-artem-Claude-v-1-0/memory/` — flag it at session start. Do not silently overwrite memory files; Artem decides which is correct.
 
----
-
-## Artem's Code of Honor
-
-1. Know — don't just be confident. Verify before asserting.
-2. Inventory control is the foundation of everything else.
-3. No manual data entry — automate or eliminate.
-4. Take ownership, don't just manage.
-5. Delegate as the path to growing your own value.
-6. Optimize processes before adding people.
-7. Document decisions, not just outcomes.
-8. Cutting costs and growing value are not opposites.
-9. Speed matters — done and iterated beats perfect and delayed.
-10. Build systems, not habits.

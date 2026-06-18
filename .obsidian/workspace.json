@@ -1,0 +1,212 @@
+{
+  "main": {
+    "id": "724905cfde745f71",
+    "type": "split",
+    "children": [
+      {
+        "id": "69014239716b9d03",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "18639d4e3c142a87",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f83dbc8efc895e21",
+    "type": "split",
+    "children": [
+      {
+        "id": "b13f2475581f79ca",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9879c05ca1a67c38",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "c9eca8af85c48a12",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "af9c1cbcc461081d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "12a64dba216046f1",
+    "type": "split",
+    "children": [
+      {
+        "id": "c190a6d33dd699e5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cf74fa1d0a72495e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "ROADMAP.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for ROADMAP"
+            }
+          },
+          {
+            "id": "8837b45740045536",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "ROADMAP.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from ROADMAP"
+            }
+          },
+          {
+            "id": "b62bcb96e6e519ff",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "129741edb4ea8769",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "0f6500b54b9c2aeb",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "ROADMAP.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of ROADMAP"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "18639d4e3c142a87",
+  "lastOpenFiles": [
+    "docs/superpowers/plans/2026-06-01-file-naming-methodology.md",
+    "scait.md",
+    "scait-icp.md",
+    "hanso_reviews.md",
+    "SCAIT/SCAIT AI department/scait-landing/DEPLOY.md",
+    "SCAIT/SCAIT AI department/SCAIT 3in1/Marketing/_presentations/SCAIT.pptx",
+    "SCAIT/SCAIT AI department/SCAIT 3in1/Marketing/_presentations/build_scait.py",
+    "SCAIT/SCAIT AI department/SCAIT 3in1/Marketing/_pages/DEPLOY.md",
+    "SCAIT/SCAIT AI department/SCAIT 3in1/Marketing/_context/SCAIT-TONE-OF-VOICE.md",
+    "AI Apollo — старт аутрічу _ Gamma.pdf",
+    "n8n — автоматизація аутрічу _ Gamma.pdf",
+    "LinkedIn_Plan_Kateryna.md",
+    "Untitled 1.base",
+    "Untitled.base",
+    "Lesson 8/L8_3_Homework.docx",
+    "Lesson 8/L8_2_Checklist.docx",
+    "Lesson 8/L8_1_Summary_Glossary.docx",
+    "Agents.md",
+    "ROADMAP.md",
+    "scait-landing/DEPLOY.md",
+    "scait-landing/index.html",
+    "Odsidian v.1/03 - Claude AI/Index.md",
+    "Odsidian v.1/02 - Career/Index.md",
+    "Odsidian v.1/01 - Course/Index.md",
+    "CLAUDE.md",
+    "artem_profile.md",
+    "Artem Stepanenko CV (Head of Supply Chain).jpg"
+  ]
+}

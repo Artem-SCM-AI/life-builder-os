@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -X GET https://api.clickup.com/*)",
+      "Bash(curl -s -X POST https://api.clickup.com/*)",
+      "Bash(curl -s -X PUT https://api.clickup.com/*)",
+      "Bash(curl -s -X PATCH https://api.clickup.com/*)",
+      "Bash(curl -X GET https://api.clickup.com/*)",
+      "Bash(curl -X POST https://api.clickup.com/*)",
+      "Bash(curl -X PUT https://api.clickup.com/*)",
+      "Bash(curl -X PATCH https://api.clickup.com/*)"
+    ]
+  }
+}
