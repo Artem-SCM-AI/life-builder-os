@@ -4,6 +4,12 @@ import subprocess
 
 from dotenv import load_dotenv
 
+from clickup_client import (
+    format_clickup_section,
+    get_tasks_closed_yesterday,
+    get_tasks_created_yesterday,
+    get_tasks_due_today,
+)
 from reader import read_context
 from sender import send_error_alert, send_telegram
 
@@ -69,10 +75,21 @@ def main() -> None:
         prompt = build_prompt(context)
         briefing = generate_briefing(prompt)
 
-        if args.dry_run:
-            print(briefing)
+        clickup_token = os.environ.get("CLICKUP_TOKEN", "")
+        clickup_team_id = os.environ.get("CLICKUP_TEAM_ID", "")
+        if clickup_token and clickup_team_id:
+            due_today = get_tasks_due_today(clickup_token, clickup_team_id)
+            closed_yesterday = get_tasks_closed_yesterday(clickup_token, clickup_team_id)
+            created_yesterday = get_tasks_created_yesterday(clickup_token, clickup_team_id)
+            clickup_section = format_clickup_section(due_today, closed_yesterday, created_yesterday)
+            message = briefing + "\n\n---\n\n" + clickup_section
         else:
-            send_telegram(token, chat_id, briefing)
+            message = briefing
+
+        if args.dry_run:
+            print(message)
+        else:
+            send_telegram(token, chat_id, message)
 
     except Exception as e:
         send_error_alert(token, chat_id, str(e))
