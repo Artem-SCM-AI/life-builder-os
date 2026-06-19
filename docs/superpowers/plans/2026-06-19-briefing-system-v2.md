@@ -1132,7 +1132,7 @@ git commit -m "feat: briefing.py v2 — --type dispatch, closed loop, HTML outpu
 **Interfaces:**
 - Consumes: `run.sh --type evening` and `run.sh --type weekly`
 
-- [ ] **Step 1: Create evening LaunchAgent plist**
+- [x] **Step 1: Create evening LaunchAgent plist**
 
 ```bash
 cat > ~/Library/LaunchAgents/com.artem.evening-briefing.plist << 'EOF'
@@ -1172,7 +1172,7 @@ cat > ~/Library/LaunchAgents/com.artem.evening-briefing.plist << 'EOF'
 EOF
 ```
 
-- [ ] **Step 2: Create weekly LaunchAgent plist**
+- [x] **Step 2: Create weekly LaunchAgent plist**
 
 ```bash
 cat > ~/Library/LaunchAgents/com.artem.weekly-briefing.plist << 'EOF'
@@ -1208,14 +1208,14 @@ cat > ~/Library/LaunchAgents/com.artem.weekly-briefing.plist << 'EOF'
 EOF
 ```
 
-- [ ] **Step 3: Load both agents**
+- [x] **Step 3: Load both agents**
 
 ```bash
 launchctl load ~/Library/LaunchAgents/com.artem.evening-briefing.plist
 launchctl load ~/Library/LaunchAgents/com.artem.weekly-briefing.plist
 ```
 
-- [ ] **Step 4: Verify both agents registered**
+- [x] **Step 4: Verify both agents registered**
 
 ```bash
 launchctl list | grep artem
@@ -1228,7 +1228,7 @@ Expected output includes:
 -    0    com.artem.weekly-briefing
 ```
 
-- [ ] **Step 5: Manual trigger test for evening**
+- [x] **Step 5: Manual trigger test for evening**
 
 ```bash
 launchctl start com.artem.evening-briefing
@@ -1238,7 +1238,7 @@ launchctl list | grep evening
 
 Expected: exit code 0 in second column
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-06-19-briefing-system-v2.md
