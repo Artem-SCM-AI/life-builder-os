@@ -86,12 +86,19 @@ Claude detects the trigger, loads the skill, fetches live EUR/UAH rate, computes
 
 ### Allocation Rules
 
-**Step 1 — Debt: 20% of gross income (fixed rule)**
+**Step 1 — Taxes (first, always)**
+
+| Tax | Rate / Amount | Notes |
+|---|---|---|
+| Єдиний податок | 6.5% of gross | ФОП group 3 rate |
+| ЄСВ | 1,760 UAH/month | Amortized monthly; paid quarterly Jan/Apr/Jul/Oct 20 |
+
+**Step 2 — Debt: 20% of gross income (fixed rule)**
 
 Total outstanding debt: $100,000 USD.  
-20% off the top, every time, no exceptions. Displayed in UAH and USD equivalent.
+20% of gross, every time, no exceptions. Displayed in UAH and USD equivalent.
 
-**Step 2 — Fixed monthly living expenses**
+**Step 3 — Fixed monthly living expenses**
 
 Auto-detected by season (current month).
 
@@ -110,7 +117,7 @@ Auto-detected by season (current month).
 
 Summer total: ~76,158 UAH · Winter total: ~77,658 UAH
 
-**Step 3 — Investable remainder (= gross − debt − living)**
+**Step 4 — Investable remainder (= gross − taxes − debt − living)**
 
 | Bucket | Share | Instrument |
 |---|---|---|
@@ -125,6 +132,9 @@ Summer total: ~76,158 UAH · Winter total: ~77,658 UAH
 
 Прийшло: 2,600 EUR = 133,900 грн (курс EUR/UAH: 51.5)
 
+🏛 Податки:           −10,464 грн
+  Єдиний податок 6.5%: 8,704 · ЄСВ: 1,760
+
 💸 Борг (20%):        −26,780 грн (~$519 USD) → переказати сьогодні
 
 Витрати на життя:     −76,158 грн
@@ -132,11 +142,11 @@ Summer total: ~76,158 UAH · Winter total: ~77,658 UAH
   Психолог 7,725 · Барбер 1,600 · Собака 2,500
   Дитина 1,733 · Дружина 1,600 · Артем 2,000
 
-💼 На інвестиції: 30,962 грн
+💼 На інвестиції: 20,498 грн
 
-  💵 Валюта готівка (40%):  12,385 грн → купити EUR або USD
-  📦 Короткий термін (30%):  9,289 грн → ОВДП 3-6 міс
-  🌱 Довгий термін (30%):    9,289 грн → ОВДП 1-2 роки
+  💵 Валюта готівка (40%):   8,199 грн → купити EUR або USD
+  📦 Короткий термін (30%):  6,149 грн → ОВДП 3-6 міс
+  🌱 Довгий термін (30%):    6,149 грн → ОВДП 1-2 роки
 ```
 
 ### Currency handling

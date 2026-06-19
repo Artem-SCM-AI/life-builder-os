@@ -698,13 +698,20 @@ Activate on any message containing: income amount + currency (грн / EUR / USD
 
 ## Allocation Rules
 
-### Step 1 — Debt: 20% of gross income
+### Step 1 — Taxes (first, always)
+
+| Tax | Rule |
+|---|---|
+| Єдиний податок | 6.5% of gross income |
+| ЄСВ | 1,760 UAH/month (amortized; paid quarterly Jan/Apr/Jul/Oct 20) |
+
+### Step 2 — Debt: 20% of gross income
 
 Outstanding debt: $100,000 USD.
-Rule: always 20% off the top, every time, no exceptions.
+Rule: always 20% of gross, every time, no exceptions.
 Show: UAH amount + USD equivalent at current rate.
 
-### Step 2 — Fixed monthly living expenses
+### Step 3 — Fixed monthly living expenses
 
 Auto-select by season:
 
@@ -726,9 +733,9 @@ Auto-select by season:
 
 Same as summer but Комунальні = 6,500 UAH (з опаленням).
 
-### Step 3 — Investable remainder
+### Step 4 — Investable remainder
 
-`remainder = gross_uah − debt_uah − living_uah`
+`remainder = gross_uah − taxes_uah − debt_uah − living_uah`
 
 | Bucket | Share | Instrument |
 |---|---|---|
@@ -737,7 +744,7 @@ Same as summer but Комунальні = 6,500 UAH (з опаленням).
 | 🌱 Довгий термін (1–2 роки) | 30% | ОВДП 1–2 роки |
 
 If remainder is negative: do NOT show investment buckets. Instead show:
-`⚠️ Дефіцит: −X грн — витрати перевищують дохід після боргу`
+`⚠️ Дефіцит: −X грн — витрати перевищують дохід після податків і боргу`
 
 ## Output Template
 
@@ -745,6 +752,9 @@ If remainder is negative: do NOT show investment buckets. Instead show:
 💰 РОЗПОДІЛ ДОХОДУ
 
 Прийшло: [amount] [currency] = [uah_total] грн (курс [currency]/UAH: [rate])
+
+🏛 Податки:           −[tax_total] грн
+  Єдиний податок 6.5%: [X] · ЄСВ: 1,760
 
 💸 Борг (20%):        −[debt_uah] грн (~$[debt_usd] USD) → переказати сьогодні
 
