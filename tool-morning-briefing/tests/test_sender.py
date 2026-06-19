@@ -19,10 +19,17 @@ def test_send_error_alert_forwards_message_as_given():
         send_error_alert("TOKEN", "CHAT", "Evening briefing failed: network error")
 
     mock_send.assert_called_once_with(
-        "TOKEN", "CHAT", "Evening briefing failed: network error"
+        "TOKEN", "CHAT", "Evening briefing failed: network error", parse_mode=None
     )
 
 
 def test_send_error_alert_does_not_raise_on_telegram_failure():
     with patch("sender.send_telegram", side_effect=Exception("network error")):
         send_error_alert("TOKEN", "CHAT", "error")  # must not raise
+
+
+def test_send_error_alert_does_not_set_parse_mode():
+    with patch("sender.requests.post") as mock_post:
+        send_error_alert("TOKEN", "CHAT", "error <with> html")
+    call_data = mock_post.call_args[1]["data"]
+    assert "parse_mode" not in call_data

@@ -110,8 +110,8 @@ def run_weekly(today: date, token: str, chat_id: str, dry_run: bool) -> None:
 
     iso = today.isocalendar()
     year, week = iso[0], iso[1]
-    prev_week = week - 1 if week > 1 else 52
-    prev_year = year if week > 1 else year - 1
+    last_day_prev_year = date(year - 1, 12, 28)  # Dec 28 is always in the last ISO week
+    prev_year, prev_week, _ = last_day_prev_year.isocalendar()
     prev_rate = load_weekly_rate(prev_year, prev_week)
 
     prompt = build_weekly_prompt(today, closed_count, created_count, rate, prev_rate)

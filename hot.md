@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-06-18 (session 37)
+last_updated: 2026-06-19 (session 46)
 ---
 
 ## Current Focus
@@ -34,6 +34,14 @@ last_updated: 2026-06-18 (session 37)
 **Новий файл:** `jello-sc/tools/sc-ops-dashboard.gs` (ще не створений)
 
 ## Recent Sessions
+- 2026-06-19 (46): @hmelinka analytics — підключили multi-account підтримку в analytics.py, завантажили 50 постів + 29 днів в analytics sheet. Топ: Єгипет 383K views, Чемпіон 34K (ER 14.65%), Брат мобілізований 27K. Висновок: особисті мікроісторії б'ють психологію в 10-100x. Файли: `ref-hmelinka-analytics-update-june2026.md` + промпт для 20 постів.
+- 2026-06-19 (45): AI Audit UA email — фікс задеплоєно (Apps Script v12). `sendAuditUaEmail` не була в v6. Тест пройшов. Pending: видалити тестовий рядок зі Sheets.
+- 2026-06-19 (44): book-to-skill встановлено (`~/.claude/skills/book-to-skill`). Активний в наступній сесії. Арtem має книги для конвертації — зробимо в наступній сесії.
+- 2026-06-19 (43): Tool review (7 GitHub repos) + cost display в statusline. ccstatusline пропустили — вже є gsd-statusline.js. Додали cost до існуючого hook ($/сесію після context bar). claudekit — переглянути перед встановленням. Решта — пропустити.
+- 2026-06-19 (42): Laptop + Notion cleanup. Downloads: 10GB→4GB (-9GB). Видалено всі CV, job search pipeline, interview prep, кеші. Job search → CLOSED у пам'яті. SC Company Intel: +8 SCAIT лідів (Pete Scratchley, Brandon Young та ін.). Notion: 17 сторінок для ручного видалення (список є). GSD Notion скіли — залишено на потім.
+- 2026-06-19 (41): ClickUp інтеграція в брифінг — додано `clickup_client.py`: задачі на сьогодні / закриті вчора / поставлені вчора. Фільтрація на Python-side (API не фільтрує точно). Limits: 15/10/10. Завтра о 8:45 перший повний брифінг з ClickUp секцією.
+- 2026-06-19 (40): Morning Briefing tool — збудовано `tool-morning-briefing/` (reader+sender+briefing, 8 тестів). Використовує Claude Code CLI (безкоштовно). Crontab о 8:45 пн-пт. Перший брифінг надіслано в Telegram ✅.
+- 2026-06-19 (39): Jello Slack Bot — brainstorming+design+plan. Spec+план готові до виконання. `docs/superpowers/plans/2026-06-19-jello-slack-bot.md` (хендовер всередині).
 - 2026-06-18 (38): Ponytail plugin — встановлено через `claude plugin` CLI і одразу вимкнено. Вмикати: `claude plugin enable ponytail`. Вимикати: `claude plugin disable ponytail`.
 - 2026-06-18 (36): Jello SC Roadmap — шукали інструмент для n8n-style візуального SC roadmap. Milanote/Miro/Whimsical — немає MCP. HTML+JS — надто редагувати. ClickUp Whiteboard — платний. **Рішення: draw.io XML (diagrams.net, безкоштовний) — генеруємо в наступній сесії.**
 - 2026-06-18 (35): Jello — Onboarding PDF + ClickUp "First Week" задача. Forecast: 2,100/day → 8,748/day Oct 16. SC планує в Jello units/day.

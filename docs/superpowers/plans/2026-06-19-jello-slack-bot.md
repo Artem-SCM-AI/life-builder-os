@@ -1,5 +1,36 @@
 # Jello Slack Intelligence Bot — Implementation Plan
 
+---
+
+## Handover for next session
+
+**What was built this session (2026-06-19):**
+Brainstorming + full design for a Jello/Accommerce Slack bot. Design doc and this implementation plan are both written and ready.
+
+**Design spec:** `docs/superpowers/specs/2026-06-19-jello-slack-intelligence-bot-design.md`
+
+**What to do next:**
+1. Read the spec above for full context
+2. Choose execution mode: Subagent-Driven (`/superpowers:subagent-driven-development`) or Inline (`/superpowers:executing-plans`)
+3. Execute this plan task by task, starting with Task 1
+
+**Key decisions already made:**
+- Runtime: FastAPI + `slack-bolt` AsyncApp on Railway (~$5/month)
+- Classifier: Claude Haiku (`claude-haiku-4-5-20251001`) per message
+- All channels + DMs monitored (entire Accommerce workspace)
+- Task creation: user confirms with ✅ reaction → ClickUp "Slack Backlog" list
+- Reply drafts: private DM to Artem only → ✅ to auto-send via bot OR copy-paste manually
+- Logging: all messages (except noise) → Google Sheets "Slack Log" tab
+- Team Q&A (others asking the bot) → deferred to v2
+
+**Pre-implementation checklist (before Task 1):**
+- [ ] Create Slack App at api.slack.com/apps (needed for tokens in Task 1 `.env`)
+- [ ] Create "Slack Backlog" list in ClickUp Space 901510747838 (get list ID for `CLICKUP_LIST_ID`)
+- [ ] Create Google Sheet "Jello Slack Log" + service account (for `GOOGLE_SERVICE_ACCOUNT_JSON`)
+- [ ] Get your Slack user ID (`ARTEM_SLACK_USER_ID`) — Slack profile → "Copy member ID"
+
+---
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** A real-time Slack bot for Accommerce that classifies messages with Claude Haiku, proposes ClickUp tasks (confirmed with ✅ reaction), drafts reply suggestions for messages directed at Artem, and logs all messages to Google Sheets.
@@ -985,7 +1016,7 @@ git commit -m "feat: add Slack Web API helper client"
 ```python
 # tests/test_main.py
 import pytest
-import asyncio
+import pytest_asyncio
 from unittest.mock import patch, MagicMock, AsyncMock
 from fastapi.testclient import TestClient
 
@@ -1031,13 +1062,14 @@ def test_bot_message_skipped(mock_make_client, mock_permalink, mock_reply, mock_
     mock_classify.assert_not_called()
 
 
+@pytest.mark.asyncio
 @patch("main.classify_message")
 @patch("main.log_message")
 @patch("main.get_permalink", return_value="https://slack.com/p/999")
 @patch("main.reply_in_thread", return_value="bot-ts-001")
 @patch("main.add_pending")
 @patch("main.make_client")
-def test_action_item_creates_pending(mock_make_client, mock_add_pending, mock_reply, mock_permalink, mock_log, mock_classify):
+async def test_action_item_creates_pending(mock_make_client, mock_add_pending, mock_reply, mock_permalink, mock_log, mock_classify):
     """action_item classification should call reply_in_thread and add_pending."""
     from classifier import ClassificationResult, ActionItem
     from main import _handle_message_logic
@@ -1056,14 +1088,12 @@ def test_action_item_creates_pending(mock_make_client, mock_add_pending, mock_re
         ),
     )
 
-    asyncio.get_event_loop().run_until_complete(
-        _handle_message_logic(
-            text="Can you confirm B2 ETA?",
-            channel="C-LOGISTICS",
-            ts="1234567890.000001",
-            thread_ts="1234567890.000001",
-            user_id="UMALCOLM",
-        )
+    await _handle_message_logic(
+        text="Can you confirm B2 ETA?",
+        channel="C-LOGISTICS",
+        ts="1234567890.000001",
+        thread_ts="1234567890.000001",
+        user_id="UMALCOLM",
     )
 
     mock_reply.assert_called_once()

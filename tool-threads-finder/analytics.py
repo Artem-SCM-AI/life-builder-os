@@ -5,7 +5,12 @@ Writes two tabs:
   Posts  — per-post metrics for the last 50 posts
   Daily  — account-level daily metrics for the last 28 days
 
-Required env vars (same .env as the finder tool):
+Usage:
+  python analytics.py                  # default account (.env)
+  python analytics.py artem-org-ua     # loads .env.artem-org-ua
+  python analytics.py hmelinka         # loads .env.hmelinka
+
+Required env vars per account file:
   THREADS_ACCESS_TOKEN
   GOOGLE_CREDENTIALS_JSON
   ANALYTICS_SHEET_ID       ← create a new Sheet, share with the service account email
@@ -15,12 +20,17 @@ import os
 import sys
 import time
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 
 import gspread
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+ACCOUNT = sys.argv[1] if len(sys.argv) > 1 else None
+_env_file = Path(__file__).parent / (f".env.{ACCOUNT}" if ACCOUNT else ".env")
+if not _env_file.exists():
+    sys.exit(f"Config file not found: {_env_file}")
+load_dotenv(_env_file)
 
 TOKEN = os.getenv("THREADS_ACCESS_TOKEN")
 CREDENTIALS_PATH = os.getenv("GOOGLE_CREDENTIALS_JSON", "credentials.json")
@@ -178,7 +188,8 @@ def main() -> None:
 
     posts_rows.sort(key=lambda r: r[0], reverse=True)
 
-    ws_posts = open_or_create_tab(spreadsheet, "Posts", POSTS_HEADERS)
+    prefix = f"{ACCOUNT} " if ACCOUNT else ""
+    ws_posts = open_or_create_tab(spreadsheet, f"{prefix}Posts", POSTS_HEADERS)
     upd, app = upsert_rows(ws_posts, posts_rows, key_col=9)  # Post ID is last col
     print(f"  Posts: {upd} updated, {app} added")
 
@@ -187,7 +198,7 @@ def main() -> None:
     daily_rows = fetch_account_daily(28)
     daily_table = [[r["date"], r["views"], r["likes"], r["replies"], r["reposts"], r["quotes"]] for r in daily_rows]
 
-    ws_daily = open_or_create_tab(spreadsheet, "Daily", DAILY_HEADERS)
+    ws_daily = open_or_create_tab(spreadsheet, f"{prefix}Daily", DAILY_HEADERS)
     upd, app = upsert_rows(ws_daily, daily_table, key_col=0)  # Date is key
     print(f"  Daily: {upd} updated, {app} added")
 
