@@ -34,4 +34,7 @@ def load_weekly_rate(year: int, week: int) -> float | None:
     path = STATE_DIR / f"weekly-{year}-W{week:02d}.json"
     if not path.exists():
         return None
-    return json.loads(path.read_text(encoding="utf-8"))["rate"]
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))["rate"]
+    except (json.JSONDecodeError, KeyError):
+        return None

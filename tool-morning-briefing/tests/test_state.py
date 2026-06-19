@@ -39,3 +39,9 @@ def test_save_and_load_weekly_rate(tmp_path, monkeypatch):
 def test_load_weekly_rate_returns_none_for_missing(tmp_path, monkeypatch):
     monkeypatch.setattr(state, "STATE_DIR", tmp_path)
     assert load_weekly_rate(2026, 25) is None
+
+
+def test_load_weekly_rate_returns_none_for_corrupted_json(tmp_path, monkeypatch):
+    monkeypatch.setattr(state, "STATE_DIR", tmp_path)
+    (tmp_path / "weekly-2026-W25.json").write_text("not json", encoding="utf-8")
+    assert load_weekly_rate(2026, 25) is None
