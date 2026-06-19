@@ -31,7 +31,7 @@ Target audience: macOS users with a Telegram bot, optionally using ClickUp or No
 ai-daily-briefing/
 ├── setup.py                         # Setup wizard (NEW)
 ├── briefing.py                      # Entry point — adapter factory + dispatch
-├── prompts.py                       # Prompt templates (unchanged)
+├── prompts.py                       # Prompt templates (rewritten in English)
 ├── formatter.py                     # Telegram HTML formatting (remove personal_finance refs)
 ├── sender.py                        # Telegram sender (unchanged)
 ├── state.py                         # State management (unchanged)
@@ -75,8 +75,8 @@ from typing import Protocol
 @dataclass
 class Task:
     name: str
-    priority: str   # "high" | "normal" | "low"
-    due: str | None # "2026-06-19" or None
+    priority: str = "normal"  # "high" | "normal" | "low" — Notion returns "normal" always
+    due: str | None = None    # "2026-06-19" or None
 
 class TaskAdapter(Protocol):
     def get_tasks_due_today(self) -> list[Task]: ...
@@ -105,9 +105,17 @@ Returns `[]` for all methods. Used when `TASK_MANAGER=none`.
 ```python
 def load_adapter(task_manager: str) -> TaskAdapter:
     if task_manager == "clickup":
-        return ClickUpAdapter(token=os.environ["CLICKUP_TOKEN"], team_id=os.environ["CLICKUP_TEAM_ID"])
+        return ClickUpAdapter(
+            token=os.environ["CLICKUP_TOKEN"],
+            team_id=os.environ["CLICKUP_TEAM_ID"],
+        )
     if task_manager == "notion":
-        return NotionAdapter(...)
+        return NotionAdapter(
+            token=os.environ["NOTION_TOKEN"],
+            database_id=os.environ["NOTION_DATABASE_ID"],
+            done_property=os.environ.get("NOTION_DONE_PROPERTY", "Status"),
+            done_value=os.environ.get("NOTION_DONE_VALUE", "Done"),
+        )
     return NoneAdapter()
 ```
 
@@ -131,7 +139,7 @@ def read_focus(path: str) -> str:
 
 ## briefing.py — Key Changes
 
-1. `CLAUDE_PATH`: auto-detected via `shutil.which("claude")`, fallback `~/.local/bin/claude`
+1. `_claude_path() -> str`: `shutil.which("claude") or os.path.expanduser("~/.local/bin/claude")` — replaces hardcoded `CLAUDE_PATH` constant. Used by both `generate_briefing()` and `update_focus()`.
 2. `run_morning()`: replaces 3-file reader with `read_focus(os.environ["FOCUS_MD_PATH"])`
 3. All ClickUp direct imports replaced by `adapter = load_adapter(os.environ["TASK_MANAGER"])`
 4. `run_weekly()`: after sending Telegram message, calls `update_focus(adapter, today)` to regenerate focus.md
@@ -218,7 +226,7 @@ Evening briefing time Fri (default: 20:00):
 Weekly briefing time Fri (default: 20:05):
 ```
 
-### Block B — Focus interview
+### Block B — Focus interview (4 questions)
 
 4 questions via `input()`:
 
@@ -236,12 +244,12 @@ claude --print "You are creating a personal focus file. Write focus.md based on 
 
 Output written to `focus.md`.
 
-### Block B — Finalize
+### Block C — Finalize
 
 1. Write `config.env`
-2. Copy plist templates → `~/Library/LaunchAgents/` with username and absolute paths substituted
+2. Copy plist templates → `~/Library/LaunchAgents/` substituting `{{USERNAME}}`, `{{REPO_PATH}}`, `{{MORNING_TIME}}`, `{{EVENING_TIME}}`, `{{EVENING_FRI_TIME}}`, `{{WEEKLY_TIME}}`
 3. `launchctl load` each plist
-4. `send_telegram(...)` → "Briefing system ready. First morning briefing at 08:45."
+4. `send_telegram(token, chat_id, f"Briefing system ready. First morning briefing at {morning_time}.")` — uses the time entered in Block A
 
 ---
 
@@ -250,6 +258,18 @@ Output written to `focus.md`.
 Plist templates use `{{USERNAME}}` and `{{REPO_PATH}}` placeholders. Setup substitutes them with `getpass.getuser()` and `Path(__file__).parent.resolve()`.
 
 Label format: `com.{{USERNAME}}.morning-briefing` (not hardcoded to "artem").
+
+Each plist passes these `EnvironmentVariables` keys (sourced from config.env at substitution time):
+
+```
+HOME, PATH, TASK_MANAGER, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID,
+FOCUS_MD_PATH, TZ,
+CLICKUP_TOKEN, CLICKUP_TEAM_ID,           (only if TASK_MANAGER=clickup)
+NOTION_TOKEN, NOTION_DATABASE_ID,          (only if TASK_MANAGER=notion)
+NOTION_DONE_PROPERTY, NOTION_DONE_VALUE    (only if TASK_MANAGER=notion)
+```
+
+Unused keys are omitted from the plist (setup.py writes only relevant keys based on chosen task manager).
 
 ---
 
