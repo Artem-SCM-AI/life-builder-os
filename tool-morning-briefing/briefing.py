@@ -13,7 +13,8 @@ from clickup_client import (
     get_tasks_created_today,
     get_tasks_due_today,
 )
-from formatter import format_evening, format_morning, format_weekly
+from formatter import append_personal_finance, format_evening, format_morning, format_weekly
+from personal_finance_client import format_personal_finance_section
 from prompts import (
     SYSTEM_PROMPT,
     build_evening_prompt,
@@ -76,6 +77,13 @@ def run_morning(today: date, token: str, chat_id: str, dry_run: bool) -> None:
     save_state("morning", today, text)
 
     message = format_morning(text, today, due_today)
+
+    pf_creds = os.environ.get("GOOGLE_CREDENTIALS_PATH", "")
+    pf_sheet = os.environ.get("PERSONAL_FINANCE_SHEET_ID", "")
+    if pf_creds and pf_sheet:
+        pf_section, pf_urgent = format_personal_finance_section(pf_creds, pf_sheet)
+        message = append_personal_finance(message, pf_section, pf_urgent)
+
     if dry_run:
         print(message)
     else:

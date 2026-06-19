@@ -39,3 +39,14 @@ def format_weekly(claude_text: str, today: date, closed_count: int, created_coun
         f"✅ Закрито: {closed_count}   🆕 Відкрито: {created_count}   📈 Rate: {rate}%"
     )
     return f"{header}\n\n{_esc(claude_text)}\n\n{clickup}"
+
+
+_PF_SEP = "\n\n───────────\n\n"
+
+
+def append_personal_finance(message: str, pf_section: str, pf_urgent: bool) -> str:
+    if not pf_section:
+        return message
+    if pf_urgent:
+        return pf_section + _PF_SEP + message
+    return message + _PF_SEP + pf_section

@@ -1,5 +1,5 @@
 from datetime import date
-from formatter import format_morning, format_evening, format_weekly
+from formatter import format_morning, format_evening, format_weekly, append_personal_finance
 
 
 def test_format_morning_header_and_clickup():
@@ -40,3 +40,20 @@ def test_format_weekly_shows_rate_and_counts():
     assert "Rate: 56%" in result
     assert "Закрито: 23" in result
     assert "Відкрито: 18" in result
+
+
+_PF_SEP = "\n\n───────────\n\n"
+
+
+def test_append_pf_empty_section_returns_message_unchanged():
+    assert append_personal_finance("msg", "", False) == "msg"
+
+
+def test_append_pf_not_urgent_appends_at_bottom():
+    result = append_personal_finance("msg", "🏠 section", False)
+    assert result == f"msg{_PF_SEP}🏠 section"
+
+
+def test_append_pf_urgent_prepends_at_top():
+    result = append_personal_finance("msg", "🏠 section", True)
+    assert result == f"🏠 section{_PF_SEP}msg"
