@@ -1,2 +1,24 @@
 .superpowers/
 .DS_Store
+Thumbs.db
+
+# Secrets — never commit these
+.env
+.env.*
+*.env
+credentials.json
+secrets.json
+service-account.json
+token.json
+.mcp.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node
+node_modules/
+npm-debug.log*
