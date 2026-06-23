@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Лук'ян — City Training</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --blue:  #6CABDD;
+  --navy:  #1C2C5B;
+  --white: #FFFFFF;
+  --gold:  #F8D21E;
+  --orange:#FF6B00;
+  --dim:   rgba(255,255,255,0.45);
+}
+
+html, body {
+  height: 100%; width: 100%;
+  overflow: hidden;
+  background: var(--navy);
+  font-family: 'Arial Black', Arial, sans-serif;
+  color: var(--white);
+}
+
+/* ── SLIDE CONTAINER ── */
+#deck {
+  position: relative;
+  width: 100%; height: 100%;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 56px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+  background: linear-gradient(175deg, #1a3060 0%, #111d3e 100%);
+}
+.slide.active { opacity: 1; pointer-events: auto; }
+
+/* ── TOP BAR ── */
+.topbar {
+  flex-shrink: 0;
+  height: 5px;
+  background: var(--blue);
+}
+
+/* ── HEADER ── */
+.hdr {
+  flex-shrink: 0;
+  padding: 14px 20px 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.hdr-left { display:flex; flex-direction:column; gap:4px; }
+.badge {
+  display: inline-block;
+  background: var(--blue);
+  color: var(--navy);
+  font-size: 11px; font-weight: 900;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  width: fit-content;
+}
+.badge-gold { background: var(--gold); }
+.slide-title-text {
+  font-size: 26px; font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.slide-title-text .blue { color: var(--blue); }
+.timer-chip {
+  flex-shrink: 0;
+  background: rgba(108,171,221,.18);
+  border: 2px solid var(--blue);
+  border-radius: 12px;
+  padding: 8px 14px;
+  text-align: center;
+  min-width: 72px;
+}
+.timer-chip .t-num { font-size: 24px; font-weight:900; color: var(--blue); line-height:1; }
+.timer-chip .t-lbl { font-size: 10px; color: var(--dim); text-transform:uppercase; letter-spacing:.5px; }
+
+/* ── DIAGRAM AREA ── */
+.diagram {
+  flex-shrink: 0;
+  padding: 0 16px;
+  margin-bottom: 4px;
+}
+.diagram svg { display:block; width:100%; }
+
+/* ── INSTRUCTIONS ── */
+.instructions {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(108,171,221,.12);
+}
+.row:last-child { border-bottom: none; }
+.rnum {
+  flex-shrink: 0;
+  background: var(--blue);
+  color: var(--navy);
+  font-size: 13px; font-weight:900;
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items:center; justify-content:center;
+  line-height: 1;
+  text-align: center;
+}
+.rnum.gold { background: var(--gold); }
+.rtxt { font-size: 16px; font-weight:700; line-height:1.35; padding-top:6px; }
+.rtxt small { display:block; font-size:12px; font-weight:400; color:var(--dim); margin-top:2px; }
+
+/* note bar */
+.note-bar {
+  flex-shrink: 0;
+  margin: 6px 20px 0;
+  background: rgba(108,171,221,.1);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+  padding: 7px 12px;
+  font-size: 13px; color: var(--dim);
+  font-weight: 400; font-style: italic;
+}
+
+/* ── PROGRESS ── */
+#progress-bar {
+  position: fixed; bottom: 0; left:0; right:0;
+  height: 4px;
+  background: rgba(255,255,255,.08);
+  z-index: 99;
+}
+#progress-fill {
+  height:100%; background: var(--blue);
+  transition: width .3s;
+}
+#nav-hint {
+  position: fixed; bottom: 10px; left:50%;
+  transform: translateX(-50%);
+  font-size: 11px; color: rgba(255,255,255,.22);
+  letter-spacing: .8px; font-weight: normal;
+  z-index: 99; white-space: nowrap;
+}
+#slide-counter {
+  position: fixed; top: 10px; right: 14px;
+  font-size: 12px; color: rgba(255,255,255,.3);
+  font-weight: normal; z-index: 99;
+}
+
+/* ── SPECIAL: title slide ── */
+.title-slide {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  padding-bottom: 56px;
+}
+.title-slide .big-name {
+  font-size: 32px; font-weight:900;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin: 14px 0 4px;
+}
+.title-slide .big-name .blue { color: var(--blue); }
+.title-slide .plan-label {
+  font-size: 13px; color: var(--dim);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.title-slide .minutes {
+  font-size: 72px; font-weight:900; color: var(--blue);
+  line-height:1;
+}
+.title-slide .min-lbl {
+  font-size: 15px; color:var(--dim); letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:20px;
+}
+.title-slide .tagline {
+  font-size: 14px; color: rgba(255,255,255,.55);
+  font-style: italic; font-weight:400;
+  max-width: 280px;
+}
+
+/* ── SPECIAL: challenge slide ── */
+.challenge-slide {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 0 24px 56px;
+}
+.record-box {
+  background: rgba(108,171,221,.1);
+  border: 2px solid var(--blue);
+  border-radius: 16px;
+  padding: 14px 32px;
+  margin: 4px 0;
+}
+.record-box .r-val { font-size:64px; font-weight:900; color:var(--blue); line-height:1; }
+.record-box .r-lbl { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:.8px; }
+.target-num { font-size:88px; font-weight:900; color:var(--gold); line-height:1; }
+.reward-txt {
+  font-size: 15px; line-height:1.55; font-weight:700;
+  margin-top:6px;
+}
+.reward-txt .gold { color: var(--gold); }
+.city-quote { font-size:12px; color:var(--dim); font-style:italic; margin-top:8px; }
+
+/* ── SPECIAL: done slide ── */
+.done-slide {
+  justify-content: center; align-items: center;
+  text-align: center; padding: 0 24px 56px;
+}
+.done-slide .done-emoji { font-size:64px; margin-bottom:12px; }
+.done-slide .done-title { font-size:36px; font-weight:900; text-transform:uppercase; line-height:1.1; }
+.done-slide .done-title .blue { color:var(--blue); }
+.done-slide .done-sub { font-size:14px; color:var(--dim); margin-top:10px; }
+
+/* city eagle watermark */
+.eagle {
+  position:absolute; bottom:60px; right:16px;
+  opacity:.05; font-size:80px; pointer-events:none;
+  user-select:none;
+}
+
+/* ── PLAYER CARDS ── */
+.player-trio {
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  gap:14px;
+  width:100%;
+  padding:0 20px;
+  margin:10px 0 6px;
+}
+.player-card {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
+.player-card.hero { transform:scale(1.12); transform-origin:bottom center; }
+.player-photo-wrap {
+  position:relative;
+  width:86px; height:86px;
+  border-radius:50%;
+  overflow:hidden;
+  border:2.5px solid rgba(108,171,221,.35);
+  background:rgba(108,171,221,.08);
+}
+.player-card.hero .player-photo-wrap {
+  border-color:var(--gold);
+  border-width:3px;
+}
+.player-photo-wrap img {
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:center top;
+  display:block;
+}
+.jersey-badge {
+  position:absolute;
+  bottom:2px; right:2px;
+  background:var(--blue);
+  color:var(--navy);
+  font-size:12px; font-weight:900;
+  width:24px; height:24px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid #111d3e;
+}
+.player-card.hero .jersey-badge {
+  background:var(--gold);
+  width:28px; height:28px;
+  font-size:14px;
+}
+.player-card-name {
+  font-size:10px; font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:rgba(255,255,255,.7);
+}
+.player-card.hero .player-card-name {
+  color:var(--gold);
+  font-size:12px;
+}
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 1 — TITLE
+════════════════════════════════════════════════ -->
+<div class="slide title-slide active">
+  <div class="topbar"></div>
+  <div class="badge" style="margin-bottom:6px">⚽ Manchester City Style</div>
+  <div class="big-name">ЛУК'ЯН<br><span class="blue">ХМІЛЕВСЬКИЙ</span></div>
+  <div class="plan-label">Персональний тренувальний план</div>
+
+  <div class="player-trio">
+    <div class="player-card">
+      <div class="player-photo-wrap">
+        <img src="haaland.jpg" alt="">
+        <div class="jersey-badge">9</div>
+      </div>
+      <div class="player-card-name">Холланд</div>
+    </div>
+    <div class="player-card hero">
+      <div class="player-photo-wrap">
+        <img src="Лук.jpg" alt="">
+        <div class="jersey-badge">10</div>
+      </div>
+      <div class="player-card-name">Лук'ян</div>
+    </div>
+    <div class="player-card">
+      <div class="player-photo-wrap">
+        <img src="doku.jpg" alt="">
+        <div class="jersey-badge">11</div>
+      </div>
+      <div class="player-card-name">Доку</div>
+    </div>
+  </div>
+
+  <div class="minutes">60</div>
+  <div class="min-lbl">хвилин</div>
+  <div class="tagline">"Сьогодні ти тренуєшся як гравець Манчестер Сіті"</div>
+  <div class="eagle">🦅</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 2 — РОЗМИНКА
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 1</div>
+      <div class="slide-title-text">Розминка<br><span class="blue">Розігрій тіло!</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">8</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <!-- diagram: running track -->
+  <div class="diagram">
+    <svg viewBox="0 0 320 90" height="90">
+      <!-- oval track -->
+      <ellipse cx="160" cy="50" rx="130" ry="32" fill="none" stroke="rgba(108,171,221,.25)" stroke-width="2" stroke-dasharray="8 4"/>
+      <!-- runner icon -->
+      <circle cx="50" cy="50" r="8" fill="var(--blue)" opacity=".9"/>
+      <line x1="50" y1="58" x2="50" y2="72" stroke="var(--blue)" stroke-width="2.5"/>
+      <line x1="50" y1="62" x2="43" y2="70" stroke="var(--blue)" stroke-width="2"/>
+      <line x1="50" y1="62" x2="57" y2="70" stroke="var(--blue)" stroke-width="2"/>
+      <line x1="50" y1="58" x2="44" y2="52" stroke="var(--blue)" stroke-width="2"/>
+      <line x1="50" y1="58" x2="56" y2="52" stroke="var(--blue)" stroke-width="2"/>
+      <!-- arrow on track -->
+      <path d="M 270,50 A 130,32 0 0,0 160,18" fill="none" stroke="var(--blue)" stroke-width="2" marker-end="url(#arr)"/>
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/>
+        </marker>
+      </defs>
+      <text x="160" y="52" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="bold">3 кола</text>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row">
+      <div class="rnum">3хв</div>
+      <div class="rtxt">Легкий біг по колу<small>не поспішай, просто розігрійся</small></div>
+    </div>
+    <div class="row">
+      <div class="rnum">20м</div>
+      <div class="rtxt">Підняття колін вперед<small>коліно — вище пояса!</small></div>
+    </div>
+    <div class="row">
+      <div class="rnum">20м</div>
+      <div class="rtxt">Захльостування п'яток назад<small>п'ятка торкається сідниці</small></div>
+    </div>
+    <div class="row">
+      <div class="rnum">20м</div>
+      <div class="rtxt">Приставний крок ліворуч, потім праворуч</div>
+    </div>
+    <div class="row">
+      <div class="rnum">30с</div>
+      <div class="rtxt">Обертання плечей — вперед і назад</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 3 — РОЗТЯЖКА
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 2</div>
+      <div class="slide-title-text">Розтяжка<br><span class="blue">35 сек кожна</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">7</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 80" height="80">
+      <!-- 5 position icons left to right -->
+      <!-- 1: quad stretch (standing, foot to butt) -->
+      <g transform="translate(20,10)">
+        <circle cx="20" cy="8" r="7" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="20" y1="15" x2="20" y2="38" stroke="var(--blue)" stroke-width="2"/>
+        <path d="M20,28 Q30,32 28,45 Q26,50 20,48" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="20" y1="25" x2="14" y2="35" stroke="var(--blue)" stroke-width="2"/>
+        <text x="20" y="68" text-anchor="middle" fill="var(--dim)" font-size="9">квадри-&shy;цепс</text>
+      </g>
+      <!-- 2: hamstring (sitting, reach forward) -->
+      <g transform="translate(70,10)">
+        <circle cx="20" cy="8" r="7" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="20" y1="15" x2="20" y2="32" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="20" y1="32" x2="50" y2="32" stroke="var(--blue)" stroke-width="2"/><!-- leg -->
+        <path d="M20,22 Q30,18 46,30" fill="none" stroke="var(--blue)" stroke-width="2"/><!-- arm reaching -->
+        <text x="20" y="68" text-anchor="middle" fill="var(--dim)" font-size="9">сухо-&shy;жилля</text>
+      </g>
+      <!-- 3: butterfly (sitting) -->
+      <g transform="translate(128,10)">
+        <circle cx="20" cy="8" r="7" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="20" y1="15" x2="20" y2="32" stroke="var(--blue)" stroke-width="2"/>
+        <path d="M20,32 Q6,40 8,48" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <path d="M20,32 Q34,40 32,48" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="8" y1="48" x2="32" y2="48" stroke="var(--blue)" stroke-width="2"/>
+        <text x="20" y="68" text-anchor="middle" fill="var(--dim)" font-size="9">метелик</text>
+      </g>
+      <!-- 4: calf (wall) -->
+      <g transform="translate(186,10)">
+        <rect x="36" y="5" width="5" height="48" fill="rgba(108,171,221,.3)" rx="2"/>
+        <circle cx="18" cy="8" r="7" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="18" y1="15" x2="18" y2="32" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="18" y1="32" x2="10" y2="48" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="18" y1="32" x2="26" y2="40" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="18" y1="22" x2="34" y2="22" stroke="var(--blue)" stroke-width="2"/>
+        <text x="20" y="68" text-anchor="middle" fill="var(--dim)" font-size="9">гомілка</text>
+      </g>
+      <!-- 5: lower back (lying, knees to chest) -->
+      <g transform="translate(248,14)">
+        <circle cx="18" cy="5" r="6" fill="none" stroke="var(--blue)" stroke-width="2"/>
+        <line x1="18" y1="11" x2="0" y2="22" stroke="var(--blue)" stroke-width="2"/><!-- body -->
+        <path d="M6,20 Q0,30 6,36 Q10,40 16,38" fill="none" stroke="var(--blue)" stroke-width="2"/><!-- legs to chest -->
+        <line x1="12" y1="22" x2="6" y2="30" stroke="var(--blue)" stroke-width="2"/><!-- arm -->
+        <text x="18" y="66" text-anchor="middle" fill="var(--dim)" font-size="9">поперек</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">35с</div><div class="rtxt">Квадрицепс — стоячи, тягни ступню до сідниці</div></div>
+    <div class="row"><div class="rnum">35с</div><div class="rtxt">Підколінне сухожилля — нахил до прямої ноги</div></div>
+    <div class="row"><div class="rnum">35с</div><div class="rtxt">Метелик — сидячи, підошви разом, натискай на коліна</div></div>
+    <div class="row"><div class="rnum">35с</div><div class="rtxt">Гомілка — впирайся руками у стіну, нога відведена назад</div></div>
+    <div class="row"><div class="rnum">35с</div><div class="rtxt">Поперек — лежачи, притисни коліна до грудей</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 4 — НАБИВАННЯ
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 3</div>
+      <div class="slide-title-text">Набивання<br><span class="blue">Відчуй м'яч!</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">10</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 85" height="85">
+      <!-- Ball -->
+      <circle cx="80" cy="30" r="22" fill="none" stroke="var(--blue)" stroke-width="2"/>
+      <circle cx="80" cy="30" r="4" fill="var(--blue)"/>
+      <!-- pentagons hint -->
+      <path d="M80,10 L90,17 L87,29 L73,29 L70,17 Z" fill="rgba(108,171,221,.25)" stroke="var(--blue)" stroke-width="1"/>
+      <!-- Foot under ball -->
+      <ellipse cx="80" cy="62" rx="20" ry="9" fill="rgba(108,171,221,.2)" stroke="var(--blue)" stroke-width="2"/>
+      <rect x="66" y="61" width="28" height="8" rx="4" fill="rgba(108,171,221,.3)" stroke="var(--blue)" stroke-width="1.5"/>
+      <!-- arrow up/down -->
+      <path d="M108,30 L108,18" stroke="var(--blue)" stroke-width="2.5" marker-end="url(#arru)"/>
+      <path d="M108,36 L108,50" stroke="var(--blue)" stroke-width="2.5" marker-end="url(#arrd)"/>
+      <defs>
+        <marker id="arru" markerWidth="6" markerHeight="6" refX="3" refY="6" orient="auto"><path d="M0,6 L3,0 L6,6 Z" fill="var(--blue)"/></marker>
+        <marker id="arrd" markerWidth="6" markerHeight="6" refX="3" refY="0" orient="auto"><path d="M0,0 L3,6 L6,0 Z" fill="var(--blue)"/></marker>
+      </defs>
+      <!-- Round labels -->
+      <rect x="155" y="5" width="150" height="72" rx="10" fill="rgba(108,171,221,.07)" stroke="rgba(108,171,221,.2)" stroke-width="1"/>
+      <text x="230" y="22" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="bold">Раунди</text>
+      <text x="170" y="38" fill="var(--dim)" font-size="11">1 ·</text><text x="183" y="38" fill="white" font-size="11" font-weight="700">×5 права / ліва</text>
+      <text x="170" y="52" fill="var(--dim)" font-size="11">2 ·</text><text x="183" y="52" fill="white" font-size="11" font-weight="700">×20 П→Л→П</text>
+      <text x="170" y="66" fill="var(--dim)" font-size="11">3 ·</text><text x="183" y="66" fill="white" font-size="11" font-weight="700">×20 Н→К→Н</text>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">×5</div><div class="rtxt">Права нога підряд, потім ліва нога підряд<small>розминка — відчуй м'яч</small></div></div>
+    <div class="row"><div class="rnum">×20</div><div class="rtxt">Права → Ліва → Права (3 торкання, повтори)<small>відпочинок: 30 сек</small></div></div>
+    <div class="row"><div class="rnum">×20</div><div class="rtxt">Ліва → Права → Ліва (3 торкання, повтори)<small>відпочинок: 30 сек</small></div></div>
+    <div class="row"><div class="rnum">×20</div><div class="rtxt">Нога → Коліно → Нога (3 торкання, повтори)<small>відпочинок: 30 сек</small></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 5 — РЕКОРД-ВИКЛИК
+════════════════════════════════════════════════ -->
+<div class="slide challenge-slide">
+  <div class="topbar"></div>
+  <div class="badge badge-gold">🏆 Рекорд-виклик</div>
+  <div style="font-size:13px;color:var(--dim);letter-spacing:1px;margin-top:8px">ТВІЙ РЕКОРД ЗАРАЗ</div>
+  <div class="record-box">
+    <div class="r-val">20</div>
+    <div class="r-lbl">набивань підряд</div>
+  </div>
+  <div style="font-size:13px;color:var(--dim);letter-spacing:1px">ТВОЯ ЦІЛЬ</div>
+  <div class="target-num">100</div>
+  <div class="reward-txt">
+    Наб'єш <span class="gold">100 разів підряд</span><br>
+    4 тижні поспіль —<br>
+    <span class="gold">Артем замовляє Макдональдс у вихідний! 🍔🍟</span>
+  </div>
+  <div class="city-quote">City boys don't quit.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 6 — ВІДТИСКАННЯ
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 4</div>
+      <div class="slide-title-text">Відтискання<br><span class="blue">Сильні руки!</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">5</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 85" height="85">
+      <!-- Ground line -->
+      <line x1="20" y1="72" x2="300" y2="72" stroke="rgba(255,255,255,.15)" stroke-width="1.5"/>
+      <!-- Pushup figure (side view, DOWN position) -->
+      <circle cx="60" cy="24" r="10" fill="none" stroke="var(--blue)" stroke-width="2"/>
+      <!-- body diagonal -->
+      <line x1="60" y1="34" x2="170" y2="62" stroke="var(--blue)" stroke-width="3" stroke-linecap="round"/>
+      <!-- arms bent -->
+      <line x1="80" y1="42" x2="80" y2="62" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="130" y1="56" x2="130" y2="72" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- feet -->
+      <circle cx="170" cy="67" r="5" fill="var(--blue)"/>
+      <!-- arrow up -->
+      <path d="M200,62 L200,28" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arru2)"/>
+      <defs>
+        <marker id="arru2" markerWidth="6" markerHeight="6" refX="3" refY="6" orient="auto"><path d="M0,6 L3,0 L6,6 Z" fill="var(--blue)"/></marker>
+      </defs>
+      <!-- UP figure (lighter) -->
+      <circle cx="240" cy="16" r="10" fill="none" stroke="rgba(108,171,221,.45)" stroke-width="2"/>
+      <line x1="240" y1="26" x2="300" y2="42" stroke="rgba(108,171,221,.45)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="255" y1="32" x2="255" y2="62" stroke="rgba(108,171,221,.45)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="290" y1="42" x2="290" y2="62" stroke="rgba(108,171,221,.45)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="300" cy="47" r="5" fill="rgba(108,171,221,.45)"/>
+      <!-- label -->
+      <text x="160" y="84" text-anchor="middle" fill="var(--dim)" font-size="11">Тіло — пряма лінія! Не прогинай поперек.</text>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">×10</div><div class="rtxt">Підхід 1 — звичайна ширина рук<small>відпочинок 45 сек</small></div></div>
+    <div class="row"><div class="rnum">×10</div><div class="rtxt">Підхід 2 — звичайна ширина рук<small>відпочинок 45 сек</small></div></div>
+    <div class="row"><div class="rnum">×8</div><div class="rtxt">Підхід 3 — руки ширше плечей<small>відпочинок 45 сек</small></div></div>
+    <div class="row"><div class="rnum gold">MAX</div><div class="rtxt">Підхід 4 — скільки зможеш!</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 7 — ДРИБЛІНГ
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 5</div>
+      <div class="slide-title-text">Дриблінг<br><span class="blue">Змійка між конусами</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">5</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <!-- cone slalom diagram -->
+  <div class="diagram">
+    <svg viewBox="0 0 320 110" height="110">
+      <!-- Ground -->
+      <line x1="10" y1="95" x2="310" y2="95" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+      <!-- Cones: 6 cones alternating top/bottom -->
+      <!-- C1 top -->
+      <polygon points="42,50 32,75 52,75" fill="var(--orange)" opacity=".9"/>
+      <line x1="32" y1="75" x2="52" y2="75" stroke="rgba(255,100,0,.5)" stroke-width="1"/>
+      <!-- C2 bottom -->
+      <polygon points="102,78 92,95 112,95" fill="var(--orange)" opacity=".9"/>
+      <!-- C3 top -->
+      <polygon points="162,50 152,75 172,75" fill="var(--orange)" opacity=".9"/>
+      <!-- C4 bottom -->
+      <polygon points="222,78 212,95 232,95" fill="var(--orange)" opacity=".9"/>
+      <!-- C5 top -->
+      <polygon points="282,50 272,75 292,75" fill="var(--orange)" opacity=".9"/>
+
+      <!-- Slalom path -->
+      <path d="M 20,85 Q 42,42 102,82 Q 162,42 222,82 Q 282,42 310,65"
+            fill="none" stroke="var(--blue)" stroke-width="3"
+            stroke-dasharray="8 4" opacity=".9"/>
+      <!-- Arrow at end -->
+      <polygon points="310,58 318,65 310,72" fill="var(--blue)"/>
+
+      <!-- Distance label -->
+      <text x="72" y="45" text-anchor="middle" fill="var(--dim)" font-size="11">←2м→</text>
+      <text x="132" y="45" text-anchor="middle" fill="var(--dim)" font-size="11">←2м→</text>
+      <text x="192" y="45" text-anchor="middle" fill="var(--dim)" font-size="11">←2м→</text>
+      <text x="252" y="45" text-anchor="middle" fill="var(--dim)" font-size="11">←2м→</text>
+
+      <!-- Leg icons under path -->
+      <text x="18" y="110" fill="var(--blue)" font-size="10">▶ Права</text>
+      <text x="118" y="110" fill="rgba(108,171,221,.6)" font-size="10">▶ Ліва</text>
+      <text x="218" y="110" fill="rgba(108,171,221,.35)" font-size="10">▶ Зовнішня</text>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">6</div><div class="rtxt">Розстав 6 конусів на відстані 2 м один від одного</div></div>
+    <div class="row"><div class="rnum">→</div><div class="rtxt">Серія 1 — веди тільки правою ногою</div></div>
+    <div class="row"><div class="rnum">→</div><div class="rtxt">Серія 2 — веди тільки лівою ногою</div></div>
+    <div class="row"><div class="rnum">→</div><div class="rtxt">Серія 3 — зовнішньою стороною обох ніг</div></div>
+  </div>
+  <div class="note-bar">3 серії туди-назад. Відпочинок між серіями: 30 сек</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 8 — ПАС У СТІНУ
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 6</div>
+      <div class="slide-title-text">Пас у стіну<br><span class="blue">1 торкання!</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">5</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 100" height="100">
+      <!-- Wall -->
+      <rect x="270" y="5" width="12" height="88" fill="rgba(108,171,221,.25)" rx="3"/>
+      <text x="276" y="100" text-anchor="middle" fill="var(--dim)" font-size="10">стіна</text>
+      <!-- Player stick figure -->
+      <circle cx="50" cy="22" r="11" fill="none" stroke="var(--blue)" stroke-width="2"/>
+      <line x1="50" y1="33" x2="50" y2="62" stroke="var(--blue)" stroke-width="2.5"/>
+      <line x1="50" y1="45" x2="38" y2="55" stroke="var(--blue)" stroke-width="2"/>
+      <line x1="50" y1="45" x2="66" y2="52" stroke="var(--blue)" stroke-width="2"/>
+      <line x1="50" y1="62" x2="42" y2="78" stroke="var(--blue)" stroke-width="2"/>
+      <line x1="50" y1="62" x2="58" y2="78" stroke="var(--blue)" stroke-width="2"/>
+      <!-- Ball going to wall -->
+      <circle cx="180" cy="68" r="9" fill="none" stroke="var(--gold)" stroke-width="2"/>
+      <!-- Arrow: player → wall -->
+      <path d="M 66,60 L 262,60" fill="none" stroke="var(--blue)" stroke-width="2.5" marker-end="url(#arrw)"/>
+      <!-- Arrow: wall → player -->
+      <path d="M 262,72 L 66,72" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arry)"/>
+      <defs>
+        <marker id="arrw" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker>
+        <marker id="arry" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--gold)"/></marker>
+      </defs>
+      <!-- Distance label -->
+      <text x="160" y="50" text-anchor="middle" fill="var(--dim)" font-size="12" font-weight="bold">← 8–10 м →</text>
+      <!-- foot labels -->
+      <text x="50" y="94" text-anchor="middle" fill="var(--dim)" font-size="10">гравець</text>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">8м</div><div class="rtxt">Відстань від стіни — відміряй кроками<small>приблизно 8–10 великих кроків</small></div></div>
+    <div class="row"><div class="rnum">П→Л</div><div class="rtxt">Пас правою → прийом лівою ногою<small>прийом — одне торкання!</small></div></div>
+    <div class="row"><div class="rnum">Л→П</div><div class="rtxt">Пас лівою → прийом правою ногою</div></div>
+    <div class="row"><div class="rnum">💡</div><div class="rtxt">Мета: м'яч одразу під контроль, без зупинок</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 9 — ВЕДЕННЯ + СТОП
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 7</div>
+      <div class="slide-title-text">Ведення<br><span class="blue">+ різка зупинка!</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">5</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 90" height="90">
+      <!-- Dribble path (zigzag free) -->
+      <path d="M30,50 Q80,20 130,50 Q180,80 230,50 Q260,35 290,50"
+            fill="none" stroke="rgba(108,171,221,.3)" stroke-width="2" stroke-dasharray="6 4"/>
+      <!-- Ball positions along path -->
+      <circle cx="30" cy="50" r="8" fill="none" stroke="var(--blue)" stroke-width="2"/>
+      <circle cx="130" cy="50" r="8" fill="none" stroke="var(--blue)" stroke-width="2"/>
+      <circle cx="230" cy="50" r="8" fill="none" stroke="var(--blue)" stroke-width="2"/>
+      <!-- STOP signal -->
+      <circle cx="290" cy="50" r="16" fill="none" stroke="#FF4444" stroke-width="2.5"/>
+      <text x="290" y="55" text-anchor="middle" fill="#FF4444" font-size="13" font-weight="bold">СТОП</text>
+      <!-- Whistle icon -->
+      <text x="20" y="85" fill="var(--dim)" font-size="11">📣 сигнал → підошва на м'яч!</text>
+      <!-- Foot sole icon -->
+      <ellipse cx="285" cy="78" rx="14" ry="6" fill="rgba(108,171,221,.2)" stroke="var(--blue)" stroke-width="1.5"/>
+      <text x="285" y="82" text-anchor="middle" fill="var(--blue)" font-size="8">підошва</text>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">▶</div><div class="rtxt">Веди м'яч вільно по всьому полю</div></div>
+    <div class="row"><div class="rnum">✋</div><div class="rtxt">По сигналу (хлопок) — різко зупини м'яч підошвою<small>м'яч не має відкотитись далеко!</small></div></div>
+    <div class="row"><div class="rnum">⇄</div><div class="rtxt">Чергуй: одна зупинка правою, наступна лівою</div></div>
+    <div class="row"><div class="rnum">💡</div><div class="rtxt">Намагайся не дивитись на м'яч під час ведення</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 10 — СТАРТИ
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 8 · Швидкість</div>
+      <div class="slide-title-text">Старти<br><span class="blue">Вибух з місця!</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">4</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 95" height="95">
+      <!-- Ground -->
+      <line x1="10" y1="80" x2="310" y2="80" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+      <!-- Start line -->
+      <line x1="30" y1="35" x2="30" y2="80" stroke="var(--blue)" stroke-width="2.5"/>
+      <text x="30" y="28" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="bold">СТАРТ</text>
+      <!-- Finish line -->
+      <line x1="270" y1="35" x2="270" y2="80" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="5 3"/>
+      <text x="270" y="28" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="bold">15 м</text>
+      <!-- Sprint arrow -->
+      <path d="M40,58 L260,58" fill="none" stroke="var(--blue)" stroke-width="3" marker-end="url(#arrsp)"/>
+      <defs>
+        <marker id="arrsp" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--blue)"/></marker>
+      </defs>
+      <!-- 3 start positions icons -->
+      <text x="30" y="94" text-anchor="middle" fill="var(--dim)" font-size="9">стоячи</text>
+      <text x="100" y="94" text-anchor="middle" fill="var(--dim)" font-size="9">з коліна</text>
+      <text x="170" y="94" text-anchor="middle" fill="var(--dim)" font-size="9">лежачи</text>
+      <!-- icons -->
+      <!-- standing -->
+      <circle cx="30" cy="70" r="4" fill="var(--blue)"/>
+      <!-- kneeling -->
+      <circle cx="100" cy="68" r="4" fill="rgba(108,171,221,.6)"/>
+      <line x1="100" y1="72" x2="96" y2="78" stroke="rgba(108,171,221,.6)" stroke-width="1.5"/>
+      <!-- lying -->
+      <line x1="162" y1="76" x2="178" y2="76" stroke="rgba(108,171,221,.4)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="160" cy="73" r="3" fill="rgba(108,171,221,.4)"/>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">6×</div><div class="rtxt">6 спринтів по 15 метрів<small>відпочинок між стартами: 30 сек</small></div></div>
+    <div class="row"><div class="rnum">1</div><div class="rtxt">Старт стоячи — 2 повторення</div></div>
+    <div class="row"><div class="rnum">2</div><div class="rtxt">Старт з коліна — 2 повторення</div></div>
+    <div class="row"><div class="rnum">3</div><div class="rtxt">Старт лежачи на животі — 2 повторення</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 11 — ЧОВНИКОВИЙ БІГ
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 9 · Швидкість</div>
+      <div class="slide-title-text">Човниковий<br><span class="blue">Торкай лінію!</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">4</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 100" height="100">
+      <!-- Ground -->
+      <line x1="10" y1="78" x2="310" y2="78" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+      <!-- 3 lines: start, 5m, 10m, 15m -->
+      <line x1="30" y1="30" x2="30" y2="78" stroke="var(--blue)" stroke-width="2.5"/>
+      <line x1="120" y1="45" x2="120" y2="78" stroke="rgba(108,171,221,.5)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="210" y1="40" x2="210" y2="78" stroke="rgba(108,171,221,.5)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="290" y1="35" x2="290" y2="78" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 3"/>
+      <!-- Labels -->
+      <text x="30" y="24" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="bold">СТАРТ</text>
+      <text x="120" y="40" text-anchor="middle" fill="var(--dim)" font-size="11">5м</text>
+      <text x="210" y="35" text-anchor="middle" fill="var(--dim)" font-size="11">10м</text>
+      <text x="290" y="29" text-anchor="middle" fill="var(--gold)" font-size="11">15м</text>
+      <!-- Arrows: go right, come back, go right further, come back... -->
+      <path d="M35,55 L115,55" fill="none" stroke="var(--blue)" stroke-width="2" marker-end="url(#a1)"/>
+      <path d="M115,63 L35,63" fill="none" stroke="rgba(108,171,221,.5)" stroke-width="2" marker-end="url(#a2)"/>
+      <path d="M35,70 L205,70" fill="none" stroke="var(--blue)" stroke-width="2" marker-end="url(#a1)"/>
+      <!-- Touch icon -->
+      <text x="120" y="98" text-anchor="middle" fill="var(--dim)" font-size="10">торкнись рукою!</text>
+      <text x="210" y="98" text-anchor="middle" fill="var(--dim)" font-size="10">торкнись рукою!</text>
+      <defs>
+        <marker id="a1" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker>
+        <marker id="a2" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="rgba(108,171,221,.5)"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">схема</div><div class="rtxt">Старт → 5м → назад → 10м → назад → 15м<small>на кожному розвороті торкнись землі рукою</small></div></div>
+    <div class="row"><div class="rnum">4×</div><div class="rtxt">4 повторення<small>відпочинок між повтореннями: 45 сек</small></div></div>
+    <div class="row"><div class="rnum">💡</div><div class="rtxt">Низький центр ваги на розворотах — швидше!</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 12 — ШВИДКІСТЬ + М'ЯЧ
+════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="topbar"></div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="badge">Блок 10 · Швидкість</div>
+      <div class="slide-title-text">Швидкість<br><span class="blue">+ м'яч</span></div>
+    </div>
+    <div class="timer-chip"><div class="t-num">4</div><div class="t-lbl">хвилин</div></div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 320 90" height="90">
+      <line x1="10" y1="78" x2="310" y2="78" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+      <!-- Phase 1: sprint -->
+      <line x1="20" y1="30" x2="20" y2="78" stroke="var(--blue)" stroke-width="2.5"/>
+      <line x1="130" y1="30" x2="130" y2="78" stroke="rgba(108,171,221,.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="20" y="24" text-anchor="middle" fill="var(--blue)" font-size="11" font-weight="bold">СТАРТ</text>
+      <text x="75" y="50" text-anchor="middle" fill="var(--dim)" font-size="11">← 10м →</text>
+      <path d="M25,62 L125,62" fill="none" stroke="var(--blue)" stroke-width="2.5" marker-end="url(#asp)"/>
+      <defs><marker id="asp" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker></defs>
+      <!-- Ball at midpoint -->
+      <circle cx="130" cy="55" r="12" fill="none" stroke="var(--gold)" stroke-width="2.5"/>
+      <circle cx="130" cy="55" r="4" fill="var(--gold)"/>
+      <text x="130" y="88" text-anchor="middle" fill="var(--gold)" font-size="10">прийняти м'яч</text>
+      <!-- Phase 2: dribble -->
+      <path d="M142,62 Q185,42 225,62" fill="none" stroke="rgba(108,171,221,.7)" stroke-width="2.5" stroke-dasharray="6 3" marker-end="url(#asp2)"/>
+      <defs><marker id="asp2" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="rgba(108,171,221,.7)"/></marker></defs>
+      <text x="183" y="48" text-anchor="middle" fill="var(--dim)" font-size="11">← 10м →</text>
+      <line x1="230" y1="30" x2="230" y2="78" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="240" y="55" fill="var(--dim)" font-size="10">фініш</text>
+    </svg>
+  </div>
+
+  <div class="instructions">
+    <div class="row"><div class="rnum">10м</div><div class="rtxt">Спринт 10 метрів без м'яча — на максимальній швидкості</div></div>
+    <div class="row"><div class="rnum">⚽</div><div class="rtxt">Прийняти м'яч (хтось закидає) або підібрати з землі</div></div>
+    <div class="row"><div class="rnum">10м</div><div class="rtxt">Ведення м'яча ще 10 метрів з максимальною швидкістю</div></div>
+    <div class="row"><div class="rnum">5×</div><div class="rtxt">5 повторень<small>відпочинок: 30 сек</small></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 13 — ЗАМИНКА / DONE
+════════════════════════════════════════════════ -->
+<div class="slide done-slide">
+  <div class="topbar"></div>
+  <div class="badge badge-gold" style="margin-bottom:16px">✅ Фінал · 3 хв</div>
+  <div class="done-emoji">💙</div>
+  <div class="done-title">МОЛОДЕЦЬ,<br><span class="blue">CITY BOY!</span></div>
+  <div style="margin-top:20px;width:100%;max-width:300px">
+    <div class="row"><div class="rnum">2хв</div><div class="rtxt">Легка ходьба — просто походи по полю</div></div>
+    <div class="row"><div class="rnum">×5</div><div class="rtxt">Глибокий видих — руки вгору, видих — руки вниз</div></div>
+    <div class="row"><div class="rnum">35с</div><div class="rtxt">Розтяжка квадрицепса + гомілки</div></div>
+  </div>
+  <div class="done-sub">Запиши скільки набивань зробив сьогодні 👇</div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- ── FIXED UI ── -->
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div id="nav-hint">торкнись → наступна вправа</div>
+<div id="slide-counter">1 / 13</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const fill   = document.getElementById('progress-fill');
+const hint   = document.getElementById('nav-hint');
+const ctr    = document.getElementById('slide-counter');
+const N      = slides.length;
+let cur = 0;
+
+function show(n) {
+  slides[cur].classList.remove('active');
+  cur = (n + N) % N;
+  slides[cur].classList.add('active');
+  fill.style.width = ((cur + 1) / N * 100) + '%';
+  ctr.textContent  = (cur + 1) + ' / ' + N;
+  hint.textContent = cur === N - 1 ? '← назад до початку' : 'торкнись → наступна вправа';
+}
+
+/* tap left / right half */
+document.addEventListener('click', e => {
+  show(cur + (e.clientX > window.innerWidth / 2 ? 1 : -1));
+});
+
+/* swipe */
+let sx = 0, sy = 0;
+document.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - sx;
+  const dy = e.changedTouches[0].clientY - sy;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 35) show(cur + (dx < 0 ? 1 : -1));
+}, {passive:true});
+
+/* keyboard */
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') show(cur + 1);
+  if (e.key === 'ArrowLeft')  show(cur - 1);
+});
+
+show(0);
+</script>
+</body>
+</html>
