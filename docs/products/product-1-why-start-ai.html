@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Pain Audit — Life Builder OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- GA4 placeholder — replace G-XXXXXXXXXX with real ID before deploy -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #0d0d0d;
+  --bg2:     #141414;
+  --bg3:     #1c1c1c;
+  --border:  #2a2a2a;
+  --accent:  #ff6d3b;
+  --accent-hover: #ff7d4f;
+  --accent2: #7c3aed; /* Reserved — secondary CTA, used in later screens */
+  --text:    #ffffff;
+  --text2:   #a0a0a0;
+  --text3:   #888888;
+  --green:   #22c55e;
+  --red:     #ef4444;  /* Reserved — hate tag, error state */
+  --blue:    #3b82f6;  /* Reserved — routine tag, info state */
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  background: rgba(13,13,13,.95);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+.topbar-brand { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+.topbar-sep { color: var(--border); font-size: 13px; }
+.topbar-product { font-size: 13px; color: var(--text3); }
+
+/* SCREENS */
+.screen { display: none; max-width: 560px; margin: 0 auto; padding: 40px 24px 80px; }
+.screen.active { display: block; }
+
+/* TYPOGRAPHY */
+.brand-label {
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.brand-label::before { content: ''; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+
+h1 { font-size: 30px; font-weight: 900; line-height: 1.15; letter-spacing: -.6px; margin-bottom: 14px; }
+h1 .hl { background: linear-gradient(90deg, var(--accent), #ff9a6c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.subtitle { font-size: 15px; color: var(--text2); line-height: 1.65; margin-bottom: 24px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--accent); color: #fff;
+  padding: 12px 24px; border-radius: 8px; border: none;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: background .15s, transform .15s, box-shadow .15s;
+  width: 100%;
+}
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(255,109,59,.3); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border); color: var(--text2);
+  width: auto; padding: 10px 18px; font-size: 14px;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: transparent; box-shadow: none; transform: none; }
+.btn-row { display: flex; gap: 10px; margin-top: 24px; }
+.btn-row .btn { flex: 1; }
+
+/* CARDS */
+.card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+/* PROGRESS BAR */
+.progress-wrap { margin-bottom: 28px; }
+.progress-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.progress-label { font-size: 13px; color: var(--text3); }
+.progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
+.progress-track { height: 3px; background: var(--bg3); border-radius: 3px; }
+.progress-fill { height: 3px; background: var(--accent); border-radius: 3px; box-shadow: 0 0 8px rgba(255,109,59,.5); /* #ff6d3b */ transition: width .3s ease; }
+
+/* STAT ROW */
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 22px 0; }
+.stat-block {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 12px; text-align: center; position: relative; overflow: hidden;
+}
+.stat-block::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.stat-num { font-size: 28px; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 6px; letter-spacing: -1px; }
+.stat-lbl { font-size: 12px; color: var(--text3); line-height: 1.4; }
+
+/* PROMISE BOX */
+.promise-box {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; margin: 18px 0; position: relative; overflow: hidden;
+}
+.promise-box::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2));
+}
+.promise-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
+.promise-box ul { list-style: none; }
+.promise-box li { font-size: 14px; color: var(--text2); padding: 4px 0; display: flex; gap: 8px; align-items: flex-start; }
+.promise-box li::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+/* AUTHOR NOTE */
+.author-note {
+  border: 1px solid var(--border); border-radius: 8px; padding: 13px 16px;
+  font-size: 13px; color: var(--text3); line-height: 1.55; font-style: italic; margin-top: 14px;
+}
+
+/* SEARCH */
+.search-input {
+  width: 100%; padding: 12px 16px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-size: 14px; font-family: inherit;
+  margin-bottom: 16px; outline: none; transition: border-color .15s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text3); }
+
+/* SEARCH RESULTS */
+.search-results {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+  max-height: 200px; overflow-y: auto; margin-bottom: 16px; display: none;
+}
+.search-result-item {
+  padding: 10px 16px; font-size: 14px; color: var(--text2);
+  cursor: pointer; border-bottom: 1px solid var(--border); transition: background .1s;
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: rgba(255,109,59,.06); color: var(--text); }
+
+/* CATEGORY CARDS */
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.cat-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 20px 16px; cursor: pointer; transition: border-color .15s, background .15s;
+  position: relative; overflow: hidden;
+}
+.cat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  transition: background .15s;
+}
+.cat-card.selected { border-color: var(--accent); background: rgba(255,109,59,.06); }
+.cat-card.selected::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.cat-card:hover:not(.selected) { border-color: #444; }
+.cat-emoji { font-size: 28px; margin-bottom: 10px; display: block; }
+.cat-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.cat-sub { font-size: 13px; color: var(--text2); line-height: 1.4; }
+
+/* LIMIT HINT */
+.limit-hint {
+  background: #1a150a; border: 1px solid #3a2510; border-radius: 7px;
+  padding: 9px 13px; font-size: 13px; color: #e09060; margin-bottom: 14px;
+}
+
+/* PAIN ITEMS */
+.pain-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.pain-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; background: var(--bg2); transition: border-color .15s, opacity .15s;
+}
+.pain-item:hover:not(.dimmed) { border-color: #444; }
+.pain-item.selected { border-color: var(--accent); background: rgba(255,109,59,.06); }
+.pain-item.dimmed { opacity: .35; cursor: not-allowed; }
+.checkbox {
+  width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--border);
+  border-radius: 4px; margin-top: 2px; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #fff; transition: all .15s; flex-shrink: 0;
+}
+.pain-item.selected .checkbox { background: var(--accent); border-color: var(--accent); }
+.pain-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.pain-desc { font-size: 13px; color: var(--text2); line-height: 1.4; }
+
+/* ADD OWN */
+.add-own-wrap { margin-top: 4px; }
+.add-own-btn {
+  width: 100%; border: 1px dashed var(--border); border-radius: 8px; padding: 12px 14px;
+  font-size: 14px; color: var(--text3); cursor: pointer; text-align: center;
+  background: transparent; font-family: inherit; transition: border-color .15s, color .15s;
+}
+.add-own-btn:hover { border-color: var(--accent); color: var(--accent); }
+.add-own-input {
+  width: 100%; padding: 12px 16px; background: var(--bg2);
+  border: 1px solid var(--accent); border-radius: 8px; color: var(--text);
+  font-size: 14px; font-family: inherit; outline: none; margin-top: 8px;
+  display: none;
+}
+
+/* TAGGER */
+.tagger-why {
+  background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.25);
+  border-radius: 8px; padding: 12px 15px; font-size: 14px; color: #c4b5fd;
+  line-height: 1.5; margin: 14px 0 20px;
+}
+.tagger-list { display: flex; flex-direction: column; gap: 10px; }
+.tagger-row {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+}
+.tagger-pain-name { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.tag-options { display: flex; gap: 8px; }
+.tag-btn {
+  flex: 1; padding: 9px 10px; border-radius: 6px; border: 1px solid var(--border);
+  font-size: 13px; font-weight: 500; color: var(--text3); cursor: pointer;
+  text-align: center; background: var(--bg3); transition: all .15s; font-family: inherit;
+}
+.tag-btn.active-routine { border-color: var(--blue); background: rgba(59,130,246,.1); color: #93c5fd; }
+.tag-btn.active-hate    { border-color: var(--red);  background: rgba(239,68,68,.1);  color: #fca5a5; }
+
+/* TIME CALCULATOR BLOCK */
+.time-calc {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 22px 24px; margin-bottom: 20px; position: relative; overflow: hidden;
+}
+.time-calc::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.time-calc-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.time-block { flex: 1; text-align: center; }
+.time-block-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.time-block-num { font-size: 36px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+.time-block-num.before { color: var(--text2); }
+.time-block-num.after { color: var(--green); }
+.time-arrow { font-size: 24px; color: var(--text3); }
+.time-savings { font-size: 15px; color: var(--text2); line-height: 1.5; }
+.time-savings strong { color: var(--accent); }
+
+/* RESULTS TABLE */
+.results-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 14px 0; }
+.results-table th {
+  text-align: left; font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .06em; padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.results-table td { padding: 13px 10px; border-bottom: 1px solid #1a1a1a; vertical-align: middle; }
+.tag-pill {
+  display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 8px;
+  border-radius: 8px; min-width: 80px; text-align: center;
+}
+.tag-pill.routine { background: rgba(59,130,246,.1); color: #93c5fd; border: 1px solid rgba(59,130,246,.2); }
+.tag-pill.hate    { background: rgba(239,68,68,.1);  color: #fca5a5; border: 1px solid rgba(239,68,68,.2); }
+.time-saved-badge {
+  display: inline-flex; align-items: center; background: rgba(34,197,94,.1);
+  color: var(--green); font-size: 13px; font-weight: 700; padding: 4px 10px;
+  border-radius: 20px; border: 1px solid rgba(34,197,94,.2);
+}
+.expand-btn {
+  background: none; border: none; color: var(--text3); font-size: 18px;
+  cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: color .15s;
+}
+.expand-btn:hover { color: var(--accent); }
+
+/* EXPAND CARD */
+.expand-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; margin: 4px 0 8px; position: relative; overflow: hidden;
+}
+.expand-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.expand-section { margin-bottom: 16px; }
+.expand-section:last-child { margin-bottom: 0; }
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin-bottom: 8px; }
+.framing-text {
+  font-size: 14px; color: var(--text2); line-height: 1.55;
+  background: rgba(255,109,59,.06); border-radius: 7px; padding: 12px 14px;
+  border-left: 2px solid var(--accent);
+}
+.framing-text.hate-style { background: rgba(239,68,68,.06); border-color: var(--red); }
+.roadmap-steps { display: flex; flex-direction: column; gap: 8px; }
+.roadmap-step { font-size: 14px; color: var(--text2); display: flex; gap: 8px; align-items: flex-start; }
+.roadmap-step::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+.roadmap-result {
+  margin-top: 10px; background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+  border-radius: 7px; padding: 10px 13px; font-size: 14px; color: var(--green); font-weight: 600;
+  display: flex; gap: 6px; align-items: center;
+}
+.roadmap-result::before { content: '✓'; }
+.paths-heading { font-size: 15px; font-weight: 800; letter-spacing: -.2px; margin-bottom: 4px; }
+.paths-sub     { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+.path-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 10px; overflow: hidden; position: relative;
+}
+.path-card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px; border-bottom: 1px solid var(--border);
+}
+.path-icon { font-size: 20px; flex-shrink: 0; }
+.path-header-text { flex: 1; }
+.path-num   { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); margin-bottom: 2px; }
+.path-title { font-size: 14px; font-weight: 700; }
+.path-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 9px;
+  border-radius: 20px; white-space: nowrap;
+}
+.badge-free   { background: rgba(34,197,94,.1);  color: var(--green); border: 1px solid rgba(34,197,94,.2); }
+.badge-paid   { background: rgba(124,58,237,.1); color: #a78bfa;      border: 1px solid rgba(124,58,237,.2); }
+.badge-custom { background: rgba(255,109,59,.1); color: var(--accent); border: 1px solid rgba(255,109,59,.2); }
+.path-body { padding: 13px 16px; }
+.path-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+.coming-soon {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 7px;
+  padding: 9px 13px; font-size: 12px; color: var(--text3); text-align: center;
+}
+.coming-soon a { color: var(--accent); text-decoration: none; }
+.coming-soon a:hover { text-decoration: underline; }
+.btn-dfy {
+  display: block; text-align: center; background: var(--accent); color: #fff;
+  padding: 11px 20px; border-radius: 8px; font-weight: 700; font-size: 14px;
+  font-family: inherit; text-decoration: none; border: none; cursor: pointer; width: 100%;
+  transition: background .15s, transform .15s, box-shadow .15s;
+}
+.btn-dfy:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,109,59,.3); }
+
+/* SHARE CTA */
+.share-block {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; margin: 20px 0 16px; text-align: center;
+}
+.share-block p { font-size: 14px; color: var(--text2); margin-bottom: 14px; font-style: italic; }
+.share-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.share-btn {
+  padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--bg3); color: var(--text2); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all .15s;
+  text-decoration: none; display: inline-block;
+}
+.share-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* EMAIL FORM */
+.email-section {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px; position: relative; overflow: hidden;
+}
+.email-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.email-section h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.email-section .email-sub { font-size: 14px; color: var(--text2); margin-bottom: 20px; line-height: 1.5; }
+.form-field { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; display: block; }
+.form-input, .form-textarea, .form-select {
+  width: 100%; padding: 11px 14px; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 7px; color: var(--text);
+  font-size: 14px; font-family: inherit; outline: none; transition: border-color .15s;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--accent); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-select { appearance: none; cursor: pointer; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.optional-label { font-size: 11px; color: var(--text3); margin-left: 4px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.skip-link { display: block; text-align: center; font-size: 13px; color: var(--text3); margin-top: 12px; cursor: pointer; text-decoration: underline; }
+.skip-link:hover { color: var(--text2); }
+
+/* SUCCESS STATE */
+.submit-success {
+  text-align: center; padding: 10px 0;
+}
+.submit-success .success-icon { font-size: 40px; margin-bottom: 12px; }
+.submit-success h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.submit-success p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.submit-error { font-size: 13px; color: var(--red); margin-top: 8px; }
+
+/* BOOK A CALL */
+.book-call {
+  margin-top: 20px; text-align: center; padding: 20px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--bg2);
+}
+.book-call p { font-size: 14px; color: var(--text2); margin-bottom: 14px; }
+.book-call a {
+  display: inline-block; padding: 11px 24px; border: 1px solid var(--accent);
+  border-radius: 8px; color: var(--accent); font-size: 14px; font-weight: 700;
+  text-decoration: none; transition: background .15s;
+}
+.book-call a:hover { background: rgba(255,109,59,.1); }
+
+/* MOBILE — 768px breakpoint */
+@media (max-width: 768px) {
+  .screen { padding: 28px 16px 60px; }
+
+  h1 { font-size: 24px; }
+  .subtitle { font-size: 14px; }
+
+  .stat-row { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .stat-num { font-size: 22px; }
+  .stat-lbl { font-size: 11px; }
+
+  .cat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cat-card { padding: 14px 12px; }
+  .cat-emoji { font-size: 22px; }
+
+  .results-table { display: block; overflow-x: auto; }
+
+  .form-row { grid-template-columns: 1fr; }
+
+  .share-btns { flex-direction: column; align-items: stretch; }
+  .share-btn { text-align: center; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 21px; letter-spacing: -.3px; }
+  .btn { font-size: 14px; padding: 11px 20px; }
+  .stat-row { gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-brand">Life Builder OS</span>
+  <span class="topbar-sep">·</span>
+  <span class="topbar-product">AI Pain Audit</span>
+</div>
+
+<!-- Screen containers — JS shows/hides these -->
+<main id="quiz-root">
+  <div id="screen-1" class="screen active"></div>
+  <div id="screen-2" class="screen"></div>
+  <div id="screen-3" class="screen"></div>
+  <div id="screen-4" class="screen"></div>
+  <div id="screen-5" class="screen"></div>
+</main>
+
+<script>
+// === QUIZ STATE ===
+const quizState = {
+  category: null,       // 'job-search' | 'experts' | 'sales-procurement' | 'freelancer'
+  profession: null,     // string, e.g. "Florist" — null if only category selected
+  pains: [],            // array of pain IDs, max 5
+  customPain: null,     // string from "+ add own" or null
+  tags: {},             // { painId: 'routine' | 'hate' }
+  buyClicks: [],        // [{ pain: string, price: number }]
+  utmParams: {}         // { utm_source, utm_medium, utm_campaign }
+};
+
+// Capture UTM params on load
+(function captureUTM() {
+  const params = new URLSearchParams(window.location.search);
+  ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k => {
+    if (params.get(k)) quizState.utmParams[k] = params.get(k);
+  });
+})();
+
+// === PAIN DATA ===
+// 4 categories × 8 pains. Fields: id, title, description, hoursWasted,
+// hoursWithAI, routine, hate, steps[], result, diy, buyName, buyPrice, buyUrl
+const PAIN_DATA = {
+
+  'job-search': [
+    {
+      id: 'js-job-boards',
+      title: 'Manually checking job boards every day',
+      description: 'LinkedIn, Indeed, Glassdoor — same 20 listings, checked one tab at a time.',
+      hoursWasted: 2, hoursWithAI: 0.1,
+      routine: 'Open LinkedIn. Scroll. Same roles as yesterday. Open Indeed. Same roles. Close. Repeat tomorrow. It\'s not searching — it\'s checking, and checking, and checking again.',
+      hate: 'You know the good roles go fast. But checking five platforms manually every morning feels like a part-time job you don\'t get paid for.',
+      steps: [
+        'Set up a job search agent (Claude Code, free) that scans LinkedIn, Indeed, and ZipRecruiter every morning',
+        'Agent scores each role 1–10 against your profile: title, seniority, location, salary, industry',
+        'You wake up to a ranked list in Notion — only new roles, no duplicates, no manual searching'
+      ],
+      result: '2 hrs/day of manual checking → 5 minutes reviewing your ranked list',
+      diy: 'Claude Code (free) + Notion (free) — ~30 min setup, then runs automatically every morning',
+      buyName: 'Job Search Agent', buyPrice: 9, buyUrl: '#'
+    },
+    {
+      id: 'js-cover-letter',
+      title: 'Writing a cover letter for every application',
+      description: 'Each role is different. Each letter takes 30–60 minutes. Most get no response.',
+      hoursWasted: 3, hoursWithAI: 0.3,
+      routine: 'Open the job description. Stare at the blank page. Write something. Rewrite it. Wonder if it even gets read. It takes an hour for a role that might not reply.',
+      hate: 'You know cover letters matter. But writing a fresh one every time — knowing most go unread — is demoralizing.',
+      steps: [
+        'Paste the job description + your resume into Claude — it writes a targeted cover letter in 2 minutes',
+        'Claude adapts tone for each company: startup vs. corporate, technical vs. creative',
+        'You edit the final paragraph to make it personal — everything else is done'
+      ],
+      result: '45–60 min per letter → 5–10 min (edit and personal touch only)',
+      diy: 'Claude free tier or Pro ($20/mo) — works immediately, no setup',
+      buyName: 'Cover Letter Template Pack', buyPrice: 9, buyUrl: '#'
+    },
+    {
+      id: 'js-tracking',
+      title: 'Tracking applications in your head or a messy spreadsheet',
+      description: 'Which resume did you send? Did you follow up? When?',
+      hoursWasted: 1.5, hoursWithAI: 0.1,
+      routine: 'You applied to 20 roles. Some got calls. Most didn\'t. You\'re not sure which resume went to which company, or whether you followed up on the ones that went quiet.',
+      hate: 'You applied to that role three weeks ago and have no idea what happened to it. Tracking 20+ open applications is exhausting on top of everything else.',
+      steps: [
+        'Set up a Notion pipeline: company, role, status, application date, resume version, follow-up date',
+        'Agent auto-fills new entries every morning after the job search runs',
+        'You see the full pipeline at a glance — what needs follow-up today, what\'s active, what\'s closed'
+      ],
+      result: 'Mental overhead of 20+ applications → one clean pipeline, 30 seconds to review',
+      diy: 'Notion (free) + template — 1 hr one-time setup',
+      buyName: 'Job Search Pipeline Template', buyPrice: 9, buyUrl: '#'
+    },
+    {
+      id: 'js-company-research',
+      title: 'Researching companies before interviews',
+      description: 'Every interview requires 1–2 hours of prep just to understand where you\'re going.',
+      hoursWasted: 2, hoursWithAI: 0.3,
+      routine: 'Interview tomorrow. Open their website. Read the About page. Check LinkedIn. Google Glassdoor. Look at recent news. Write a few notes. It\'s 90 minutes of reading before you can think about your answers.',
+      hate: 'You go in knowing the basics but never feel fully prepared. There\'s always something you missed.',
+      steps: [
+        'Paste the company name and job description into Claude — ask for a structured research brief',
+        'In 3 minutes: mission, recent news, culture signals, likely interview questions, what to ask them',
+        'Add your own notes on top — the research is done, you focus on preparation'
+      ],
+      result: '90 min of research → 15 min reviewing a ready brief',
+      diy: 'Claude free tier + Perplexity (free) — works immediately',
+      buyName: 'Interview Research Prompt Pack', buyPrice: 9, buyUrl: '#'
+    },
+    {
+      id: 'js-follow-up',
+      title: 'Writing follow-up emails after interviews',
+      description: 'You know you should send one. Writing something that doesn\'t sound generic takes 30–45 min.',
+      hoursWasted: 1, hoursWithAI: 0.1,
+      routine: 'The interview ended well. Now write a follow-up. Open a blank doc. You don\'t want to sound desperate. You don\'t want to sound cold. Thirty minutes later you have three paragraphs that feel wrong.',
+      hate: 'The follow-up is the one email that actually matters after the interview — and it\'s the hardest to write because the stakes feel real.',
+      steps: [
+        'Right after the interview: paste your notes into Claude with the job description',
+        'Claude writes a follow-up: specific, warm, references something from the actual conversation',
+        'You edit one sentence to make it yours — done in 5 minutes while the interview is still fresh'
+      ],
+      result: '30–45 min of painful drafting → 5 min review and send',
+      diy: 'Claude free tier — works immediately, no setup',
+      buyName: 'Follow-Up Email Templates', buyPrice: 9, buyUrl: '#'
+    },
+    {
+      id: 'js-interview-prep',
+      title: 'Preparing for interviews (answering likely questions)',
+      description: 'Every interview needs prep. Most people wing it or spend 3 hours on generic tips.',
+      hoursWasted: 3, hoursWithAI: 0.5,
+      routine: 'Interview in two days. You look up "most common interview questions." Read 40 generic answers. None fit your actual experience. You try to memorize something. Walk in uncertain.',
+      hate: 'You know your experience well. Getting it into confident, coherent answers for a stranger in 45 minutes is a different skill — and you never feel ready enough.',
+      steps: [
+        'Paste the job description + your resume into Claude — ask for the 10 most likely questions for this specific role',
+        'Claude generates tailored questions + STAR-format answer frameworks based on your actual background',
+        'Run a mock interview: you answer out loud, Claude gives feedback on clarity and relevance'
+      ],
+      result: '3 hrs of anxious prep → 45 min of targeted practice with real feedback',
+      diy: 'Claude Pro ($20/mo) — works immediately',
+      buyName: 'Interview Prep Prompt System', buyPrice: 9, buyUrl: '#'
+    },
+    {
+      id: 'js-resume',
+      title: 'Tailoring your resume for every role',
+      description: 'One base resume doesn\'t land interviews. Tailoring takes 45–60 min per application.',
+      hoursWasted: 2, hoursWithAI: 0.2,
+      routine: 'Open your resume. Open the job description. Start editing. Move bullets around. Add keywords. Wonder if the ATS will catch it. An hour before you even apply.',
+      hate: 'You\'ve rewritten the same experience ten different ways. Each version feels like the same document with words shuffled — and you still don\'t know if it works.',
+      steps: [
+        'Keep one master resume with everything — every role, achievement, and skill',
+        'Paste it + the job description into Claude: "Tailor this resume for this role, keep it honest"',
+        'Claude rearranges emphasis, adjusts language, highlights the most relevant points in 2 minutes'
+      ],
+      result: '45–60 min per tailored resume → 5–10 min review and adjust',
+      diy: 'Claude free tier — works immediately',
+      buyName: 'Resume Tailoring Prompt Pack', buyPrice: 9, buyUrl: '#'
+    },
+    {
+      id: 'js-linkedin',
+      title: 'LinkedIn outreach to recruiters',
+      description: 'Your profile isn\'t working hard enough. Reaching out manually is slow and uncomfortable.',
+      hoursWasted: 2, hoursWithAI: 0.3,
+      routine: 'You know you should reach out to recruiters. You open a profile. Stare at the message box. Write something. Delete it. Write it again. Send 3 messages in 45 minutes. Three days later — silence.',
+      hate: 'Reaching out to strangers on LinkedIn feels like cold-calling your own future. You don\'t know what to say, and the fear of sounding desperate is paralyzing.',
+      steps: [
+        'Paste your About section into Claude: "What\'s weak and what should change?" — fix in 15 min',
+        'For outreach: give Claude the recruiter\'s profile + the role you want — personalized message in 30 seconds',
+        'Build a 10-message batch in 15 minutes instead of one message in 30'
+      ],
+      result: '2 hrs of uncomfortable outreach → 20 min writing and sending 10 targeted messages',
+      diy: 'Claude free tier — works immediately',
+      buyName: 'LinkedIn Outreach Message Templates', buyPrice: 9, buyUrl: '#'
+    }
+  ],
+
+  'experts': [
+    {
+      id: 'exp-session-notes',
+      title: 'Session notes and documentation after appointments',
+      description: 'After every session: write what happened, what was decided, what\'s next.',
+      hoursWasted: 3, hoursWithAI: 0.2,
+      routine: 'Session ends. Open the notes doc. Write what you discussed, what emerged, what the next step is. 20–30 minutes per client, every day, after you\'re already mentally drained.',
+      hate: 'You became a therapist / doctor / lawyer to help people — not to spend a third of your day writing about helping people.',
+      steps: [
+        'Record a 2-minute audio memo right after the session (phone voice memos)',
+        'Transcribe with Otter.ai or Whisper (free) — spoken notes become text instantly',
+        'Paste into Claude: "Format this as session notes with key themes, decisions, and next steps"'
+      ],
+      result: '20–30 min of post-session writing → 5 min reviewing auto-generated notes',
+      diy: 'Otter.ai (free tier) + Claude (free tier) — works immediately',
+      buyName: 'Session Notes Automation', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'exp-client-reports',
+      title: 'Writing client-facing reports and progress summaries',
+      description: 'Progress reports, case summaries, briefs — each takes hours to draft from scratch.',
+      hoursWasted: 2, hoursWithAI: 0.2,
+      routine: 'Client asks for a progress summary. You open a blank doc and rebuild the last three months from memory, notes, and email threads. Two hours later you have something you\'re not proud of.',
+      hate: 'You know exactly what the client needs to hear. Getting it from your head onto paper in a professional format takes longer than it should every single time.',
+      steps: [
+        'Keep structured session notes (from pain 1) — they become source material for every report',
+        'Tell Claude: "Write a progress report for this client type covering these sessions — focus on outcomes"',
+        'You review, add nuance, and send — your expertise shapes it, AI does the drafting'
+      ],
+      result: '2 hrs of report writing → 20 min review and polish',
+      diy: 'Claude Pro ($20/mo) — works immediately once you have structured notes',
+      buyName: 'Client Report Template Pack', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'exp-faq',
+      title: 'Answering the same client questions over and over',
+      description: '"How long does this take?" "What should I bring?" "How do I prepare?" — every day.',
+      hoursWasted: 3, hoursWithAI: 0.3,
+      routine: 'Same questions. Same answers. Different people. You\'ve written "the first session typically lasts..." fifty times this year. You still write it fresh each time because you want to seem personal.',
+      hate: 'You want every client to feel heard. But copy-pasting the same response — or rewriting it every time — both feel wrong.',
+      steps: [
+        'Build a personal FAQ doc: your 15 most common questions and your best answers',
+        'Set up a Telegram bot or Instagram auto-reply that handles these 24/7',
+        'Uncommon questions get flagged to you — routine ones never reach your inbox'
+      ],
+      result: '45 min/day on DMs and emails → 5 min reviewing only the unusual questions',
+      diy: 'ManyChat ($15/mo) or Telegram bot (free) — 3–4 hrs initial setup',
+      buyName: 'FAQ Bot Setup', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'exp-invoicing',
+      title: 'Invoices and payment reminders',
+      description: 'Create invoice, send, wait, follow up, remind again. Every month, every client.',
+      hoursWasted: 1, hoursWithAI: 0.1,
+      routine: 'Session done. Write the invoice. Email it. Three days — nothing. Write a polite reminder. Wait. Write a firmer one. It\'s a negotiation you didn\'t sign up for.',
+      hate: 'Asking a person you just helped for money feels uncomfortable. Doing it twice is worse. Every client, every month.',
+      steps: [
+        'Set up Invoice Ninja or Wave (both free) — invoice auto-generates from a template',
+        'Zapier (free tier): payment reminder goes out automatically at day 3 and day 7',
+        'Client pays → automatic receipt. You never touch it.'
+      ],
+      result: '3–5 hrs/month chasing payments → 10 min reviewing who paid',
+      diy: 'Invoice Ninja (free) + Zapier free tier — 2–3 hrs one-time setup',
+      buyName: 'Payment Autopilot Setup', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'exp-scheduling',
+      title: 'Scheduling and booking management',
+      description: '"When are you free?" — and the 5-message thread to find a time.',
+      hoursWasted: 1.5, hoursWithAI: 0.1,
+      routine: 'Client wants to book. You ask for availability. They send times. Two don\'t work. You send alternatives. One works. You create the event. You send confirmation. That\'s 6–8 messages for a 50-minute session.',
+      hate: 'You\'re a professional with expertise that took years to build. Spending 15 minutes per booking on logistics is beneath what you should be doing with your time.',
+      steps: [
+        'Set up Calendly (free) with your availability, session types, and intake questions',
+        'Client gets a link — they book, pay if required, receive auto-confirmation and reminders',
+        'You get one notification: booked, client name, session type. Done.'
+      ],
+      result: '6–8 message booking threads → zero — clients book themselves',
+      diy: 'Calendly free plan — 30 min one-time setup',
+      buyName: 'Booking Automation Setup', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'exp-session-prep',
+      title: 'Preparing context before each session',
+      description: 'Each client needs review: what did we discuss last time? What was left open?',
+      hoursWasted: 2, hoursWithAI: 0.5,
+      routine: 'Session in 10 minutes. Open last session\'s notes. Scan. Try to remember where things stood. Add context from before. You\'re still catching up when the client walks in.',
+      hate: 'You don\'t want to ask "so where were we?" — it breaks trust. But remembering the full arc of 20 active clients is humanly impossible.',
+      steps: [
+        'Keep structured notes after every session (see pain 1)',
+        'Before each session: ask Claude to summarize the last 3 sessions and flag unresolved threads',
+        'You walk in with a 5-bullet brief — context loaded, attention on the person, not the paperwork'
+      ],
+      result: '15–20 min of pre-session scrambling → 3 min reading a clean brief',
+      diy: 'Claude free tier + your existing notes — works immediately',
+      buyName: 'Client Context System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'exp-proposals',
+      title: 'Writing service proposals',
+      description: 'Every prospect gets a custom proposal. Each takes 1–2 hours to write.',
+      hoursWasted: 2, hoursWithAI: 0.3,
+      routine: 'Discovery call ends. Now write the proposal. Describe your approach, pricing, process, why you\'re the right fit. You do this from scratch every time because every client feels different.',
+      hate: 'You\'re an expert at what you do — not at writing about what you do. The proposal never captures it the way you explained it on the call.',
+      steps: [
+        'Right after the discovery call: paste your notes into Claude and say "write a proposal for this client"',
+        'Claude drafts: problem statement, your approach, what\'s included, investment, next step',
+        'You add personal language and send within the hour — while the conversation is still warm'
+      ],
+      result: '1–2 hrs per proposal → 20 min review and personalize',
+      diy: 'Claude Pro ($20/mo) — works immediately after a 30-min template setup',
+      buyName: 'Proposal Template System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'exp-admin',
+      title: 'Administrative reporting and compliance documentation',
+      description: 'Logs, hours, outcomes, regulatory requirements — the paperwork that never ends.',
+      hoursWasted: 2, hoursWithAI: 0.1,
+      routine: 'End of week: fill out the logs. Count sessions. Write summaries for the insurance board, licensing body, or your own records. Not complex — just slow and draining.',
+      hate: 'Admin exists so you don\'t lose your license or miss a billing cycle. It doesn\'t make you better at your work. You just have to do it.',
+      steps: [
+        'Structured session notes become source material — admin is extraction, not creation',
+        'Ask Claude: "From these session notes, generate a weekly summary in [required format]"',
+        'What took 90 minutes becomes 10 minutes of reviewing and signing off'
+      ],
+      result: '90 min/week of admin → 10 min reviewing and approving',
+      diy: 'Claude free tier + your session notes — works once notes are structured',
+      buyName: 'Admin Reporting Template Pack', buyPrice: 47, buyUrl: '#'
+    }
+  ],
+
+  'sales-procurement': [
+    {
+      id: 'sp-cold-outreach',
+      title: 'Writing cold outreach messages',
+      description: '50 messages a day, each slightly different. Best case: 5% reply.',
+      hoursWasted: 4, hoursWithAI: 0.5,
+      routine: 'Open the list. Open a blank message. Try to personalize. Write something. Delete it. Write something shorter. Send. Move to the next. An hour for 10 messages that probably won\'t get replies.',
+      hate: 'Cold messages feel like asking strangers for a favor. Writing them with energy when most will be ignored is draining.',
+      steps: [
+        'Give Claude your offer, your ICP, and one specific signal about the prospect — it generates 5 message variants',
+        'Test 2–3 versions to find what resonates with your specific audience',
+        'Personalization tokens (name, company, signal) fill automatically from your contact list'
+      ],
+      result: '4 hrs writing 50 messages → 45 min reviewing and sending 50 personalized messages',
+      diy: 'Claude free tier + your existing contact list — works immediately',
+      buyName: 'Cold Outreach Message Library', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sp-followup',
+      title: 'Following up with leads and suppliers',
+      description: 'Without a system, half your leads go cold. Manual follow-up is inconsistent.',
+      hoursWasted: 2, hoursWithAI: 0.3,
+      routine: 'You reached out last Thursday. You meant to follow up Monday. It\'s Wednesday and you still haven\'t — because you have 30 others to track, no system, and follow-up feels awkward.',
+      hate: 'Reaching out a second time feels like bothering someone. You never know if silence means "not interested" or "just busy."',
+      steps: [
+        'Add a "Follow-up date" column to your lead/vendor list — one column, no new software',
+        'Zapier sends you a Telegram reminder when the date hits — no relying on memory',
+        'AI drafts the follow-up based on stage: first touch, second touch, "last try" — you send in one click'
+      ],
+      result: 'Inconsistent follow-up → 100% of leads and vendors touched at the right time, 10 min/day',
+      diy: 'Google Sheets + Zapier (free tier) + Claude — 2–3 hrs setup',
+      buyName: 'Lead Follow-Up Automation', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sp-proposals',
+      title: 'Writing proposals and commercial offers',
+      description: 'Every proposal: 2–3 hours. And there\'s a real chance they won\'t even reply.',
+      hoursWasted: 3, hoursWithAI: 0.5,
+      routine: 'Discovery call ends. Now write the proposal. Research the client. Build the price table. Write the narrative. Format it. Proofread it. A half-day for something that may get a "not now."',
+      hate: 'The client wanted it today. You\'re already behind. And every proposal is different enough that you can\'t just copy the last one.',
+      steps: [
+        'Build a proposal template with sections: problem, solution, scope, investment, next step',
+        'After the discovery call: paste your notes into Claude — it fills 80% of the proposal in 3 minutes',
+        'You personalize the intro and investment section — structured and professional in under an hour'
+      ],
+      result: '2–3 hrs per proposal → 30–45 min (personalize and review only)',
+      diy: 'Claude Pro ($20/mo) + Canva (free) — 2–3 hrs to build the template once',
+      buyName: 'Proposal Template System', buyPrice: 97, buyUrl: '#'
+    },
+    {
+      id: 'sp-quote-comparison',
+      title: 'Comparing supplier quotes and tracking prices',
+      description: 'Three suppliers, different formats. Building a real comparison takes hours.',
+      hoursWasted: 2, hoursWithAI: 0.2,
+      routine: 'Three quotes arrive as PDFs in different formats. You build a spreadsheet. Copy numbers. Try to compare like-for-like. Something\'s always missing or named differently. Two hours, and you\'re still not sure it\'s right.',
+      hate: 'You\'re supposed to be sourcing, not building comparison tables. But no one else will do it — so you do it every time, for every RFQ.',
+      steps: [
+        'Paste all three quotes into Claude: "Extract line items, quantities, unit prices, and totals into a comparison table"',
+        'In 2 minutes: structured table with like-for-like comparison, price gaps flagged automatically',
+        'You focus on the vendor decision — AI did the extraction'
+      ],
+      result: '2 hrs of manual comparison → 15 min reviewing a ready table',
+      diy: 'Claude Pro ($20/mo) — works immediately for text-based PDFs',
+      buyName: 'Procurement Comparison Templates', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sp-research',
+      title: 'Researching prospects or suppliers before calls',
+      description: 'Every important call needs context: who are they, what do they care about, what are the risks?',
+      hoursWasted: 2, hoursWithAI: 0.3,
+      routine: 'Call in an hour. Open their website. LinkedIn. Google their news. Check reviews. Scan for red flags. You arrive with enough context to not embarrass yourself — but rarely enough to lead.',
+      hate: 'You\'re always one Google rabbit hole away from being late for the call you were supposed to be preparing for.',
+      steps: [
+        'Give Claude the company name, their LinkedIn URL, and the purpose of the call',
+        'In 5 minutes: overview, recent news, likely priorities, potential objections, questions to ask',
+        'You add your own context on top — the research is done'
+      ],
+      result: '60–90 min of research → 15 min reviewing a ready brief',
+      diy: 'Perplexity (free) + Claude free tier — works immediately',
+      buyName: 'Pre-Call Research Prompts', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sp-pipeline',
+      title: 'Managing your pipeline or vendor list manually',
+      description: 'Status updates, next steps, last contact — tracking it all eats time every week.',
+      hoursWasted: 2, hoursWithAI: 0.1,
+      routine: 'You have 30 active deals or 40 vendors. Each at a different stage. Some haven\'t been touched in two weeks. You open the CRM, realize everything is out of date, spend an hour just getting back to current.',
+      hate: 'You should be selling or sourcing — not doing CRM data entry. But if you don\'t enter it, you lose track.',
+      steps: [
+        'Use a Google Sheet or Notion as your pipeline: last contact, status, next step, due date',
+        'After every call: paste your notes into Claude — it extracts and formats the update in the right columns',
+        'Weekly: AI generates a pipeline status brief — who needs action, who\'s stalled, what\'s at risk'
+      ],
+      result: '2 hrs of weekly CRM maintenance → 20 min review and update',
+      diy: 'Notion (free) + Claude free tier — 2 hrs initial setup',
+      buyName: 'Pipeline Management Templates', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sp-reporting',
+      title: 'Reporting on sales or procurement results',
+      description: 'Same data, different format, every week or month.',
+      hoursWasted: 1.5, hoursWithAI: 0.1,
+      routine: 'End of week or month: pull data from the CRM, check emails, count deals or POs. Build the table. Write the summary. Send to the manager. Repeat.',
+      hate: 'The report exists so leadership can see what you\'re doing. You know what you\'re doing. Writing it down every week is the tax you pay for having a boss.',
+      steps: [
+        'Keep a running log in Google Sheets — one row per deal or PO, updated after each interaction',
+        'End of week: Claude reads the sheet and writes the summary in your standard format',
+        'You review and send — 10 minutes instead of 90'
+      ],
+      result: '90 min/week of reporting → 10 min review and send',
+      diy: 'Google Sheets + Claude free tier — works immediately once data is structured',
+      buyName: 'Sales/Procurement Report Templates', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'sp-negotiation',
+      title: 'Preparing for negotiations',
+      description: 'Every important negotiation needs prep. Most people walk in underprepared.',
+      hoursWasted: 2, hoursWithAI: 0.3,
+      routine: 'Meeting tomorrow. You review what you know about them. Try to anticipate their position. Write a few notes on your BATNA. Walk in hoping you covered the right things.',
+      hate: 'Prepare for everything — then get blindsided by something you didn\'t expect. Feels worse than not preparing at all.',
+      steps: [
+        'Give Claude the deal context: what you want, what they want, what\'s been discussed so far',
+        'Claude generates: their likely positions, your best counters, scenarios, what to concede, what to protect',
+        'You walk in with a negotiation playbook instead of a gut feeling'
+      ],
+      result: '2 hrs of prep → 20 min reviewing a structured negotiation brief',
+      diy: 'Claude Pro ($20/mo) — works immediately',
+      buyName: 'Negotiation Prep Templates', buyPrice: 47, buyUrl: '#'
+    }
+  ],
+
+  'freelancer': [
+    {
+      id: 'fl-client-comms',
+      title: 'Back-and-forth with clients (approvals, questions, revisions)',
+      description: 'Every project has 30–50 messages before anything gets done. Most are logistics.',
+      hoursWasted: 3, hoursWithAI: 0.3,
+      routine: 'Client asks a question. You answer. They have a follow-up. You answer again. They confirm with their team. You wait. They come back with a different question. It\'s not work — it\'s coordination.',
+      hate: 'By the time the back-and-forth is done, you\'ve spent more time on logistics than on the actual work. And you still have to do the actual work.',
+      steps: [
+        'Build a client onboarding doc: answers to the 15 most common questions, timeline, process, what you need',
+        'AI drafts responses to client messages in seconds — you review and send',
+        'For status updates: a template + Claude fills in project specifics — professional and fast'
+      ],
+      result: '3 hrs/week of client back-and-forth → 30 min reviewing and sending drafted replies',
+      diy: 'Notion (free) + Claude free tier — 2–3 hrs to build the templates',
+      buyName: 'Client Communication System', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'fl-proposals',
+      title: 'Writing proposals and quotes',
+      description: 'Every project starts with a proposal. Each takes 1–2 hours and might not convert.',
+      hoursWasted: 2, hoursWithAI: 0.2,
+      routine: 'Discovery call ends. Now write the proposal. Describe what you\'ll do, how long it takes, what it costs. You want it to sound good. You write it from scratch because each client feels different.',
+      hate: 'You\'ve written "my approach to this project" fifty times. You know what you do. Making the document feel worthy of what you\'re charging is a different problem every time.',
+      steps: [
+        'Build a master proposal template: problem, solution, deliverables, timeline, investment, next step',
+        'After the call: paste your notes into Claude — it fills the template for this specific client in 3 minutes',
+        'You edit the tone and add a personal paragraph — done in 20 minutes while the call is still fresh'
+      ],
+      result: '1–2 hrs per proposal → 20 min to review and personalize',
+      diy: 'Claude free tier + Google Docs template — 1–2 hrs one-time setup',
+      buyName: 'Freelance Proposal Templates', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'fl-invoicing',
+      title: 'Invoicing and chasing late payments',
+      description: 'Write, send, wait, remind, remind again. Every project, every client.',
+      hoursWasted: 1, hoursWithAI: 0.1,
+      routine: 'Project delivered. Send the invoice. Three days — nothing. Write a polite reminder. Another week. Write a less polite one. You know who it\'s from. You don\'t want to ruin the relationship.',
+      hate: 'Getting paid for work you already did should be the easy part. Chasing your own money is humiliating — especially from clients who seemed happy with the work.',
+      steps: [
+        'Invoice Ninja or Wave (both free) — invoice auto-generates from a template in 2 minutes',
+        'Automatic reminders go out at day 3, day 7, day 14 — no intervention from you',
+        'Client pays → auto-receipt sent, your tracker updates, you get a Telegram notification'
+      ],
+      result: '1–2 hrs/month chasing payments → 10 min reviewing who paid and who didn\'t',
+      diy: 'Invoice Ninja (free) + Zapier free tier — 2 hrs one-time setup',
+      buyName: 'Payment Autopilot Setup', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'fl-content',
+      title: 'Creating content to promote your work',
+      description: 'You finished a great project. You should post. Writing about yourself takes forever.',
+      hoursWasted: 3, hoursWithAI: 0.3,
+      routine: 'Great project done. You know you should post about it. Open Instagram. Stare at the blank caption. Write three versions. None feel right. You don\'t post. The project disappears.',
+      hate: 'You\'re good at your craft. Writing about being good at your craft is a completely different skill that you never signed up to learn.',
+      steps: [
+        'Right after each project: write 3 bullet points — what you did and what the client got',
+        'Give them to Claude: "Write an Instagram caption and a LinkedIn post from these notes, in my voice"',
+        'Review, adjust tone, post — 15 minutes instead of an hour, every time'
+      ],
+      result: 'Projects you never posted about → consistent presence without the blank-page paralysis',
+      diy: 'Claude free tier — works immediately',
+      buyName: 'Content Creation Prompt Pack', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'fl-scheduling',
+      title: 'Scheduling calls and managing your calendar',
+      description: '"When are you free?" — and the 5-message thread that follows.',
+      hoursWasted: 1.5, hoursWithAI: 0.1,
+      routine: 'Prospect wants to talk. You ask for their availability. They suggest times. You\'re busy then. You counter. They confirm. You create the event. You send an invite. 15 minutes of logistics for a 30-minute call.',
+      hate: 'You run your own business. Spending 15 minutes on scheduling admin per meeting is death by a thousand cuts.',
+      steps: [
+        'Calendly free plan — set your availability once, share a link with every inquiry',
+        'Client books themselves, gets auto-confirmation and reminder, pays upfront if required',
+        'You get one notification: who booked, when, what type of session. Nothing else to do.'
+      ],
+      result: 'Per-meeting scheduling threads → zero — everyone books themselves',
+      diy: 'Calendly (free) — 30 min setup',
+      buyName: 'Booking Automation Setup', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'fl-followup',
+      title: 'Following up after projects — reviews and repeat business',
+      description: 'Most repeat clients and referrals come from a follow-up you never sent.',
+      hoursWasted: 0.5, hoursWithAI: 0,
+      routine: 'Project delivered. Client happy. You move on. Two months later you wonder why you\'re not getting referrals. The relationship went cold because no one maintained it.',
+      hate: 'Asking for a review feels like asking for a favor right after you\'ve already done a favor. You know you should do it. You almost never do.',
+      steps: [
+        'Set up a simple post-project flow: 3 days after delivery, automatic message goes out via email',
+        'Message: thanks + ask for feedback + ask if they\'d like to continue + referral ask',
+        'AI personalizes the name and project details — you review the batch once a week'
+      ],
+      result: '0 follow-ups sent → 100% of clients touched 3 days post-delivery, automatically',
+      diy: 'Make.com (free tier) + Claude — 2–3 hrs one-time setup',
+      buyName: 'Client Retention Automation', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'fl-notes',
+      title: 'Keeping client and project notes organized',
+      description: 'What did they want? What did I promise? What\'s the login for their tool?',
+      hoursWasted: 1, hoursWithAI: 0.1,
+      routine: 'New message from a client you worked with two months ago. You need to find your notes. They\'re in an email. And a Slack thread. And a notebook. 20 minutes to piece together the context.',
+      hate: 'You know there was a folder. You think it was named something. You\'re pretty sure that\'s the final version. Managing your own files shouldn\'t take this long.',
+      steps: [
+        'One Notion workspace: one page per client — brief, deliverables, decisions, files, access',
+        'After every call: paste key points into Claude — it structures and adds them to the right section',
+        'Search anything across all client pages in 5 seconds'
+      ],
+      result: 'Scattered notes across 5 apps → one searchable system, 30 seconds to find anything',
+      diy: 'Notion (free) + template — 1–2 hrs setup',
+      buyName: 'Freelance Client CRM Template', buyPrice: 47, buyUrl: '#'
+    },
+    {
+      id: 'fl-faq',
+      title: 'Answering the same questions from every new client',
+      description: '"What\'s your process?" "How long?" "Do you do X?" — every inquiry, every time.',
+      hoursWasted: 2, hoursWithAI: 0.2,
+      routine: 'New lead in the inbox. They want to know your process, timeline, whether you\'ve done their industry, what\'s included. You write it all out. Again. Like the last 20 times.',
+      hate: 'You want every new client to feel like you wrote this specifically for them. But it\'s the same email, rewritten for the 40th time, and it shows.',
+      steps: [
+        'Write your master FAQ: every question you\'ve ever been asked + your best answer',
+        'Paste the client\'s inquiry into Claude: "Answer their specific questions using my FAQ, warm and direct tone"',
+        'Review and send — consistent, personal, done in 3 minutes'
+      ],
+      result: '20–30 min per new inquiry response → 3 min review and send',
+      diy: 'Claude free tier + your FAQ doc — works immediately',
+      buyName: 'Client Inquiry Response System', buyPrice: 47, buyUrl: '#'
+    }
+  ]
+};
+
+// Maps profession name → category key
+const PROFESSION_MAP = {
+  'Job Seeker': 'job-search', 'Career Changer': 'job-search',
+
+  'Therapist': 'experts', 'Psychologist': 'experts', 'Psychiatrist': 'experts',
+  'Doctor': 'experts', 'Physician': 'experts', 'Family Doctor': 'experts',
+  'Dentist': 'experts', 'Dermatologist': 'experts', 'Physical Therapist': 'experts',
+  'Pharmacist': 'experts', 'Nurse': 'experts',
+  'Lawyer': 'experts', 'Attorney': 'experts', 'Paralegal': 'experts',
+  'Teacher': 'experts', 'Professor': 'experts', 'Tutor': 'experts',
+  'Coach': 'experts', 'Trainer': 'experts', 'Instructor': 'experts',
+  'Financial Advisor': 'experts', 'Accountant': 'experts', 'Consultant': 'experts',
+
+  'Sales Manager': 'sales-procurement', 'Account Manager': 'sales-procurement',
+  'Account Executive': 'sales-procurement', 'Business Development Manager': 'sales-procurement',
+  'Sales Rep': 'sales-procurement', 'Realtor': 'sales-procurement',
+  'Real Estate Agent': 'sales-procurement', 'Insurance Agent': 'sales-procurement',
+  'Procurement Manager': 'sales-procurement', 'Buyer': 'sales-procurement',
+  'Purchasing Manager': 'sales-procurement', 'Supply Chain Manager': 'sales-procurement',
+  'Logistics Manager': 'sales-procurement',
+
+  'Photographer': 'freelancer', 'Videographer': 'freelancer', 'Video Editor': 'freelancer',
+  'Graphic Designer': 'freelancer', 'Web Designer': 'freelancer', 'UI/UX Designer': 'freelancer',
+  'Interior Designer': 'freelancer', 'Illustrator': 'freelancer', 'Motion Designer': 'freelancer',
+  'Copywriter': 'freelancer', 'Content Writer': 'freelancer', 'Journalist': 'freelancer',
+  'Social Media Manager': 'freelancer', 'Marketing Consultant': 'freelancer',
+  'Web Developer': 'freelancer', 'Freelance Developer': 'freelancer',
+  'Hair Stylist': 'freelancer', 'Makeup Artist': 'freelancer', 'Aesthetician': 'freelancer',
+  'Massage Therapist': 'freelancer', 'Nutritionist': 'freelancer', 'Florist': 'freelancer',
+  'Personal Trainer': 'freelancer', 'Event Planner': 'freelancer',
+  'Virtual Assistant': 'freelancer'
+};
+
+const ALL_PROFESSIONS = Object.keys(PROFESSION_MAP);
+
+// === NAVIGATION ===
+function goToScreen(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + n).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function updateProgress(step, total) {
+  const wrap = document.getElementById('progress-wrap');
+  if (!wrap) return;
+  wrap.querySelector('.progress-label').textContent = 'Step ' + step + ' of ' + total;
+  wrap.querySelector('.progress-fill').style.width = ((step / total) * 100) + '%';
+}
+
+function progressBarHTML(step) {
+  return `<div class="progress-wrap" id="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label">Step ${step} of 3</span>
+      <span class="progress-count" id="pain-count"></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${(step/3)*100}%"></div></div>
+  </div>`;
+}
+
+// === SCREEN 1: INTRO ===
+function renderScreen1() {
+  document.getElementById('screen-1').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    <h1>You're probably wasting <span class="hl">10+ hours a week</span> on work AI can handle. Let's find out.</h1>
+    <p class="subtitle">Pick your biggest daily pains — get a specific roadmap: which tool, how long to set up, how many hours you get back every week.</p>
+
+    <div class="stat-row">
+      <div class="stat-block">
+        <div class="stat-num">56%</div>
+        <div class="stat-lbl">higher salary for professionals with AI skills</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">8 hrs</div>
+        <div class="stat-lbl">avg. time lost weekly to AI-automatable tasks</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">$0</div>
+        <div class="stat-lbl">cost to set up most of these automations</div>
+      </div>
+    </div>
+
+    <div class="promise-box">
+      <div class="promise-title">What you get in 5 minutes</div>
+      <ul>
+        <li>The specific pains where AI helps most — for your type of work</li>
+        <li>A concrete roadmap: how it works, which tool, step by step</li>
+        <li>DIY vs. done-for-you — time and cost of both paths</li>
+      </ul>
+    </div>
+
+    <div class="author-note">Built by someone with no tech background who reached the top 1% of salaries in 4 years. This is what I wish I'd known on day one.</div>
+
+    <button class="btn" style="margin-top:28px" onclick="startQuiz()">Find my time wasters →</button>
+  `;
+}
+
+function startQuiz() {
+  gtag('event', 'quiz_started');
+  renderScreen2();
+  goToScreen(2);
+}
+
+// === SCREEN 2: CATEGORY + SEARCH ===
+function renderScreen2() {
+  const categories = [
+    { key: 'job-search',        emoji: '🔍', title: 'Actively Job Searching',   sub: 'Looking for a new role — any level, any industry' },
+    { key: 'experts',           emoji: '🎓', title: 'Education / Experts',       sub: 'Doctor, lawyer, therapist, teacher, coach' },
+    { key: 'sales-procurement', emoji: '📈', title: 'Sales / Procurement',       sub: 'Closing deals, managing pipeline, sourcing vendors' },
+    { key: 'freelancer',        emoji: '💼', title: 'Freelancer / Own Business', sub: 'You do the work and run the business' }
+  ];
+
+  document.getElementById('screen-2').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    ${progressBarHTML(1)}
+    <h1>What's your <span class="hl">work context?</span></h1>
+    <p class="subtitle" style="margin-bottom:16px">Choose the closest match — your results will be tailored to your role.</p>
+
+    <input type="text" class="search-input" id="prof-search"
+      placeholder="Search your job title (e.g. Accountant, Florist...)"
+      oninput="handleProfSearch(this.value)">
+    <div class="search-results" id="search-results"></div>
+
+    <div class="cat-grid">
+      ${categories.map(c => `
+        <div class="cat-card${quizState.category === c.key ? ' selected' : ''}"
+             onclick="selectCategory('${c.key}', null)">
+          <span class="cat-emoji">${c.emoji}</span>
+          <div class="cat-title">${c.title}</div>
+          <div class="cat-sub">${c.sub}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="goToScreen(1)">← Back</button>
+      <button class="btn" id="s2-continue" onclick="goToS3()"
+        ${quizState.category ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+}
+
+function handleProfSearch(val) {
+  const resultsEl = document.getElementById('search-results');
+  if (!val.trim()) { resultsEl.style.display = 'none'; return; }
+  const matches = ALL_PROFESSIONS.filter(p => p.toLowerCase().includes(val.toLowerCase()));
+  if (!matches.length) { resultsEl.style.display = 'none'; return; }
+  resultsEl.style.display = 'block';
+  resultsEl.innerHTML = matches.slice(0, 8).map(p =>
+    `<div class="search-result-item" onclick="selectCategory('${PROFESSION_MAP[p]}', '${p}')">${p}</div>`
+  ).join('');
+}
+
+function selectCategory(catKey, profName) {
+  quizState.category = catKey;
+  quizState.profession = profName;
+  quizState.pains = [];
+  quizState.tags = {};
+  gtag('event', 'category_selected', { category: catKey });
+  document.getElementById('search-results').style.display = 'none';
+  renderScreen2(); // re-render to show selected state
+}
+
+function goToS3() {
+  renderScreen3();
+  goToScreen(3);
+}
+
+// === SCREEN 3: PAIN SELECTION ===
+function renderScreen3() {
+  const pains = PAIN_DATA[quizState.category] || [];
+
+  document.getElementById('screen-3').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    ${progressBarHTML(2)}
+    <h1>What's eating your <span class="hl">time or energy</span> the most?</h1>
+    <p class="subtitle" style="margin-bottom:12px">Pick up to 5 — we'll break down each one.</p>
+    <div class="limit-hint">⚠ Maximum 5. Forced prioritization — intentional.</div>
+
+    <div class="pain-list" id="pain-list">
+      ${pains.map(p => {
+        const selected = quizState.pains.includes(p.id);
+        const atMax = quizState.pains.length >= 5 && !selected;
+        return `<div class="pain-item${selected ? ' selected' : ''}${atMax ? ' dimmed' : ''}"
+                     onclick="togglePain('${p.id}')">
+          <div class="checkbox">${selected ? '✓' : ''}</div>
+          <div>
+            <div class="pain-title">${p.title}</div>
+            <div class="pain-desc">${p.description}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="add-own-wrap">
+      <button class="add-own-btn" id="add-own-btn" onclick="showAddOwn()">
+        + This isn't on the list — add mine
+      </button>
+      <input type="text" class="add-own-input" id="add-own-input"
+        placeholder="Describe your pain in a few words..."
+        onkeydown="if(event.key==='Enter') confirmAddOwn(this.value)"
+        onblur="confirmAddOwn(this.value)">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="renderScreen2(); goToScreen(2);">← Back</button>
+      <button class="btn" id="s3-continue" onclick="goToS4()"
+        ${quizState.pains.length > 0 ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+
+  updatePainCount();
+}
+
+function togglePain(id) {
+  const idx = quizState.pains.indexOf(id);
+  if (idx > -1) {
+    quizState.pains.splice(idx, 1);
+    delete quizState.tags[id];
+    gtag('event', 'pain_selected', { pain: id, action: 'deselected' });
+  } else {
+    if (quizState.pains.length >= 5) return;
+    quizState.pains.push(id);
+    gtag('event', 'pain_selected', { pain: id, action: 'selected' });
+  }
+  renderScreen3();
+}
+
+function updatePainCount() {
+  const el = document.getElementById('pain-count');
+  if (el) el.textContent = `Selected: ${quizState.pains.length} / 5`;
+}
+
+function showAddOwn() {
+  document.getElementById('add-own-btn').style.display = 'none';
+  document.getElementById('add-own-input').style.display = 'block';
+  document.getElementById('add-own-input').focus();
+}
+
+function confirmAddOwn(val) {
+  if (!val.trim()) return;
+  quizState.customPain = val.trim();
+  if (quizState.pains.length < 5 && !quizState.pains.includes('custom')) {
+    quizState.pains.push('custom');
+    gtag('event', 'pain_selected', { pain: 'custom:' + val.trim(), action: 'selected' });
+  }
+  renderScreen3();
+}
+
+function goToS4() {
+  renderScreen4();
+  goToScreen(4);
+}
+
+// === SCREEN 4: PAIN TAGGING ===
+function renderScreen4() {
+  const allPains = PAIN_DATA[quizState.category] || [];
+
+  const tagRows = quizState.pains.map(id => {
+    const pain = id === 'custom'
+      ? { title: quizState.customPain }
+      : allPains.find(p => p.id === id);
+    if (!pain) return '';
+    const tag = quizState.tags[id];
+    return `<div class="tagger-row">
+      <div class="tagger-pain-name">${pain.title}</div>
+      <div class="tag-options">
+        <button class="tag-btn${tag === 'routine' ? ' active-routine' : ''}"
+          onclick="setTag('${id}', 'routine')">⏰ Routine — eats time</button>
+        <button class="tag-btn${tag === 'hate' ? ' active-hate' : ''}"
+          onclick="setTag('${id}', 'hate')">😤 I hate doing this</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const allTagged = quizState.pains.every(id => quizState.tags[id]);
+
+  document.getElementById('screen-4').innerHTML = `
+    <div class="brand-label">Life Builder OS</div>
+    ${progressBarHTML(3)}
+    <h1>One more thing about <span class="hl">each pain</span></h1>
+    <div class="tagger-why">💡 This changes the solution. Routine tasks → we automate completely. Things you hate → we remove them from your day entirely.</div>
+    <div class="tagger-list">${tagRows}</div>
+    <div class="btn-row" style="margin-top:22px">
+      <button class="btn btn-ghost" onclick="renderScreen3(); goToScreen(3);">← Back</button>
+      <button class="btn" id="s4-continue" onclick="goToS5()" ${allTagged ? '' : 'disabled'}>
+        Show my roadmap →
+      </button>
+    </div>
+  `;
+}
+
+function setTag(painId, tag) {
+  quizState.tags[painId] = tag;
+  gtag('event', 'pain_tag_set', { pain: painId, tag: tag });
+  renderScreen4();
+}
+
+function goToS5() {
+  renderScreen5();
+  goToScreen(5);
+  gtag('event', 'results_viewed');
+}
+
+// === SCREEN 5: RESULTS ===
+function renderScreen5() {
+  const allPains = PAIN_DATA[quizState.category] || [];
+  const selectedPains = quizState.pains.map(id =>
+    id === 'custom' ? { id: 'custom', title: quizState.customPain, isCustom: true } : allPains.find(p => p.id === id)
+  ).filter(Boolean);
+
+  const totalWasted = selectedPains.reduce((sum, p) => sum + (p.hoursWasted || 0), 0);
+  const totalWithAI = selectedPains.reduce((sum, p) => sum + (p.hoursWithAI || 0), 0);
+  const saved = +(totalWasted - totalWithAI).toFixed(1);
+
+  const profName = quizState.profession || {
+    'job-search':        'Job Seeker',
+    'experts':           'Expert / Practitioner',
+    'sales-procurement': 'Sales / Procurement Professional',
+    'freelancer':        'Freelancer / Business Owner'
+  }[quizState.category];
+
+  const tableRows = selectedPains.map((pain, i) => {
+    const tag = quizState.tags[pain.id] || 'routine';
+    const painSaved = pain.isCustom ? '?' : +(pain.hoursWasted - pain.hoursWithAI).toFixed(1);
+    return `
+      <tr>
+        <td><strong>${pain.title}</strong></td>
+        <td><span class="tag-pill ${tag}">${tag}</span></td>
+        <td><span class="time-saved-badge">-${painSaved} hrs</span></td>
+        <td><button class="expand-btn" id="expand-btn-${i}" onclick="toggleExpand(${i})">▸</button></td>
+      </tr>
+      <tr id="expand-row-${i}" style="display:none">
+        <td colspan="4" style="padding:2px 0 12px">
+          ${pain.isCustom ? renderCustomExpandCard(pain) : renderExpandCard(pain, tag)}
+        </td>
+      </tr>`;
+  }).join('');
+
+  document.getElementById('screen-5').innerHTML = `
+    <div class="brand-label">Your AI Roadmap</div>
+    <h1><span class="hl">${profName}'s AI Audit</span></h1>
+
+    <div class="time-calc">
+      <div class="time-calc-row">
+        <div class="time-block">
+          <div class="time-block-label">Right Now</div>
+          <div class="time-block-num before">${totalWasted.toFixed(1)}<span style="font-size:18px;font-weight:400"> hrs</span></div>
+        </div>
+        <div class="time-arrow">→</div>
+        <div class="time-block">
+          <div class="time-block-label">With AI</div>
+          <div class="time-block-num after">${totalWithAI.toFixed(1)}<span style="font-size:18px;font-weight:400"> hrs</span></div>
+        </div>
+      </div>
+      <div class="time-savings">You're leaving <strong>${saved} hours on the table</strong> every single week.</div>
+    </div>
+
+    <p class="subtitle" style="margin-bottom:14px">Expand each pain — see a concrete plan and two paths to fix it.</p>
+
+    <table class="results-table">
+      <thead><tr>
+        <th>Pain</th><th>Tag</th><th>Saved/week</th><th></th>
+      </tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <div id="s5-rest"></div>
+  `;
+
+  renderS5Rest();
+}
+
+function renderExpandCard(pain, tag) {
+  const framing = tag === 'hate' ? pain.hate : pain.routine;
+  const framingClass = tag === 'hate' ? 'framing-text hate-style' : 'framing-text';
+  return `<div class="expand-card">
+    <div class="expand-section">
+      <div class="section-label">${tag === 'hate' ? '😤 Why you hate this' : '⏰ What this routine really costs you'}</div>
+      <div class="${framingClass}">${framing}</div>
+    </div>
+    <div class="expand-section">
+      <div class="section-label">🤖 How AI solves this</div>
+      <div class="roadmap-steps">
+        ${pain.steps.map(s => `<div class="roadmap-step">${s}</div>`).join('')}
+      </div>
+      <div class="roadmap-result">${pain.result}</div>
+    </div>
+    <div class="expand-section">
+      <div class="paths-heading">What's your next step?</div>
+      <div class="paths-sub">Three paths. Pick the one that fits your situation.</div>
+      <div class="path-card">
+        <div class="path-card-header">
+          <span class="path-icon">📚</span>
+          <div class="path-header-text">
+            <div class="path-num">Path 1</div>
+            <div class="path-title">Learn & Build Yourself</div>
+          </div>
+          <span class="path-badge badge-free">Free</span>
+        </div>
+        <div class="path-body">
+          <p class="path-desc">${pain.diy}</p>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-card-header">
+          <span class="path-icon">🎥</span>
+          <div class="path-header-text">
+            <div class="path-num">Path 2</div>
+            <div class="path-title">Watch How I Do It</div>
+          </div>
+          <span class="path-badge badge-paid">$19–39</span>
+        </div>
+        <div class="path-body">
+          <p class="path-desc">Under 30-min video where I build this exact type of automation from scratch. Step-by-step + ready-to-use setup file.</p>
+          <div class="coming-soon">🔜 Coming soon — <a href="#email-section">join the waitlist</a> below to get notified first</div>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-card-header">
+          <span class="path-icon">⚡</span>
+          <div class="path-header-text">
+            <div class="path-num">Path 3</div>
+            <div class="path-title">Let Me Build It For You</div>
+          </div>
+          <span class="path-badge badge-custom">Custom</span>
+        </div>
+        <div class="path-body">
+          <p class="path-desc">You describe the task. I build the automation or AI agent. You get the working setup, documentation, and a 30-min handoff call.</p>
+          <a href="https://calendly.com/artem-scait/30min" target="_blank" class="btn-dfy">Book a Free Discovery Call →</a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCustomExpandCard(pain) {
+  return `<div class="expand-card">
+    <div class="expand-section">
+      <div class="section-label">🤖 Where to start with AI</div>
+      <div class="framing-text">AI can likely handle this. Here's the universal starting point.</div>
+      <div class="roadmap-steps" style="margin-top:10px">
+        <div class="roadmap-step">Describe this task to ChatGPT in detail — ask it "how would I automate this with AI?"</div>
+        <div class="roadmap-step">Identify the repetitive pattern: what triggers the task, what's the input, what's the output</div>
+        <div class="roadmap-step">Build a simple Make.com or Zapier flow connecting the trigger to the output — takes 2–4 hrs</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleExpand(i) {
+  const row = document.getElementById('expand-row-' + i);
+  const btn = document.getElementById('expand-btn-' + i);
+  const isOpen = row.style.display !== 'none';
+  row.style.display = isOpen ? 'none' : 'table-row';
+  btn.textContent = isOpen ? '▸' : '▾';
+  btn.style.color = isOpen ? '' : 'var(--accent)';
+}
+
+function handleBuyClick(painId, price, url) {
+  quizState.buyClicks.push({ pain: painId, price: price });
+  gtag('event', 'buy_clicked', { pain: painId, price: price });
+  if (url && url !== '#') window.open(url, '_blank');
+}
+
+// === SCREEN 5 REST: SHARE + EMAIL + BOOK ===
+function renderJobSearchTeaser() {
+  return `
+    <div class="card" style="margin-bottom:16px;border-color:#ff6d3b22">
+      <div class="brand-label" style="margin-bottom:10px">Coming Soon</div>
+      <p style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">Searching for a job right now?</p>
+      <p style="font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:0">
+        I'm building a tool that handles most of what's on your list automatically — finds roles, scores them, tracks your pipeline, drafts follow-ups. Every morning, without you touching it.<br><br>
+        <span style="color:var(--text3)">Leave your email below — I'll reach out personally when it's ready.</span>
+      </p>
+    </div>
+  `;
+}
+
+function renderS5Rest() {
+  const saved = quizState.pains.reduce((sum, id) => {
+    const p = (PAIN_DATA[quizState.category] || []).find(x => x.id === id);
+    return sum + (p ? p.hoursWasted - p.hoursWithAI : 0);
+  }, 0).toFixed(1);
+
+  const firstPainId = quizState.pains[0];
+  const firstPain = (PAIN_DATA[quizState.category] || []).find(p => p.id === firstPainId);
+  const firstTool = firstPain ? firstPain.diy.split(' — ')[0] : 'Claude';
+
+  document.getElementById('s5-rest').innerHTML = `
+    <div class="share-block">
+      <p>"Just found out I'm wasting ${saved} hours/week. What's yours?"</p>
+      <div class="share-btns">
+        <a id="share-li" target="_blank" rel="noopener" class="share-btn">Share on LinkedIn</a>
+        <a id="share-th" target="_blank" rel="noopener" class="share-btn">Share on Threads</a>
+        <button class="share-btn" id="share-copy">📋 Copy link</button>
+      </div>
+    </div>
+
+    ${quizState.category === 'job-search' ? renderJobSearchTeaser() : ''}
+
+    <div class="email-section" id="email-section">
+      <h2>Ready to stop doing this yourself?</h2>
+      <p class="email-sub">Tell us what's eating your time — we'll put together a personal plan to move your routine tasks and the work you hate off your plate and onto AI. Free, within 24 hours.</p>
+
+      <div id="email-form-wrap">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">First name</label>
+            <input type="text" class="form-input" id="f-name" placeholder="Alex">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="f-email" placeholder="you@email.com">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Job title / field</label>
+          <input type="text" class="form-input" id="f-jobtitle" placeholder="e.g. Marketing Manager, Florist, Sales Rep">
+        </div>
+        <div class="form-field">
+          <label class="form-label">What's the one task you'd most want off your plate?</label>
+          <textarea class="form-textarea" id="f-maintask" placeholder="e.g. Writing follow-up emails after every meeting"></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label">LinkedIn URL <span class="optional-label">optional</span></label>
+          <input type="text" class="form-input" id="f-linkedin" placeholder="linkedin.com/in/yourname">
+        </div>
+        <div id="form-error" class="submit-error" style="display:none"></div>
+        <button class="btn" style="margin-top:6px" onclick="submitForm()">Get my AI transition plan →</button>
+        <span class="skip-link" onclick="skipForm()">Skip for now — just save the results</span>
+        <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">We'll send your plan within 24 hours. No spam.</p>
+      </div>
+    </div>
+
+    <div class="book-call">
+      <p><strong>Want to talk through your specific situation?</strong></p>
+      <a href="https://calendly.com/artem-scait/30min" target="_blank" onclick="gtag('event','book_call_clicked')">
+        Book a free 20-min call with Artem →
+      </a>
+    </div>
+  `;
+
+  // Set share hrefs via JS to avoid innerHTML encoding issues
+  const currentUrl = window.location.href;
+  const shareMsg = `Just found out I'm wasting ${saved} hours/week on work AI can handle. Free audit → ${currentUrl}`;
+  document.getElementById('share-li').href =
+    'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(currentUrl);
+  document.getElementById('share-th').href =
+    'https://www.threads.net/intent/post?text=' + encodeURIComponent(shareMsg);
+  document.getElementById('share-copy').addEventListener('click', function() {
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      this.innerHTML = '✅ Copied!';
+      setTimeout(() => { this.innerHTML = '📋 Copy link'; }, 2000);
+    }).catch(() => {
+      this.innerHTML = '✅ Copied!';
+      setTimeout(() => { this.innerHTML = '📋 Copy link'; }, 2000);
+    });
+  });
+}
+
+// === FORM SUBMISSION ===
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfBe87y7FsxcCEm_4OU_RG0u7SsVKhKtsmWb1wthedrL5dW86637Duyb-6-WlMopkflw/exec';
+
+function submitForm() {
+  const name     = document.getElementById('f-name').value.trim();
+  const email    = document.getElementById('f-email').value.trim();
+  const title    = document.getElementById('f-jobtitle').value.trim();
+  const mainTask = document.getElementById('f-maintask').value.trim();
+  const linkedin = document.getElementById('f-linkedin').value.trim();
+  const errorEl  = document.getElementById('form-error');
+
+  if (!name || !email || !title || !mainTask) {
+    errorEl.textContent = 'Please fill in all required fields.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (!email.includes('@')) {
+    errorEl.textContent = 'Please enter a valid email address.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  errorEl.style.display = 'none';
+
+  const payload = {
+    product: 'product-1',
+    timestamp: new Date().toISOString(),
+    ...quizState.utmParams,
+    category: quizState.category,
+    profession: quizState.profession || '',
+    pains: JSON.stringify(quizState.pains),
+    tags: JSON.stringify(quizState.tags),
+    custom_pain: quizState.customPain || '',
+    buy_clicks: JSON.stringify(quizState.buyClicks),
+    hours_wasted: quizState.pains.reduce((s, id) => {
+      const p = (PAIN_DATA[quizState.category] || []).find(x => x.id === id);
+      return s + (p ? p.hoursWasted : 0);
+    }, 0).toFixed(1),
+    hours_with_ai: quizState.pains.reduce((s, id) => {
+      const p = (PAIN_DATA[quizState.category] || []).find(x => x.id === id);
+      return s + (p ? p.hoursWithAI : 0);
+    }, 0).toFixed(1),
+    first_name: name,
+    email: email,
+    job_title: title,
+    main_task: mainTask,
+    linkedin_url: linkedin
+  };
+
+  const submitBtn = document.querySelector('#email-form-wrap .btn');
+  submitBtn.textContent = 'Sending...';
+  submitBtn.disabled = true;
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(() => showSubmitSuccess(name))
+  .catch(() => {
+    errorEl.textContent = 'Something went wrong — email us directly at eco.stepanenko@gmail.com';
+    errorEl.style.display = 'block';
+    submitBtn.textContent = 'Get my AI transition plan →';
+    submitBtn.disabled = false;
+  });
+
+  gtag('event', 'email_submitted');
+}
+
+function showSubmitSuccess(name) {
+  const firstPainId = quizState.pains[0];
+  const firstPain = (PAIN_DATA[quizState.category] || []).find(p => p.id === firstPainId);
+  const firstTool = firstPain ? firstPain.diy.split(' — ')[0] : 'ChatGPT';
+
+  document.getElementById('email-form-wrap').innerHTML = `
+    <div class="submit-success">
+      <div class="success-icon">✅</div>
+      <h2>Your plan is on the way, ${name}!</h2>
+      <p>Check your inbox within 24 hours.<br><br>
+      <strong>While you wait — pick the #1 pain from your list and try the DIY step right now.</strong><br>
+      It takes less time than you think.</p>
+    </div>
+  `;
+}
+
+function skipForm() {
+  document.getElementById('email-section').style.display = 'none';
+}
+
+
+// Init
+renderScreen1();
+</script>
+</body>
+</html>

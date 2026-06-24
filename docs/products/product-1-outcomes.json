@@ -1,0 +1,133 @@
+{
+  "categories": [
+    {
+      "id": "jobseeker",
+      "label": "Job Seeker / Career Changer",
+      "emoji": "🔍",
+      "description": "You're actively looking for a new job or switching careers",
+      "time_saved": "2+ hours saved per application",
+      "money_impact": "+56% salary premium for AI-skilled workers",
+      "top_uses": [
+        "Write a tailored cover letter in 2 minutes instead of 2 hours",
+        "Research any company in 5 minutes — mission, culture, what they care about",
+        "Prepare for interviews with AI as your personal mock interviewer",
+        "Track applications and automate follow-up reminders — never miss a callback"
+      ],
+      "first_tool": "Claude for cover letters + Job Search Orchestrator for full automation",
+      "income_angle": "You have time right now. Use it to learn AI — and arrive at your new job with a skill that pays 56% more from day one.",
+      "upsell": true
+    },
+    {
+      "id": "expert",
+      "label": "Expert / Specialist",
+      "emoji": "🧠",
+      "description": "Psychologist, doctor, lawyer, HR, finance — deep expertise, heavy admin",
+      "time_saved": "90% faster on documentation and admin tasks",
+      "money_impact": "More clients, higher rates — without more hours",
+      "top_uses": [
+        "Session notes written automatically — no more 30-minute post-session admin",
+        "Payment reminders go out by themselves — the awkward conversation disappears",
+        "Clients notified when their package is running low — without you saying a word",
+        "Research, summaries, and client-facing documents drafted in minutes"
+      ],
+      "first_tool": "Claude for documentation + Calendly + Stripe for client automation",
+      "income_angle": "Your expertise is what clients pay for. AI handles the business around it — so you can see more clients and charge more."
+    },
+    {
+      "id": "educator",
+      "label": "Educator / Coach / Trainer",
+      "emoji": "📚",
+      "description": "You teach, train, or coach — online, offline, or both",
+      "time_saved": "4.5 hours → 11 minutes on curriculum creation",
+      "money_impact": "Create and sell more programs without more hours",
+      "top_uses": [
+        "Build a full lesson plan in 11 minutes — a task that used to take 4.5 hours",
+        "Write personalized student feedback at scale without losing quality",
+        "Turn your expertise into a course, ebook, or workshop in days not months",
+        "Answer repetitive student questions automatically — focus on the hard ones"
+      ],
+      "first_tool": "Claude for curriculum design + Beehiiv for student newsletters",
+      "income_angle": "Educators who productize their knowledge earn while they sleep. AI makes the build 10x faster."
+    },
+    {
+      "id": "creative",
+      "label": "Creative / Marketer / Content",
+      "emoji": "🎨",
+      "description": "You create content, campaigns, copy, or visuals for a living",
+      "time_saved": "Up to 21 hours saved on a single production project",
+      "money_impact": "Charge for strategy and ideas — not execution time",
+      "top_uses": [
+        "Repurpose one piece of content into 10 formats automatically",
+        "Generate a month of social captions from a single brief",
+        "Write ad copy, email sequences, and landing pages 5x faster",
+        "Client reports and campaign briefs done in minutes not hours"
+      ],
+      "first_tool": "Claude for copy + Canva Magic Studio for visuals",
+      "income_angle": "Creatives who produce at volume without losing quality command premium rates. AI is your production team."
+    },
+    {
+      "id": "sales",
+      "label": "Sales / Business Development",
+      "emoji": "📈",
+      "description": "You close deals, build pipelines, write pitches, handle objections",
+      "time_saved": "Doubles your active selling time — 75% of your day was admin",
+      "money_impact": "+30% win rates for AI-using teams, 80% report revenue increase",
+      "top_uses": [
+        "CRM updated and follow-up email sent after every call — automatically",
+        "Research any prospect in 5 minutes and craft a pitch that lands",
+        "Generate a full proposal from bullet points — no more blank-page paralysis",
+        "Prepare objection responses before every important call"
+      ],
+      "first_tool": "Claude for personalized outreach + Apollo or LinkedIn for leads",
+      "income_angle": "Sales is a numbers game. AI doubles the numbers without doubling your hours."
+    },
+    {
+      "id": "manager",
+      "label": "Manager / Ops / Supply Chain",
+      "emoji": "⚙️",
+      "description": "You lead teams, manage processes, and keep operations running",
+      "time_saved": "80% faster on management tasks — reports, updates, analysis",
+      "money_impact": "3x revenue per employee in AI-exposed operations roles",
+      "top_uses": [
+        "Meeting summaries and action items in 2 minutes instead of 30",
+        "Weekly status reports to leadership — drafted in minutes not hours",
+        "Spot anomalies in data without manual line-by-line review",
+        "Vendor emails, SOPs, and process documentation written in one prompt"
+      ],
+      "first_tool": "Claude for documentation and analysis + Make.com for automation",
+      "income_angle": "Ops professionals who make their impact visible get promoted. AI makes your results impossible to ignore."
+    },
+    {
+      "id": "service",
+      "label": "Service & Craft Business",
+      "emoji": "🎭",
+      "description": "Barber, trainer, DJ, bartender, coffee shop — your skill IS the product",
+      "time_saved": "1 full workday reclaimed per week on scheduling and admin",
+      "money_impact": "AI attracts and retains clients while you focus on your craft",
+      "top_uses": [
+        "Clients book themselves, get reminders, and pay automatically — with tip option",
+        "No-shows handled with automated follow-up — no awkward calls from you",
+        "Social content written and scheduled while you're working",
+        "Client loyalty on autopilot: visit tracking, re-booking prompts, birthday messages"
+      ],
+      "first_tool": "Calendly for booking + Stripe for payments + Canva Magic Studio for social",
+      "income_angle": "You don't use AI to do your craft. You use it so more people can experience your craft — and keep coming back."
+    },
+    {
+      "id": "freelancer",
+      "label": "Freelancer / Consultant",
+      "emoji": "💻",
+      "description": "You work independently — writing, strategy, design, coaching, development",
+      "time_saved": "6–10 hours/week on proposals, admin, and client communication",
+      "money_impact": "Take on 2x more clients without working more hours",
+      "top_uses": [
+        "Write a winning proposal in 20 minutes instead of 3 hours",
+        "Onboard new clients automatically — contracts, briefs, expectations all handled",
+        "Invoice, follow up on late payments, track project status — without chasing",
+        "Weekly client updates written in 5 minutes from your notes"
+      ],
+      "first_tool": "Claude for proposals + Notion AI for project management",
+      "income_angle": "96% of workers use AI for tasks they didn't know how to do before. Your clients will pay for that range."
+    }
+  ]
+}

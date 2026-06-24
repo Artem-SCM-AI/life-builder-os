@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude. Налаштований під тебе.</title>
+<meta name="description" content="15 хвилин — і у тебе є персональний AI-асистент який знає хто ти, пам'ятає контекст, і вміє те що потрібно саме для твоєї роботи.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #37352f; }
+
+  /* HERO */
+  .hero { background: #0d0d0d; padding: 72px 80px 64px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,109,59,0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+  .hero-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #ff6d3b; margin-bottom: 20px; }
+  .hero-title { font-size: 48px; font-weight: 900; color: #fff; letter-spacing: -2px; line-height: 1.05; margin-bottom: 20px; }
+  .hero-title span { color: #ff6d3b; }
+  .hero-sub { font-size: 17px; color: #888; line-height: 1.65; max-width: 520px; margin-bottom: 36px; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 100px; padding: 9px 18px; font-size: 13px; color: #ccc; }
+  .hero-badge.highlight { background: rgba(255,109,59,0.15); border-color: rgba(255,109,59,0.4); color: #ffb899; }
+
+  /* CONTENT */
+  .page { background: #fff; }
+  .content { padding: 0 80px; max-width: 860px; margin: 0 auto; }
+
+  /* CALLOUTS */
+  .callout { border-radius: 8px; padding: 20px 24px; margin: 16px 0; font-size: 15px; color: #333; line-height: 1.7; }
+  .callout-orange { background: #fff3ee; border-left: 4px solid #ff6d3b; }
+  .callout-gray { background: #f7f6f3; border-left: 4px solid #ddd; font-size: 14px; color: #555; }
+  .callout-warning { background: #fef9c3; border-left: 4px solid #eab308; }
+  .callout strong { color: #0d0d0d; }
+  .callout-warning strong { color: #854d0e; }
+
+  /* SECTION HEADER */
+  .section-header { margin: 52px 0 24px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #aaa; display: flex; align-items: center; gap: 12px; }
+  .section-header::after { content: ''; flex: 1; height: 1px; background: #f0f0f0; }
+
+  /* NO-TECH BANNER */
+  .no-tech-banner { background: #0d0d0d; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 18px; }
+  .no-tech-icon { font-size: 30px; flex-shrink: 0; }
+  .no-tech-text h4 { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 5px; }
+  .no-tech-text p { font-size: 13px; color: #888; line-height: 1.55; }
+  .no-tech-text p strong { color: #ff6d3b; }
+
+  /* ROLE TAGS */
+  .roles-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 52px; }
+  .role-tag { background: #f7f6f3; border: 1px solid #e5e5e5; border-radius: 100px; padding: 7px 16px; font-size: 13px; color: #555; }
+
+  /* FEATURE GRID */
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 52px; }
+  .feature-card { background: #0d0d0d; border-radius: 10px; padding: 20px 22px; }
+  .feature-card.accent { background: #ff6d3b; }
+  .feature-icon { font-size: 22px; margin-bottom: 10px; }
+  .feature-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  .feature-desc { font-size: 12px; color: #888; line-height: 1.55; }
+  .feature-card.accent .feature-desc { color: rgba(255,255,255,0.82); }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; margin-bottom: 32px; }
+  .step { display: flex; gap: 20px; align-items: flex-start; padding: 18px 0; border-bottom: 1px solid #f5f5f5; }
+  .step:last-child { border-bottom: none; }
+  .step-num { width: 34px; height: 34px; background: #0d0d0d; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 1px; }
+  .step-body h4 { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 5px; }
+  .step-body p { font-size: 13px; color: #888; line-height: 1.55; }
+  .step-body code { background: #f0f0f0; border-radius: 4px; padding: 2px 7px; font-size: 12px; color: #333; font-family: monospace; }
+  .video-hint { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; background: #f0f0f0; border-radius: 6px; padding: 5px 11px; font-size: 11px; color: #555; font-weight: 600; }
+
+  /* CTA */
+  .cta-block { background: #0d0d0d; border-radius: 12px; padding: 44px 40px; margin-bottom: 80px; text-align: center; }
+  .cta-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #666; margin-bottom: 14px; }
+  .cta-title { font-size: 28px; font-weight: 900; color: #fff; letter-spacing: -.5px; margin-bottom: 14px; }
+  .cta-sub { font-size: 15px; color: #888; margin-bottom: 30px; line-height: 1.65; }
+  .cta-btn { display: inline-block; background: #ff6d3b; color: #fff; padding: 15px 36px; border-radius: 10px; font-size: 16px; font-weight: 700; text-decoration: none; letter-spacing: -.2px; transition: opacity .15s; }
+  .cta-btn:hover { opacity: .88; }
+  .cta-note { margin-top: 18px; font-size: 12px; color: #555; }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    .hero { padding: 48px 24px 44px; }
+    .hero-title { font-size: 34px; }
+    .content { padding: 0 24px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .cta-block { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">⚡ Claude · Безкоштовно</div>
+    <div class="hero-title">Claude.<br>Налаштований<br><span>під тебе.</span></div>
+    <div class="hero-sub">15 хвилин — і у тебе є персональний AI-асистент який знає хто ти, пам'ятає контекст, і вміє те що потрібно саме для твоєї роботи.</div>
+    <div class="hero-badges">
+      <div class="hero-badge highlight">🙌 Без жодного IT досвіду</div>
+      <div class="hero-badge">⏱ 15 хв · одна команда</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- HOOK -->
+    <div class="callout callout-orange" style="margin-top:44px;">
+      Замість <strong>базового Клода</strong> — <strong>прокачаний workspace</strong> що знає хто ти, пам'ятає контекст між сесіями, і вміє те що потрібно саме для твоєї роботи.
+    </div>
+    <div class="callout callout-gray">
+      І ще одне: правильний сетап <strong>економить токени</strong>. Клод не витрачає їх щоразу на з'ясування хто ти і що тобі треба — ти витискаєш <strong>максимум з пакета на $20</strong>.
+    </div>
+
+    <!-- FOR WHO -->
+    <div class="section-header">Для кого це</div>
+
+    <div class="no-tech-banner">
+      <div class="no-tech-icon">🙌</div>
+      <div class="no-tech-text">
+        <h4>Жодного IT досвіду не потрібно</h4>
+        <p>Якщо ти ніколи не чув слова "термінал" — <strong>це саме для тебе</strong>. Весь процес — це розмова з Claude. Він запитує, ти відповідаєш, він налаштовує.</p>
+      </div>
+    </div>
+
+    <div class="roles-grid">
+      <span class="role-tag">📣 SMM / контент-менеджер</span>
+      <span class="role-tag">📊 Digital маркетолог</span>
+      <span class="role-tag">💼 Продажник</span>
+      <span class="role-tag">🤝 Рекрутер</span>
+      <span class="role-tag">📦 SC менеджер</span>
+      <span class="role-tag">🛒 E-commerce власник</span>
+      <span class="role-tag">⚖️ Юрист</span>
+      <span class="role-tag">🏗️ Проєктний менеджер</span>
+      <span class="role-tag">🧾 Бухгалтер</span>
+      <span class="role-tag">🏪 Власник МСБ</span>
+      <span class="role-tag">✂️ Beauty & wellness</span>
+      <span class="role-tag">🍽️ HoReCa</span>
+      <span class="role-tag">💻 Фрілансер</span>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section-header">Що ти отримуєш</div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <div class="feature-title">Персональний профіль</div>
+        <div class="feature-desc">Claude знає твоє ім'я, роль і поточну ціль — без пояснень щоразу</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Пам'ять між сесіями</div>
+        <div class="feature-desc">Пам'ятає контекст між сесіями. Не треба повторювати хто ти</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Навички під твою роль</div>
+        <div class="feature-desc">SMM, маркетолог, рекрутер — кожен отримує свій набір навичок</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <div class="feature-title">Підключення Notion, Sheets, Telegram</div>
+        <div class="feature-desc">Claude читає таблиці і створює задачі прямо з розмови</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🪝</div>
+        <div class="feature-title">Автоматика</div>
+        <div class="feature-desc">Журнал сесій сам пишеться. PDF і Word читаються без конвертації</div>
+      </div>
+      <div class="feature-card accent">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Перший результат одразу</div>
+        <div class="feature-desc">Демо під твою роль — прямо після налаштування</div>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="section-header">Як це працює</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Підпишись на Telegram-канал</h4>
+          <p>Там у закріпленому пості лежить ZIP-архів з workspace</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Завантаж ZIP і відкрий у Claude</h4>
+          <p>Розпакуй архів, відкрий папку в Claude.</p>
+          <div class="video-hint">▶ відеоінструкція — у закріпленому пості каналу</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Напиши <code>/onboarding</code></h4>
+          <p>Claude проведе тебе через 6 питань і налаштує все автоматично. ~15 хвилин.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WARNING -->
+    <div class="callout callout-warning">
+      ⚠️ <strong>Важливо перед стартом:</strong> це працює тільки на платних тарифах Claude ($20/міс і вище). Безкоштовний план не підтримується. Якщо ти ще не підписаний — це перший крок.
+    </div>
+
+    <div style="height:36px;"></div>
+
+    <!-- CTA -->
+    <div class="cta-block">
+      <div class="cta-eyebrow">Безкоштовно · ZIP у закріпленому пості</div>
+      <div class="cta-title">Підпишись — і забирай</div>
+      <div class="cta-sub">Підписуєшся на канал → відкриваєш закріплений пост → завантажуєш ZIP.<br>Далі 15 хвилин і твій Claude знає хто ти.</div>
+      <a class="cta-btn" href="https://t.me/thelifebuilder_os">Підписатись на канал →</a>
+      <div class="cta-note">безкоштовно назавжди</div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
