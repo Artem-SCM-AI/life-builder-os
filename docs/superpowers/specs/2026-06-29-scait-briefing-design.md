@@ -20,7 +20,7 @@
 
 ## 1. Who I Am — and Why I'm Building This
 
-2 years in import-export (Ukraine–Middle East). 5 years in SC leadership positions.
+2 years in import-export. 5 years in SC leadership roles — responsible for $5M–$35M in annual product flow.
 
 Right now: SC Manager at Accommerce, running the supply chain for the Jello brand across the DACH market. €1.3M/month in product flow. Factories in China. 3PL networks in Germany and Austria.
 
