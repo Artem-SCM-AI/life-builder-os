@@ -4,9 +4,23 @@
 
 ---
 
+## Implementation: HTML Deliverable
+
+**Format:** Single self-contained `.html` file — no external dependencies, shareable as attachment or link.
+
+**Language toggle:** EN / UA switcher in the header. Clicking switches all text instantly (JS toggle, no page reload). Default: English.
+
+**Visual style:** Matches scait.space — dark navy/charcoal background, white text, bold sans-serif headings, card-based sections, minimal flat design, generous whitespace. No heavy gradients.
+
+**Output file:** `ref-scait-briefing-consultants.html` in the project root.
+
+---
+
+---
+
 ## 1. Who I Am — and Why I'm Building This
 
-13 years in supply chain. E-commerce, import/export, logistics — Ukraine and Europe.
+2 import-export roles. 2 businesses of my own — both failed. 5 years in SC leadership positions.
 
 Right now: SC Manager at Accommerce, running the supply chain for the Jello brand across the DACH market. €1.3M/month in product flow. Factories in China. 3PL networks in Germany and Austria.
 
@@ -123,12 +137,11 @@ Ready to buy when: just survived a stockout / got a 3PL invoice that doesn't add
 - NeonPanel: being set up on live Jello data — becomes the ERP delivery tool for clients
 
 **Missing:**
-- First client
 - Sample audit report (real case data, in progress)
 - Brand identity: positioning, voice, visual language
-- A pitch that converts at $2,500+
+- A pitch that converts consistently at $2,500+
 
-The methodology is real. It runs on Jello's supply chain right now. SCAIT is the system to bring it to market.
+The methodology is real. It runs on Jello's supply chain right now. Two first audit clients completed. SCAIT is the system to scale it.
 
 ---
 
@@ -136,7 +149,7 @@ The methodology is real. It runs on Jello's supply chain right now. SCAIT is the
 
 ### Brand strategist
 
-I have 13 years of real-world SC expertise, a framework, and real proof numbers.
+I have real-world SC expertise built across import-export, two failed businesses, and 5 years in SC leadership — plus a framework and real proof numbers.
 
 What's missing is the packaging. I need you to help me answer: *Why Artem Stepanenko — specifically — for your supply chain?*
 
