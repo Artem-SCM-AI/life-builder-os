@@ -896,6 +896,7 @@
   <script>
     function setLang(lang) {
       document.body.className = 'lang-' + lang;
+      document.documentElement.lang = lang;
       document.getElementById('btn-en').classList.toggle('active', lang === 'en');
       document.getElementById('btn-ua').classList.toggle('active', lang === 'ua');
     }
